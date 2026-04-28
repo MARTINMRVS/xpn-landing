@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>XPN Builder — Ship packs. Keep the craft.</title>
+<meta name="description" content="The pro expansion builder for Akai MPC. Sequencer, sampler edits, multi-kit projects. Export to MPC 2.x, 3.x, Ableton and MIDI. macOS only."/>
+<link rel="icon" href="assets/favicon/favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0E0F12; --ink-2:#14161A; --graphite:#17191D; --slate:#24262B; --iron:#3A3D44;
+    --dust:#6A6E76; --bone:#EDEAE2; --champagne:#D9BC82; --champ-hi:#D9BC82; --antique:#8D7A4D;
+    --line:#1c1d20;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ink); color:var(--bone);
+    font-family:"Inter",system-ui,sans-serif; font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--champagne)}
+  .h1,.h2,.h3{font-family:"Unbounded",sans-serif;font-weight:700;letter-spacing:-0.02em;line-height:1}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; padding:14px 22px; border-radius:2px;
+    border:1px solid var(--champagne); background:var(--champagne); color:var(--ink);
+    font-weight:500; cursor:pointer; transition:.18s;
+  }
+  .btn:hover{background:var(--champ-hi); border-color:var(--champ-hi)}
+  .btn.ghost{background:transparent; color:var(--champagne)}
+  .btn.ghost:hover{background:rgba(217,188,130,0.08); color:var(--champ-hi)}
+
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px) saturate(120%);background:rgba(14,15,18,0.78);border-bottom:1px solid var(--line)}
+  .topbar .row{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .w{font-family:"Unbounded";font-weight:700;font-size:20px;letter-spacing:-0.02em}
+  .brand .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase;padding:3px 8px;border:1px solid var(--antique);border-radius:2px}
+  nav.menu{display:flex;gap:32px;font-family:"IBM Plex Mono";font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#b5b2a9}
+  nav.menu a:hover{color:var(--champagne)}
+  .lang{display:flex;gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden;font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.18em}
+  .lang button{background:transparent;border:0;color:var(--dust);padding:6px 10px;cursor:pointer;font:inherit;text-transform:uppercase}
+  .lang button.on{background:var(--champagne);color:var(--ink);font-weight:500}
+
+  .hero{position:relative;padding:88px 0 120px;
+    background:radial-gradient(900px 400px at 85% 20%, rgba(217,188,130,0.10), transparent 60%),linear-gradient(180deg,#0E0F12 0%, #0a0b0e 100%);
+    overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px, rgba(217,188,130,0.10) 1px, transparent 0);
+    background-size:22px 22px;opacity:0.5;
+    mask-image:linear-gradient(180deg,#000 20%, transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,#000 20%, transparent 100%)}
+  .hero .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;position:relative;z-index:2}
+  /* Headline scale 78% (final design choice from the prototype's Tweaks). */
+  .hero h1{font-size:clamp(44px,6.24vw,87px);letter-spacing:-0.028em}
+  .hero h1 em{font-style:normal;color:var(--champagne)}
+  /* Lede scale 86%. */
+  .hero .lede{max-width:520px;margin:28px 0 40px;color:#b5b2a9;font-size:15.5px;line-height:1.55}
+  .hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .hero .meta{display:flex;gap:24px;margin-top:28px;color:var(--dust);font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.16em;text-transform:uppercase;flex-wrap:wrap}
+  .hero .meta b{color:var(--champagne);font-weight:500}
+  .mock{background:var(--graphite);border:1px solid var(--line);border-radius:8px;
+    box-shadow:0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,188,130,0.04);
+    overflow:hidden;font-family:"IBM Plex Mono";font-size:11px}
+  .mock-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);background:#11131a}
+  .dot{width:10px;height:10px;border-radius:50%;background:#3a3d44}
+  .mock-title{margin-left:auto;color:var(--dust);font-size:10px;letter-spacing:0.18em;text-transform:uppercase}
+  .mock-body{display:grid;grid-template-columns:180px 1fr 220px;min-height:420px;color:#b5b2a9}
+  .mock-col{padding:16px;border-right:1px solid var(--line)}
+  .mock-col:last-child{border-right:0}
+  .mock-col .sec{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dust);margin:0 0 10px}
+  .mock-col .item{padding:7px 8px;border-radius:3px;display:flex;justify-content:space-between;gap:8px;margin-bottom:2px;color:#d6d2c8}
+  .mock-col .item.active{background:rgba(217,188,130,0.12);color:var(--champagne)}
+  .mock-col .item .c{color:var(--dust)}
+  .pads{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;margin-top:12px}
+  .pad{aspect-ratio:1/1;background:#1c1f26;border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--dust);font-size:10px}
+  .pad.on{background:var(--champagne);color:var(--ink);border-color:var(--champagne)}
+  .pad.half{background:rgba(217,188,130,0.3);border-color:rgba(217,188,130,0.4);color:var(--bone)}
+  .pad.active{outline:1.5px solid var(--champ-hi);outline-offset:2px}
+  .mrow{display:flex;justify-content:space-between;padding:4px 2px;border-bottom:1px dashed var(--line);font-size:10px}
+  .mrow:last-child{border:0}
+  .mrow .k{color:var(--dust)}
+  .mrow .v{color:var(--champagne);font-weight:500}
+  .progress{margin:12px 0 0;height:4px;background:#24262b;border-radius:2px;overflow:hidden}
+  .progress::after{content:"";display:block;height:100%;width:62%;background:linear-gradient(90deg,var(--antique),var(--champagne))}
+
+  .logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 0;background:#0b0c0f}
+  .logos .list{display:flex;gap:48px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+  .logos .item{font-family:"IBM Plex Mono";font-size:12px;letter-spacing:0.18em;color:#7a7a7a;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+  .logos .item::before{content:"";display:inline-block;width:6px;height:6px;background:var(--antique);transform:rotate(45deg)}
+
+  .section{padding:120px 0;border-top:1px solid var(--line)}
+  .sec-head{display:grid;grid-template-columns:80px 1fr auto;gap:24px;align-items:end;margin-bottom:64px}
+  .sec-num{font-family:"Unbounded";font-weight:300;font-size:64px;color:var(--antique);line-height:0.9}
+  /* Section titles also scaled to 78% to honor the design's final headline scale. */
+  .sec-title{font-family:"Unbounded";font-weight:700;font-size:clamp(28px,3.9vw,50px);letter-spacing:-0.025em;line-height:1.02;margin:0}
+  .sec-title em{font-style:normal;color:var(--champagne)}
+  .sec-meta{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--dust);text-align:right}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .feat{border:1px solid var(--line);background:var(--graphite);border-radius:6px;padding:28px;min-height:260px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:.22s}
+  .feat:hover{border-color:var(--antique);transform:translateY(-2px)}
+  .feat .n{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase}
+  .feat h3{font-family:"Unbounded";font-weight:600;font-size:22px;letter-spacing:-0.01em;margin:0;color:var(--bone)}
+  .feat p{margin:0;color:#b5b2a9;font-size:12px;line-height:1.6}
+  .feat.wide{grid-column:span 2}
+
+  .padviz{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
+  .padviz .p{aspect-ratio:1/1;background:#1c1f26;border:1px solid var(--line);border-radius:2px}
+  .padviz .p.on{background:var(--champagne);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
+  .seqviz{margin-top:6px;height:90px;display:flex;align-items:flex-end;gap:2px;padding:8px;background:var(--ink-2);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .seqviz .bar{flex:1;background:linear-gradient(180deg,var(--champ-hi),var(--antique));border-radius:1px 1px 0 0;animation:eq 1.6s ease-in-out infinite}
+  .seqviz .bar:nth-child(1){animation-delay:.0s}.seqviz .bar:nth-child(2){animation-delay:.15s}.seqviz .bar:nth-child(3){animation-delay:.3s}.seqviz .bar:nth-child(4){animation-delay:.45s}.seqviz .bar:nth-child(5){animation-delay:.6s}.seqviz .bar:nth-child(6){animation-delay:.25s}.seqviz .bar:nth-child(7){animation-delay:.1s}.seqviz .bar:nth-child(8){animation-delay:.35s}.seqviz .bar:nth-child(9){animation-delay:.55s}.seqviz .bar:nth-child(10){animation-delay:.2s}.seqviz .bar:nth-child(11){animation-delay:.4s}.seqviz .bar:nth-child(12){animation-delay:.5s}
+  @keyframes eq{0%,100%{height:30%}50%{height:100%}}
+
+  .showcase{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .showcase h3{font-family:"Unbounded";font-weight:600;font-size:36px;letter-spacing:-0.015em;margin:0 0 16px}
+  .showcase p{color:#b5b2a9;font-size:14px;line-height:1.65;max-width:480px}
+  .showcase ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
+  .showcase ul li{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+  .showcase ul li::before{content:"";width:10px;height:10px;background:var(--champagne);flex-shrink:0;margin-top:5px}
+  .mock-lg{background:var(--graphite);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+
+  .pricing{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:20px;align-items:stretch}
+  .price{border:1px solid var(--line);background:var(--graphite);border-radius:6px;padding:36px;display:flex;flex-direction:column;gap:18px}
+  .price.main{background:var(--ink);border-color:var(--champ-hi);position:relative}
+  .price.main::before{content:"RECOMMENDED";position:absolute;top:-10px;left:36px;
+    font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;background:var(--champagne);color:var(--ink);padding:4px 10px;border-radius:2px}
+  .price .tier{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase}
+  .price .amount{font-family:"Unbounded";font-weight:700;font-size:56px;letter-spacing:-0.02em;line-height:1}
+  .price .amount .c{color:var(--champ-hi)}
+  .price .amount .sub{font-family:"IBM Plex Mono";font-size:12px;color:var(--dust);font-weight:400;letter-spacing:0.12em;margin-left:6px}
+  .price .lead{color:#b5b2a9;font-size:12px;line-height:1.55}
+  .price ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:13px}
+  .price ul li{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);color:#d6d2c8}
+  .price ul li::before{content:"▸";color:var(--champagne)}
+  .price ul li.no{color:var(--dust)}
+  .price ul li.no::before{content:"—";color:var(--dust)}
+  .price .btn{justify-content:center}
+
+  footer{border-top:1px solid var(--line);padding:64px 0 40px;background:#0a0b0e}
+  footer .frow{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+  footer h4{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase;margin:0 0 14px}
+  footer a{display:block;color:#b5b2a9;font-size:14px;padding:4px 0}
+  footer a:hover{color:var(--champagne)}
+  footer .legal{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--dust);font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.1em;flex-wrap:wrap;gap:16px}
+
+  @media (max-width:920px){
+    .hero .grid{grid-template-columns:1fr}
+    .showcase{grid-template-columns:1fr}
+    .features{grid-template-columns:1fr}
+    .feat.wide{grid-column:auto}
+    .pricing{grid-template-columns:1fr}
+    footer .frow{grid-template-columns:1fr 1fr}
+    nav.menu{display:none}
+    .sec-head{grid-template-columns:1fr;gap:10px}
+    .sec-num{font-size:36px}
+    .mock-body{grid-template-columns:1fr}
+    .mock-col{border-right:0;border-bottom:1px solid var(--line)}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="#">
+      <svg width="30" height="30" viewBox="0 0 72 72" aria-hidden="true">
+        <g fill="none" stroke="#D9BC82" stroke-width="1.1" stroke-opacity="0.5">
+          <rect x="4" y="4" width="14" height="14"/><rect x="22" y="4" width="14" height="14"/><rect x="40" y="4" width="14" height="14"/>
+          <rect x="4" y="22" width="14" height="14"/><rect x="22" y="22" width="14" height="14"/><rect x="40" y="22" width="14" height="14"/>
+          <rect x="4" y="40" width="14" height="14"/><rect x="22" y="40" width="14" height="14"/><rect x="40" y="40" width="14" height="14"/>
+        </g>
+        <rect x="4" y="4" width="14" height="14" fill="#D9BC82"/>
+        <rect x="40" y="4" width="14" height="14" fill="#D9BC82"/>
+        <rect x="22" y="22" width="14" height="14" fill="#D9BC82"/>
+        <rect x="4" y="40" width="14" height="14" fill="#D9BC82"/>
+        <rect x="40" y="40" width="14" height="14" fill="#D9BC82"/>
+      </svg>
+      <span class="w">XPN</span>
+      <span class="k">Builder</span>
+    </a>
+    <nav class="menu">
+      <a href="#features" data-en="Features" data-es="Features">Features</a>
+      <a href="#how" data-en="How it works" data-es="Cómo funciona">How it works</a>
+      <a href="#pricing" data-en="Pricing" data-es="Pricing">Pricing</a>
+      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0/XPN.Builder-1.0.0.dmg" data-en="Download" data-es="Descargar">Download</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="lang">
+        <button class="on" data-lang="en">EN</button>
+        <button data-lang="es">ES</button>
+      </div>
+      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download" data-es="Descargar">Download</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow" data-en="Pad Works · Studio Instrument · V1.0" data-es="Pad Works · Studio Instrument · V1.0">Pad Works · Studio Instrument · V1.0</div>
+      <h1 class="h1" style="margin:18px 0 0"
+        data-en="The pro expansion<br/>builder for <em>MPC.</em>"
+        data-es="El builder profesional<br/>para <em>MPC.</em>">The pro expansion<br/>builder for <em>MPC.</em></h1>
+      <p class="lede"
+        data-en="XPN Builder is the pro expansion builder for Akai MPC. Sequencer, sampler edits, 12 genre templates, intelligent auto-assign, multi-kit projects — exports to MPC 2.x, 3.x, Ableton and MIDI with perfect parity."
+        data-es="XPN Builder es el builder profesional de expansion packs para Akai MPC. Secuenciador, editor de samples, 12 templates de género, auto-assign inteligente, proyectos multi-kit — exporta a MPC 2.x, 3.x, Ableton y MIDI sin reajustes.">
+        XPN Builder is the pro expansion builder for Akai MPC.
+      </p>
+      <div class="ctas">
+        <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download for macOS ↓" data-es="Descargar para macOS ↓">Download for macOS ↓</a>
+        <a href="#how" class="btn ghost" data-en="See how it works" data-es="Ver cómo funciona">See how it works</a>
+      </div>
+      <div class="meta">
+        <span><b>macOS 13+</b></span>
+        <span><b>V1.0</b> · 28 Apr 2026</span>
+        <span><b data-en="One-time" data-es="Pago único">One-time</b> · USD 79</span>
+      </div>
+    </div>
+    <div>
+      <div class="mock">
+        <div class="mock-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="mock-title">midnight_drill_vol2.xpn — XPN Builder</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-col">
+            <div class="sec" data-en="Project" data-es="Proyecto">Project</div>
+            <div class="item active">Kit 01 · 808 <span class="c">32</span></div>
+            <div class="item">Kit 02 · Hats <span class="c">16</span></div>
+            <div class="item">Kit 03 · Snare <span class="c">24</span></div>
+            <div class="item">Kit 04 · FX <span class="c">12</span></div>
+            <div class="item">Kit 05 · Melody <span class="c">24</span></div>
+            <div class="item">Kit 06 · Drill Pack <span class="c">32</span></div>
+            <div class="sec" style="margin-top:20px" data-en="Template" data-es="Template">Template</div>
+            <div class="item active">Chilean Drill</div>
+          </div>
+          <div class="mock-col" style="padding:12px">
+            <div class="sec" data-en="Pads · Bank A" data-es="Pads · Banco A">Pads · Bank A</div>
+            <div class="pads">
+              <div class="pad on">A1</div><div class="pad half">A2</div><div class="pad">A3</div><div class="pad on active">A4</div>
+              <div class="pad">B1</div><div class="pad on">B2</div><div class="pad half">B3</div><div class="pad">B4</div>
+              <div class="pad on">C1</div><div class="pad">C2</div><div class="pad on">C3</div><div class="pad half">C4</div>
+              <div class="pad half">D1</div><div class="pad on">D2</div><div class="pad">D3</div><div class="pad on">D4</div>
+            </div>
+            <div class="seqviz" style="margin-top:12px">
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+          </div>
+          <div class="mock-col">
+            <div class="sec" data-en="Export" data-es="Export">Export</div>
+            <div class="mrow"><span class="k">TARGET</span><span class="v">MPC 3.x</span></div>
+            <div class="mrow"><span class="k">PADS</span><span class="v">128 / 128</span></div>
+            <div class="mrow"><span class="k">KITS</span><span class="v">6</span></div>
+            <div class="mrow"><span class="k">SIZE</span><span class="v">1.82 GB</span></div>
+            <div class="mrow"><span class="k">BPM</span><span class="v">142</span></div>
+            <div class="mrow"><span class="k">INTEGRITY</span><span class="v" style="color:#7BA05B">✓ PASS</span></div>
+            <div class="progress"></div>
+            <div style="font-size:10px;color:var(--dust);margin-top:8px;letter-spacing:0.12em">PACKAGING · 62%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logos">
+  <div class="wrap list">
+    <span class="item" data-en="Built for MPC 2.x" data-es="Para MPC 2.x">Built for MPC 2.x</span>
+    <span class="item" data-en="Built for MPC 3.x" data-es="Para MPC 3.x">Built for MPC 3.x</span>
+    <span class="item" data-en="Ableton Live export" data-es="Export a Ableton">Ableton Live export</span>
+    <span class="item" data-en="MIDI export" data-es="Export MIDI">MIDI export</span>
+    <span class="item">Gumroad · BeatStars · Splice</span>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <header class="sec-head">
+      <div class="sec-num">01</div>
+      <div>
+        <div class="eyebrow" data-en="Features" data-es="Características">Features</div>
+        <h2 class="sec-title"
+          data-en="Everything the <em>official builder</em><br/>should have been."
+          data-es="Todo lo que el <em>builder oficial</em><br/>debió haber sido.">Everything the <em>official builder</em><br/>should have been.</h2>
+      </div>
+      <div class="sec-meta">9 / 9 shipping</div>
+    </header>
+
+    <div class="features">
+      <div class="feat">
+        <div class="n">01 · Pads</div>
+        <h3 data-en="Intelligent auto-assign" data-es="Auto-assign inteligente">Intelligent auto-assign</h3>
+        <p data-en="Drop 400 samples into a folder. XPN organizes 808s, hats, snares, FX and melodics into banks automatically — and you override any pad with a keystroke." data-es="Arrastra 400 samples a una carpeta. XPN organiza 808s, hats, snares, FX y melodías en bancos automáticamente.">Drop 400 samples into a folder. XPN organizes 808s, hats, snares, FX and melodics into banks automatically — and you override any pad with a keystroke.</p>
+        <div class="padviz">
+          <div class="p on"></div><div class="p"></div><div class="p on"></div><div class="p"></div>
+          <div class="p"></div><div class="p on"></div><div class="p"></div><div class="p on"></div>
+          <div class="p on"></div><div class="p"></div><div class="p"></div><div class="p on"></div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="n">02 · Sequencer</div>
+        <h3 data-en="Bake patterns into the pack" data-es="Graba patterns en el pack">Bake patterns into the pack</h3>
+        <p data-en="Preview groove, pocket and swing inside XPN. Export the sequence with the pack so buyers load a kit and hear your demo immediately." data-es="Previsualiza groove, pocket y swing dentro de XPN. Exporta la secuencia con el pack.">Preview groove, pocket and swing inside XPN. Export the sequence with the pack so buyers load a kit and hear your demo immediately.</p>
+        <div class="seqviz">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="n">03 · Templates</div>
+        <h3 data-en="12 genre starting points" data-es="12 puntos de partida por género">12 genre starting points</h3>
+        <p data-en="Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient." data-es="Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient.">Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient.</p>
+        <div class="mono" style="color:var(--champagne);font-size:11px;letter-spacing:0.12em;margin-top:auto">BPM 70–170 · 44.1/24</div>
+      </div>
+
+      <div class="feat wide">
+        <div class="n">04 · Export</div>
+        <h3 style="font-size:28px" data-en="One project. Every target." data-es="Un proyecto. Todos los targets.">One project. Every target.</h3>
+        <p data-en="Export the same project as an MPC 2.x expansion, an MPC 3.x expansion, an Ableton Live drum rack, a MIDI groove file, or a plain sample folder. Integrity check before every bounce — no missing samples at 2am." data-es="Exporta el mismo proyecto como expansion MPC 2.x, expansion MPC 3.x, drum rack de Ableton, MIDI groove o carpeta de samples. Integrity check antes de cada export.">Export the same project as an MPC 2.x expansion, an MPC 3.x expansion, an Ableton Live drum rack, a MIDI groove file, or a plain sample folder. Integrity check before every bounce — no missing samples at 2am.</p>
+        <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap">
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MPC 2.x · .xpn</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px;color:var(--champagne)">MPC 3.x · .xpn</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Ableton · .adg</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MIDI · .mid</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Folder · .wav</div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="n">05 · Sampler edits</div>
+        <h3 data-en="Trim, loop, tune — in place" data-es="Trim, loop, tune — en vivo">Trim, loop, tune — in place</h3>
+        <p data-en="A real sampler editor inside the builder: start/end, loop, tune, gain, fades, root note. No round-trips to a DAW for every fix." data-es="Editor de sampler completo dentro del builder: start/end, loop, tune, gain, fades, root note. Sin round-trips al DAW.">A real sampler editor inside the builder: start/end, loop, tune, gain, fades, root note. No round-trips to a DAW for every fix.</p>
+      </div>
+
+      <div class="feat">
+        <div class="n">06 · Batch</div>
+        <h3 data-en="Multi-kit projects" data-es="Proyectos multi-kit">Multi-kit projects</h3>
+        <p data-en="16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack." data-es="16 kits × 128 pads × 4 bancos en un solo proyecto. Batch-rename, batch-tune, batch-normalize.">16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <header class="sec-head">
+      <div>
+        <div class="eyebrow" data-en="How it works" data-es="Cómo funciona">How it works</div>
+        <h2 class="sec-title"
+          data-en="From folder to <em>finished pack</em><br/>in under ten minutes."
+          data-es="De carpeta a <em>pack finalizado</em><br/>en menos de diez minutos.">From folder to <em>finished pack</em><br/>in under ten minutes.</h2>
+      </div>
+      <div class="sec-meta">4 steps</div>
+    </header>
+
+    <div class="showcase">
+      <div>
+        <h3 data-en="Drop. Assign. Tune. Ship." data-es="Arrastra. Asigna. Tune. Publica.">Drop. Assign. Tune. Ship.</h3>
+        <p data-en="XPN Builder is the only tool in the market that treats your expansion pack like a studio session — because that's what it is. Built by an indie dev in Santiago who was tired of XML surgery and Expansion Builder crashes." data-es="XPN Builder es la única herramienta del mercado que trata tu expansion pack como una sesión de estudio. Hecho por un indie dev en Santiago.">XPN Builder is the only tool in the market that treats your expansion pack like a studio session — because that's what it is. Built by an indie dev in Santiago who was tired of XML surgery and Expansion Builder crashes.</p>
+        <ul>
+          <li data-en="① Drop a folder of samples — 1 to 2,000." data-es="① Arrastra una carpeta con samples — de 1 a 2.000.">① Drop a folder of samples — 1 to 2,000.</li>
+          <li data-en="② Pick a genre template. Auto-assign runs." data-es="② Elige un template de género. Corre el auto-assign.">② Pick a genre template. Auto-assign runs.</li>
+          <li data-en="③ Edit pads, trim samples, bake a demo pattern." data-es="③ Edita pads, recorta samples, graba un pattern demo.">③ Edit pads, trim samples, bake a demo pattern.</li>
+          <li data-en="④ Export to every target — MPC 2, MPC 3, Ableton, MIDI." data-es="④ Exporta a cada target — MPC 2, MPC 3, Ableton, MIDI.">④ Export to every target — MPC 2, MPC 3, Ableton, MIDI.</li>
+        </ul>
+      </div>
+      <div class="mock-lg">
+        <div class="mock-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="mock-title">Sampler Editor · pad A4 · kick_01.wav</span>
+        </div>
+        <div style="padding:24px">
+          <svg viewBox="0 0 700 200" style="width:100%;height:auto">
+            <rect width="700" height="200" fill="#11131a"/>
+            <g stroke="#24262B" stroke-width="1">
+              <line x1="0" y1="100" x2="700" y2="100"/>
+              <line x1="0" y1="50" x2="700" y2="50" stroke-dasharray="2,4"/>
+              <line x1="0" y1="150" x2="700" y2="150" stroke-dasharray="2,4"/>
+            </g>
+            <g fill="#D9BC82">
+              <path d="M0 100 L20 60 L40 110 L60 40 L80 160 L100 30 L120 170 L140 50 L160 120 L180 80 L200 100 L220 95 L240 105 L260 92 L280 108 L300 98 L320 102 L340 99 L360 101 L380 100 L700 100 Z"/>
+            </g>
+            <line x1="30" y1="0" x2="30" y2="200" stroke="#D9BC82" stroke-width="2"/>
+            <line x1="180" y1="0" x2="180" y2="200" stroke="#D9BC82" stroke-width="2"/>
+            <rect x="30" y="0" width="150" height="200" fill="#D9BC82" opacity="0.06"/>
+            <line x1="90" y1="0" x2="90" y2="200" stroke="#7BA05B" stroke-width="1.5"/>
+            <text x="32" y="14" font-family="IBM Plex Mono" font-size="10" fill="#D9BC82">IN 0.032s</text>
+            <text x="182" y="14" font-family="IBM Plex Mono" font-size="10" fill="#D9BC82">OUT 0.512s</text>
+          </svg>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:20px;font-family:'IBM Plex Mono';font-size:11px">
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">START</div><div style="color:var(--champagne)">0.032</div></div>
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">END</div><div style="color:var(--champagne)">0.512</div></div>
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">LOOP</div><div style="color:var(--champagne)">OFF</div></div>
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">TUNE</div><div style="color:var(--champagne)">−2 st</div></div>
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">GAIN</div><div style="color:var(--champagne)">+1.2 dB</div></div>
+            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">ROOT</div><div style="color:var(--champagne)">C2</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <header class="sec-head">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="eyebrow" data-en="Pricing" data-es="Precio">Pricing</div>
+        <h2 class="sec-title" data-en="Pay once. Own it <em>forever.</em>" data-es="Pago único. Tuyo para <em>siempre.</em>">Pay once. Own it <em>forever.</em></h2>
+      </div>
+      <div class="sec-meta">USD · no subscription</div>
+    </header>
+
+    <div class="pricing">
+      <div class="price">
+        <div class="tier">Solo</div>
+        <div class="amount">$49<span class="sub" data-en="/ once" data-es="/ único">/ once</span></div>
+        <div class="lead" data-en="For the producer shipping their first pack." data-es="Para el productor publicando su primer pack.">For the producer shipping their first pack.</div>
+        <ul>
+          <li data-en="Up to 4 kits per project" data-es="Hasta 4 kits por proyecto">Up to 4 kits per project</li>
+          <li data-en="4 genre templates" data-es="4 templates de género">4 genre templates</li>
+          <li data-en="MPC 3.x export" data-es="Export MPC 3.x">MPC 3.x export</li>
+          <li class="no" data-en="Sequencer" data-es="Secuenciador">Sequencer</li>
+          <li class="no" data-en="Ableton · MIDI export" data-es="Ableton · MIDI export">Ableton · MIDI export</li>
+          <li data-en="Email support" data-es="Soporte por email">Email support</li>
+        </ul>
+        <a href="#" class="btn ghost" data-en="Get Solo" data-es="Comprar Solo">Get Solo</a>
+      </div>
+
+      <div class="price main">
+        <div class="tier" data-en="Studio · Recommended" data-es="Studio · Recomendado">Studio</div>
+        <div class="amount">$<span class="c">79</span><span class="sub" data-en="/ once · lifetime" data-es="/ único · lifetime">/ once · lifetime</span></div>
+        <div class="lead" data-en="Everything a pro pack seller needs. Lifetime updates." data-es="Todo lo que un pro necesita. Updates de por vida.">Everything a pro pack seller needs. Lifetime updates.</div>
+        <ul>
+          <li data-en="Up to 16 kits · 128 pads × 4 banks" data-es="Hasta 16 kits · 128 pads × 4 bancos">Up to 16 kits · 128 pads × 4 banks</li>
+          <li data-en="All 12 genre templates" data-es="Los 12 templates de género">All 12 genre templates</li>
+          <li data-en="MPC 2.x · 3.x export + integrity check" data-es="Export MPC 2.x · 3.x + integrity check">MPC 2.x · 3.x export + integrity check</li>
+          <li data-en="Ableton drum rack · MIDI groove" data-es="Ableton drum rack · MIDI groove">Ableton drum rack · MIDI groove</li>
+          <li data-en="Sequencer · sampler editor · batch tools" data-es="Secuenciador · editor · batch tools">Sequencer · sampler editor · batch tools</li>
+          <li data-en="Lifetime updates · priority support" data-es="Updates lifetime · soporte prioritario">Lifetime updates · priority support</li>
+        </ul>
+        <a href="#" class="btn" data-en="Get Studio · $79" data-es="Comprar Studio · $79">Get Studio · $79</a>
+      </div>
+
+      <div class="price">
+        <div class="tier">Label</div>
+        <div class="amount">$199<span class="sub" data-en="/ once · 5 seats" data-es="/ único · 5 puestos">/ once · 5 seats</span></div>
+        <div class="lead" data-en="For labels and sample companies shipping at volume." data-es="Para labels y sample companies publicando en volumen.">For labels and sample companies shipping at volume.</div>
+        <ul>
+          <li data-en="Everything in Studio" data-es="Todo lo de Studio">Everything in Studio</li>
+          <li data-en="5 team seats" data-es="5 puestos">5 team seats</li>
+          <li data-en="Branded pack.json metadata" data-es="Metadata pack.json con branding">Branded pack.json metadata</li>
+          <li data-en="Batch export queue" data-es="Cola de batch export">Batch export queue</li>
+          <li data-en="Private Discord + 30-min onboarding" data-es="Discord privado + onboarding 30 min">Private Discord + 30-min onboarding</li>
+        </ul>
+        <a href="#" class="btn ghost" data-en="Get Label" data-es="Comprar Label">Get Label</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="download">
+  <div class="wrap" style="text-align:center">
+    <div class="eyebrow" data-en="Ready when you are" data-es="Cuando estés listo">Ready when you are</div>
+    <h2 class="sec-title" style="margin:12px 0 32px" data-en="Ship your next pack <em>tonight.</em>" data-es="Publica tu próximo pack <em>esta noche.</em>">Ship your next pack <em>tonight.</em></h2>
+    <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0/XPN.Builder-1.0.0.dmg" class="btn" style="padding:18px 32px;font-size:13px" data-en="Download XPN Builder · macOS ↓" data-es="Descargar XPN Builder · macOS ↓">Download XPN Builder · macOS ↓</a>
+    <div class="mono" style="margin-top:20px;color:var(--dust);font-size:11px;letter-spacing:0.2em">MACOS 13+ · 99 MB · V1.0</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="frow">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <svg width="28" height="28" viewBox="0 0 72 72">
+            <g fill="none" stroke="#D9BC82" stroke-width="1.1" stroke-opacity="0.5">
+              <rect x="4" y="4" width="14" height="14"/><rect x="22" y="4" width="14" height="14"/><rect x="40" y="4" width="14" height="14"/>
+              <rect x="4" y="22" width="14" height="14"/><rect x="22" y="22" width="14" height="14"/><rect x="40" y="22" width="14" height="14"/>
+              <rect x="4" y="40" width="14" height="14"/><rect x="22" y="40" width="14" height="14"/><rect x="40" y="40" width="14" height="14"/>
+            </g>
+            <rect x="4" y="4" width="14" height="14" fill="#D9BC82"/>
+            <rect x="40" y="4" width="14" height="14" fill="#D9BC82"/>
+            <rect x="22" y="22" width="14" height="14" fill="#D9BC82"/>
+            <rect x="4" y="40" width="14" height="14" fill="#D9BC82"/>
+            <rect x="40" y="40" width="14" height="14" fill="#D9BC82"/>
+          </svg>
+          <span style="font-family:Unbounded;font-weight:700;font-size:20px">XPN</span>
+        </div>
+        <p style="color:var(--dust);font-size:13px;line-height:1.6;max-width:340px;margin:16px 0 0"
+          data-en="Pad Works is an independent software studio in Santiago, Chile. We build desktop tools for producers who ship."
+          data-es="Pad Works es un estudio independiente en Santiago, Chile. Hacemos tools de escritorio para productores que publican.">Pad Works is an independent software studio in Santiago, Chile. We build desktop tools for producers who ship.</p>
+      </div>
+      <div>
+        <h4 data-en="Product" data-es="Producto">Product</h4>
+        <a href="#features" data-en="Features" data-es="Características">Features</a>
+        <a href="#pricing" data-en="Pricing" data-es="Precio">Pricing</a>
+        <a href="#" data-en="Changelog" data-es="Changelog">Changelog</a>
+        <a href="#" data-en="Roadmap" data-es="Roadmap">Roadmap</a>
+      </div>
+      <div>
+        <h4 data-en="Resources" data-es="Recursos">Resources</h4>
+        <a href="#" data-en="Documentation" data-es="Documentación">Documentation</a>
+        <a href="#" data-en="Video tutorials" data-es="Video tutoriales">Video tutorials</a>
+        <a href="#" data-en="MPC 2.x ↔ 3.x guide" data-es="Guía MPC 2.x ↔ 3.x">MPC 2.x ↔ 3.x guide</a>
+        <a href="#" data-en="Support" data-es="Soporte">Support</a>
+      </div>
+      <div>
+        <h4 data-en="Company" data-es="Empresa">Company</h4>
+        <a href="#" data-en="About Pad Works" data-es="Sobre Pad Works">About Pad Works</a>
+        <a href="#" data-en="Contact" data-es="Contacto">Contact</a>
+        <a href="#">X / Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© 2026 PAD WORKS · SANTIAGO / CL</span>
+      <span>"AKAI" AND "MPC" ARE TRADEMARKS OF THEIR RESPECTIVE OWNERS. XPN BUILDER IS NOT AFFILIATED.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// EN/ES toggle with localStorage persistence. Reads `xpn_landing_lang`,
+// falls back to 'en'. Each translatable element carries data-en / data-es;
+// we swap innerHTML when the user clicks the chip and persist the choice.
+(function() {
+  var STORAGE_KEY = 'xpn_landing_lang';
+  function applyLang(lang) {
+    document.querySelectorAll('[data-en]').forEach(function(el) {
+      var val = el.getAttribute('data-' + lang);
+      if (val != null) el.innerHTML = val;
+    });
+    document.querySelectorAll('.lang button').forEach(function(b) {
+      b.classList.toggle('on', b.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang;
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  }
+  document.querySelectorAll('.lang button').forEach(function(b) {
+    b.addEventListener('click', function() { applyLang(b.dataset.lang); });
+  });
+  var stored = null;
+  try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  applyLang(stored === 'es' ? 'es' : 'en');
+})();
+</script>
+</body>
+</html>
