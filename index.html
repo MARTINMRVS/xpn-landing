@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>XPN Builder — Ship packs. Keep the craft.</title>
 <meta name="description" content="The pro expansion builder for Akai MPC. Sequencer, sampler edits, multi-kit projects. Export to MPC 2.x, 3.x, Ableton and MIDI. macOS only."/>
-<link rel="icon" href="assets/favicon/favicon.ico"/>
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+<link rel="icon" sizes="16x16" href="assets/favicon.ico"/>
+<link rel="icon" sizes="32x32" href="assets/favicon.ico"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -111,6 +113,25 @@
   .feat h3{font-family:"Unbounded";font-weight:600;font-size:22px;letter-spacing:-0.01em;margin:0;color:var(--bone)}
   .feat p{margin:0;color:#b5b2a9;font-size:12px;line-height:1.6}
   .feat.wide{grid-column:span 2}
+
+  /* ── HARDWARE CARDS ── */
+  .hw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .hw-card{position:relative;border:1px solid rgba(217,188,130,0.2);background:var(--graphite);border-radius:6px;padding:30px;display:flex;flex-direction:column;gap:10px;transition:.22s;overflow:hidden}
+  .hw-card:hover{border-color:var(--champagne);transform:translateY(-2px)}
+  .hw-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(217,188,130,0.6),transparent);opacity:0;transition:opacity .22s}
+  .hw-card:hover::before{opacity:1}
+  .hw-num{position:absolute;top:24px;right:28px;font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--dust)}
+  .hw-brand{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--dust);margin-bottom:2px}
+  .hw-name{font-family:"Unbounded";font-weight:700;font-size:30px;letter-spacing:-0.02em;line-height:1.05;margin:0;color:var(--champagne)}
+  .hw-models{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.04em;color:var(--bone);margin-top:4px;line-height:1.55}
+  .hw-format{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.06em;color:var(--dust);padding:6px 10px;border:1px solid var(--line);border-radius:2px;align-self:flex-start;margin-top:6px}
+  .hw-desc{margin:8px 0 0;color:#b5b2a9;font-size:12px;line-height:1.6}
+  @media (max-width: 900px){
+    .hw-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width: 560px){
+    .hw-grid{grid-template-columns:1fr}
+  }
 
   .padviz{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
   .padviz .p{aspect-ratio:1/1;background:#1c1f26;border:1px solid var(--line);border-radius:2px}
@@ -224,7 +245,7 @@
       <div class="meta">
         <span><b>macOS 13+</b></span>
         <span><b>V1.0</b> · 28 Apr 2026</span>
-        <span><b data-en="One-time" data-es="Pago único">One-time</b> · USD 79</span>
+        <span><b data-en="One-time" data-es="Pago único">One-time</b> · USD 39</span>
       </div>
     </div>
     <div>
@@ -302,18 +323,38 @@
         placeholder="Your name"
         style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
 
-      <select name="mpc_model" required
+      <select name="hardware" required
         style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
-        <option value="" data-en="Which MPC do you use?" data-es="¿Qué MPC usas?">Which MPC do you use?</option>
-        <option>MPC Live 1</option>
-        <option>MPC Live 2</option>
-        <option>MPC Live 3</option>
-        <option>MPC One</option>
-        <option>MPC One+</option>
-        <option>MPC X</option>
-        <option>MPC Key</option>
-        <option>Akai Force</option>
-        <option data-en="MPC Software only" data-es="Solo MPC Software">MPC Software only</option>
+        <option value="" data-en="Which hardware do you use?" data-es="¿Qué hardware usas?">Which hardware do you use?</option>
+        <optgroup label="Akai MPC">
+          <option>MPC Live 1</option>
+          <option>MPC Live 2</option>
+          <option>MPC Live 3</option>
+          <option>MPC One</option>
+          <option>MPC One+</option>
+          <option>MPC X</option>
+          <option>MPC Key</option>
+          <option>Akai Force</option>
+        </optgroup>
+        <optgroup label="Roland">
+          <option>SP-404 MKII</option>
+          <option>SP-404 SX</option>
+        </optgroup>
+        <optgroup label="Elektron">
+          <option>Analog RYTM MKII</option>
+          <option>Digitakt</option>
+          <option>Syntakt</option>
+        </optgroup>
+        <optgroup label="Native Instruments">
+          <option>Maschine MK3</option>
+          <option>Maschine+</option>
+          <option>Maschine Mikro</option>
+        </optgroup>
+        <optgroup label="Software">
+          <option>Ableton Live</option>
+          <option data-en="MPC Software only" data-es="Solo MPC Software">MPC Software only</option>
+          <option data-en="Other DAW" data-es="Otro DAW">Other DAW</option>
+        </optgroup>
       </select>
 
       <select name="experience" required
@@ -421,21 +462,23 @@
 
       <div class="feat">
         <div class="n">03 · Templates</div>
-        <h3 data-en="12 genre starting points" data-es="12 puntos de partida por género">12 genre starting points</h3>
-        <p data-en="Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient." data-es="Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient.">Trap · Drill · Boom-bap · Lo-fi · House · Amapiano · Afrobeat · Reggaeton · UK Garage · Jersey · Phonk · Ambient.</p>
+        <h3 data-en="12 genre templates" data-es="12 templates de género">12 genre templates</h3>
+        <p data-en="Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop." data-es="Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop.">Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop.</p>
         <div class="mono" style="color:var(--champagne);font-size:11px;letter-spacing:0.12em;margin-top:auto">BPM 70–170 · 44.1/24</div>
       </div>
 
       <div class="feat wide">
         <div class="n">04 · Export</div>
-        <h3 style="font-size:28px" data-en="One project. Every target." data-es="Un proyecto. Todos los targets.">One project. Every target.</h3>
-        <p data-en="Export the same project as an MPC 2.x expansion, an MPC 3.x expansion, an Ableton Live drum rack, a MIDI groove file, or a plain sample folder. Integrity check before every bounce — no missing samples at 2am." data-es="Exporta el mismo proyecto como expansion MPC 2.x, expansion MPC 3.x, drum rack de Ableton, MIDI groove o carpeta de samples. Integrity check antes de cada export.">Export the same project as an MPC 2.x expansion, an MPC 3.x expansion, an Ableton Live drum rack, a MIDI groove file, or a plain sample folder. Integrity check before every bounce — no missing samples at 2am.</p>
-        <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap">
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MPC 2.x · .xpn</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px;color:var(--champagne)">MPC 3.x · .xpn</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Ableton · .adg</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MIDI · .mid</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Folder · .wav</div>
+        <h3 style="font-size:28px" data-en="One project. Every target." data-es="Un proyecto. Todos los destinos.">One project. Every target.</h3>
+        <p data-en="Export the same project as an Akai MPC expansion (firmware 2.x or 3.x), a Roland SP-404 MKII import, an Ableton Live Drum Rack, an NI Maschine pack, an Elektron RYTM pack, or a Universal WAV pack — six destinations from one source. Integrity check before every bounce." data-es="Exporta el mismo proyecto como expansion Akai MPC (firmware 2.x o 3.x), import para Roland SP-404 MKII, Drum Rack de Ableton Live, pack para NI Maschine, pack para Elektron RYTM o pack Universal WAV — seis destinos desde una sola fuente. Integrity check antes de cada export.">Export the same project as an Akai MPC expansion (firmware 2.x or 3.x), a Roland SP-404 MKII import, an Ableton Live Drum Rack, an NI Maschine pack, an Elektron RYTM pack, or a Universal WAV pack — six destinations from one source. Integrity check before every bounce.</p>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MPC 2.x</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px;color:var(--champagne)">MPC 3.x</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">SP-404 MKII</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Ableton</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Maschine</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Elektron</div>
+          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Universal</div>
         </div>
       </div>
 
@@ -449,6 +492,111 @@
         <div class="n">06 · Batch</div>
         <h3 data-en="Multi-kit projects" data-es="Proyectos multi-kit">Multi-kit projects</h3>
         <p data-en="16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack." data-es="16 kits × 128 pads × 4 bancos en un solo proyecto. Batch-rename, batch-tune, batch-normalize.">16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPATIBLE HARDWARE ── -->
+<section class="section" id="hardware">
+  <div class="wrap">
+    <header class="sec-head">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="eyebrow" data-en="Compatible hardware" data-es="Hardware compatible">Compatible hardware</div>
+        <h2 class="sec-title"
+          data-en="One project. <em>Every target.</em>"
+          data-es="Un proyecto. <em>Todos los destinos.</em>">One project. <em>Every target.</em></h2>
+        <p style="color:#b5b2a9;font-size:13px;line-height:1.6;margin:12px 0 0;max-width:540px"
+          data-en="Export ready-to-play packs for 6 platforms — same source, format-perfect output."
+          data-es="Exporta packs listos para 6 plataformas — misma fuente, formato perfecto.">Export ready-to-play packs for 6 platforms — same source, format-perfect output.</p>
+      </div>
+      <div class="sec-meta">6 targets</div>
+    </header>
+
+    <div class="hw-grid">
+      <!-- 1. Akai MPC -->
+      <div class="hw-card">
+        <div class="hw-num">01</div>
+        <div class="hw-brand" data-en="Akai" data-es="Akai">Akai</div>
+        <h3 class="hw-name">MPC</h3>
+        <div class="hw-models" data-en="Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force"
+                                data-es="Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force">Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force</div>
+        <div class="hw-format" data-en=".xpn expansion · firmware 2.x + 3.x"
+                                 data-es=".xpn expansion · firmware 2.x + 3.x">.xpn expansion · firmware 2.x + 3.x</div>
+        <p class="hw-desc"
+           data-en="Full expansion with kits, sequences, previews and artwork — drag the .xpn into the MPC, browse it like a factory pack."
+           data-es="Expansion completa con kits, secuencias, previews y artwork — arrastra el .xpn a la MPC, explóralo como un pack de fábrica.">Full expansion with kits, sequences, previews and artwork — drag the .xpn into the MPC, browse it like a factory pack.</p>
+      </div>
+
+      <!-- 2. Roland SP-404 MKII -->
+      <div class="hw-card">
+        <div class="hw-num">02</div>
+        <div class="hw-brand" data-en="Roland" data-es="Roland">Roland</div>
+        <h3 class="hw-name">SP-404 MKII</h3>
+        <div class="hw-models" data-en="SP-404 MKII"
+                                data-es="SP-404 MKII">SP-404 MKII</div>
+        <div class="hw-format" data-en="SD card ready · ROLAND/IMPORT/"
+                                 data-es="SD card listo · ROLAND/IMPORT/">SD card ready · ROLAND/IMPORT/</div>
+        <p class="hw-desc"
+           data-en="WAV 16-bit / 44.1 kHz organised bank by bank. Drop the folder onto your SD card, hit Import on the device — done."
+           data-es="WAV 16-bit / 44.1 kHz organizados banco por banco. Pega la carpeta en la SD, presiona Import en el aparato — listo.">WAV 16-bit / 44.1 kHz organised bank by bank. Drop the folder onto your SD card, hit Import on the device — done.</p>
+      </div>
+
+      <!-- 3. Ableton Live -->
+      <div class="hw-card">
+        <div class="hw-num">03</div>
+        <div class="hw-brand" data-en="Ableton" data-es="Ableton">Ableton</div>
+        <h3 class="hw-name">Live</h3>
+        <div class="hw-models" data-en="Live 10+ · Suite / Standard"
+                                data-es="Live 10+ · Suite / Standard">Live 10+ · Suite / Standard</div>
+        <div class="hw-format" data-en=".adg Drum Rack + samples + MIDI"
+                                 data-es=".adg Drum Rack + samples + MIDI">.adg Drum Rack + samples + MIDI</div>
+        <p class="hw-desc"
+           data-en="Open the Drum Rack inside Live — every pad mapped, every sample loaded, patterns drop in as MIDI clips."
+           data-es="Abre el Drum Rack en Live — cada pad mapeado, cada sample cargado, los patterns entran como clips MIDI.">Open the Drum Rack inside Live — every pad mapped, every sample loaded, patterns drop in as MIDI clips.</p>
+      </div>
+
+      <!-- 4. NI Maschine -->
+      <div class="hw-card">
+        <div class="hw-num">04</div>
+        <div class="hw-brand" data-en="Native Instruments" data-es="Native Instruments">Native Instruments</div>
+        <h3 class="hw-name">Maschine</h3>
+        <div class="hw-models" data-en="MK3 · Mikro · Plus · Studio"
+                                data-es="MK3 · Mikro · Plus · Studio">MK3 · Mikro · Plus · Studio</div>
+        <div class="hw-format" data-en="Sample pack + MIDI patterns"
+                                 data-es="Sample pack + patterns MIDI">Sample pack + MIDI patterns</div>
+        <p class="hw-desc"
+           data-en="Pad-ordered folders so you can drag them into Groups in sequence. Tags file included for the NI Browser."
+           data-es="Carpetas ordenadas por pad para arrastrarlas a Groups en secuencia. Archivo de tags incluido para el NI Browser.">Pad-ordered folders so you can drag them into Groups in sequence. Tags file included for the NI Browser.</p>
+      </div>
+
+      <!-- 5. Elektron Analog RYTM -->
+      <div class="hw-card">
+        <div class="hw-num">05</div>
+        <div class="hw-brand" data-en="Elektron" data-es="Elektron">Elektron</div>
+        <h3 class="hw-name">Analog RYTM</h3>
+        <div class="hw-models" data-en="Analog RYTM MKII"
+                                data-es="Analog RYTM MKII">Analog RYTM MKII</div>
+        <div class="hw-format" data-en="48 kHz mono WAV + MIDI · Transfer ready"
+                                 data-es="48 kHz mono WAV + MIDI · listo para Transfer">48 kHz mono WAV + MIDI · Transfer ready</div>
+        <p class="hw-desc"
+           data-en="Samples auto-converted to RYTM specs. PadMap.txt lists which sample lands on which pad — drag through Elektron Transfer."
+           data-es="Samples convertidos automáticamente a specs RYTM. PadMap.txt indica qué sample va a cada pad — arrastra con Elektron Transfer.">Samples auto-converted to RYTM specs. PadMap.txt lists which sample lands on which pad — drag through Elektron Transfer.</p>
+      </div>
+
+      <!-- 6. Universal -->
+      <div class="hw-card">
+        <div class="hw-num">06</div>
+        <div class="hw-brand" data-en="Universal" data-es="Universal">Universal</div>
+        <h3 class="hw-name" data-en="Any DAW" data-es="Cualquier DAW">Any DAW</h3>
+        <div class="hw-models" data-en="Any DAW or hardware sampler"
+                                data-es="Cualquier DAW o sampler de hardware">Any DAW or hardware sampler</div>
+        <div class="hw-format" data-en="WAV folders by type + MIDI"
+                                 data-es="Carpetas WAV por tipo + MIDI">WAV folders by type + MIDI</div>
+        <p class="hw-desc"
+           data-en="Kicks, snares, hats, melodics — sorted by the audio classifier. Works wherever WAVs work."
+           data-es="Kicks, snares, hats, melodías — clasificados por el audio classifier. Funciona donde funcionen los WAVs.">Kicks, snares, hats, melodics — sorted by the audio classifier. Works wherever WAVs work.</p>
       </div>
     </div>
   </div>
@@ -517,7 +665,7 @@
 <section class="section" id="pricing">
   <div class="wrap">
     <header class="sec-head">
-      <div class="sec-num">02</div>
+      <div class="sec-num">03</div>
       <div>
         <div class="eyebrow" data-en="Pricing" data-es="Precio">Pricing</div>
         <h2 class="sec-title" data-en="Pay once. Own it <em>forever.</em>" data-es="Pago único. Tuyo para <em>siempre.</em>">Pay once. Own it <em>forever.</em></h2>
@@ -544,7 +692,7 @@
           <li data-en="Lifetime updates" data-es="Updates de por vida">Lifetime updates</li>
         </ul>
         <a href="#" class="btn" data-en="Get XPN Builder · $39" data-es="Comprar XPN Builder · $39">Get XPN Builder · $39</a>
-        <p class="mono" style="text-align:center;color:var(--dust);font-size:11px;letter-spacing:0.18em;margin:4px 0 0;text-transform:uppercase" data-en="After 100 licenses: $79" data-es="Después de 100 licencias: $79">After 100 licenses: $79</p>
+        <p class="mono" style="text-align:center;color:var(--dust);font-size:11px;letter-spacing:0.18em;margin:4px 0 0;text-transform:uppercase" data-en="After 100 licenses: $59" data-es="Después de 100 licencias: $59">After 100 licenses: $59</p>
       </div>
     </div>
   </div>
