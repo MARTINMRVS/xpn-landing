@@ -193,14 +193,14 @@
       <a href="#features" data-en="Features" data-es="Features">Features</a>
       <a href="#how" data-en="How it works" data-es="Cómo funciona">How it works</a>
       <a href="#pricing" data-en="Pricing" data-es="Pricing">Pricing</a>
-      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta/XPN.Builder-1.0.0.dmg" data-en="Download" data-es="Descargar">Download</a>
+      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta2/XPN.Builder-1.0.0.dmg" data-en="Download" data-es="Descargar">Download</a>
     </nav>
     <div style="display:flex;gap:12px;align-items:center">
       <div class="lang">
         <button class="on" data-lang="en">EN</button>
         <button data-lang="es">ES</button>
       </div>
-      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download" data-es="Descargar">Download</a>
+      <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta2/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download" data-es="Descargar">Download</a>
     </div>
   </div>
 </header>
@@ -218,7 +218,7 @@
         XPN Builder is the pro expansion builder for Akai MPC.
       </p>
       <div class="ctas">
-        <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download for macOS ↓" data-es="Descargar para macOS ↓">Download for macOS ↓</a>
+        <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta2/XPN.Builder-1.0.0.dmg" class="btn" data-en="Download for macOS ↓" data-es="Descargar para macOS ↓">Download for macOS ↓</a>
         <a href="#how" class="btn ghost" data-en="See how it works" data-es="Ver cómo funciona">See how it works</a>
       </div>
       <div class="meta">
@@ -290,8 +290,7 @@
       Get early access with a free beta key. Test, give feedback, shape the product.
     </p>
 
-    <!-- TODO: replace YOUR_FORM_ID with the real Formspree form id (formspree.io free plan = 50 submissions/month). -->
-    <form action="https://formspree.io/f/mjgjngkj" method="POST"
+    <form id="betaForm" onsubmit="submitBeta(event)"
       style="max-width:500px;margin:0 auto;text-align:left">
 
       <input type="email" name="email" required
@@ -344,6 +343,33 @@
         style="width:100%;padding:16px;background:#D9BC82;color:#0D0F14;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:2px;border:none;cursor:pointer;border-radius:2px"
         data-en="REQUEST BETA ACCESS" data-es="SOLICITAR ACCESO BETA">REQUEST BETA ACCESS</button>
     </form>
+
+    <script>
+      // Submit the beta form via fetch and redirect to the DMG download on
+      // success. Formspree still receives the submission (open form, no API
+      // key required); we just intercept the navigation so the user lands
+      // on the download instead of Formspree's confirmation page.
+      window.submitBeta = async function(e) {
+        e.preventDefault();
+        var form = e.target;
+        var btn = form.querySelector('button[type=submit]');
+        var originalLabel = btn.textContent;
+        btn.textContent = 'SENDING...';
+        btn.disabled = true;
+        try {
+          await fetch('https://formspree.io/f/mjgjngkj', {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+          window.location.href = 'https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta2/XPN.Builder-1.0.0.dmg';
+        } catch (err) {
+          btn.textContent = 'ERROR — TRY AGAIN';
+          btn.disabled = false;
+          setTimeout(function(){ btn.textContent = originalLabel; }, 3000);
+        }
+      };
+    </script>
   </div>
 </section>
 
@@ -528,8 +554,8 @@
   <div class="wrap" style="text-align:center">
     <div class="eyebrow" data-en="Ready when you are" data-es="Cuando estés listo">Ready when you are</div>
     <h2 class="sec-title" style="margin:12px 0 32px" data-en="Ship your next pack <em>tonight.</em>" data-es="Publica tu próximo pack <em>esta noche.</em>">Ship your next pack <em>tonight.</em></h2>
-    <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta/XPN.Builder-1.0.0.dmg" class="btn" style="padding:18px 32px;font-size:13px" data-en="Download XPN Builder · macOS ↓" data-es="Descargar XPN Builder · macOS ↓">Download XPN Builder · macOS ↓</a>
-    <div class="mono" style="margin-top:20px;color:var(--dust);font-size:11px;letter-spacing:0.2em">MACOS 13+ · 99 MB · V1.0</div>
+    <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta2/XPN.Builder-1.0.0.dmg" class="btn" style="padding:18px 32px;font-size:13px" data-en="Download XPN Builder · macOS ↓" data-es="Descargar XPN Builder · macOS ↓">Download XPN Builder · macOS ↓</a>
+    <div class="mono" style="margin-top:20px;color:var(--dust);font-size:11px;letter-spacing:0.2em">MACOS 13+ · 99 MB · V1.0-beta2</div>
   </div>
 </section>
 
