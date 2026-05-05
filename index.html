@@ -18,6 +18,7 @@
     --line:#1c1d20;
   }
   *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   html,body{margin:0;padding:0}
   body{
     background:var(--ink); color:var(--bone);
@@ -210,10 +211,11 @@
       <span class="k">Builder</span>
     </a>
     <nav class="menu">
-      <a href="#beta" data-en="Beta" data-es="Beta">Beta</a>
+      <a href="#collaborators" data-en="Beta" data-es="Beta">Beta</a>
       <a href="#features" data-en="Features" data-es="Features">Features</a>
       <a href="#how" data-en="How it works" data-es="Cómo funciona">How it works</a>
       <a href="#pricing" data-en="Pricing" data-es="Pricing">Pricing</a>
+      <a href="#collaborators" data-en="Collaborators" data-es="Colaboradores">Collaborators</a>
       <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta3/XPN.Builder-1.0.0.dmg" data-en="Download" data-es="Descargar">Download</a>
     </nav>
     <div style="display:flex;gap:12px;align-items:center">
@@ -294,123 +296,6 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="beta" style="padding:80px 0;text-align:center;border-top:1px solid rgba(217,188,130,0.15);border-bottom:1px solid rgba(217,188,130,0.15)">
-  <div class="wrap">
-    <p style="color:#D9BC82;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;margin:0" data-en="BETA PROGRAM" data-es="PROGRAMA BETA">BETA PROGRAM</p>
-    <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,4vw,48px);color:#F5F0E6;margin:16px 0;line-height:1.05;letter-spacing:-0.02em"
-      data-en="Help us build the best<br/><span style='color:#D9BC82'>expansion tool ever.</span>"
-      data-es="Ayúdanos a construir la mejor<br/><span style='color:#D9BC82'>herramienta de expansiones.</span>">
-      Help us build the best<br/><span style="color:#D9BC82">expansion tool ever.</span>
-    </h2>
-    <p style="color:rgba(245,240,230,0.6);max-width:500px;margin:0 auto 32px;font-size:15px;line-height:1.55"
-      data-en="Get early access with a free beta key. Test, give feedback, shape the product."
-      data-es="Acceso anticipado con clave beta gratuita. Prueba, da feedback, dale forma al producto.">
-      Get early access with a free beta key. Test, give feedback, shape the product.
-    </p>
-
-    <form id="betaForm" onsubmit="submitBeta(event)"
-      style="max-width:500px;margin:0 auto;text-align:left">
-
-      <input type="email" name="email" required
-        placeholder="your@email.com"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
-
-      <input type="text" name="name" required
-        data-en-placeholder="Your name" data-es-placeholder="Tu nombre"
-        placeholder="Your name"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
-
-      <select name="hardware" required
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
-        <option value="" data-en="Which hardware do you use?" data-es="¿Qué hardware usas?">Which hardware do you use?</option>
-        <optgroup label="Akai MPC">
-          <option>MPC Live 1</option>
-          <option>MPC Live 2</option>
-          <option>MPC Live 3</option>
-          <option>MPC One</option>
-          <option>MPC One+</option>
-          <option>MPC X</option>
-          <option>MPC Key</option>
-          <option>Akai Force</option>
-        </optgroup>
-        <optgroup label="Roland">
-          <option>SP-404 MKII</option>
-          <option>SP-404 SX</option>
-        </optgroup>
-        <optgroup label="Elektron">
-          <option>Analog RYTM MKII</option>
-          <option>Digitakt</option>
-          <option>Syntakt</option>
-        </optgroup>
-        <optgroup label="Native Instruments">
-          <option>Maschine MK3</option>
-          <option>Maschine+</option>
-          <option>Maschine Mikro</option>
-        </optgroup>
-        <optgroup label="Software">
-          <option>Ableton Live</option>
-          <option data-en="MPC Software only" data-es="Solo MPC Software">MPC Software only</option>
-          <option data-en="Other DAW" data-es="Otro DAW">Other DAW</option>
-        </optgroup>
-      </select>
-
-      <select name="experience" required
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
-        <option value="" data-en="Experience making expansions?" data-es="¿Experiencia haciendo expansions?">Experience making expansions?</option>
-        <option data-en="Never made one" data-es="Nunca hice una">Never made one</option>
-        <option data-en="Tried Akai Expansion Builder" data-es="Probé Akai Expansion Builder">Tried Akai Expansion Builder</option>
-        <option data-en="Sell packs on Gumroad/BeatStars" data-es="Vendo packs en Gumroad/BeatStars">Sell packs on Gumroad/BeatStars</option>
-        <option data-en="Professional sound designer" data-es="Sound designer profesional">Professional sound designer</option>
-      </select>
-
-      <textarea name="feedback_interest" rows="3"
-        placeholder="What would you use XPN Builder for? (optional)"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;resize:vertical;font-family:inherit;border-radius:2px"></textarea>
-
-      <input type="url" name="portfolio"
-        placeholder="Link to your work — BeatStars, Spotify, IG (optional)"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
-
-      <p style="color:rgba(245,240,230,0.4);font-size:11px;margin:0 0 16px"
-        data-en="Interested in being sponsored by Pad Works? Leave your portfolio link above."
-        data-es="¿Interés en ser sponsoreado por Pad Works? Deja tu portfolio arriba.">
-        Interested in being sponsored by Pad Works? Leave your portfolio link above.
-      </p>
-
-      <button type="submit"
-        style="width:100%;padding:16px;background:#D9BC82;color:#0D0F14;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:2px;border:none;cursor:pointer;border-radius:2px"
-        data-en="REQUEST BETA ACCESS" data-es="SOLICITAR ACCESO BETA">REQUEST BETA ACCESS</button>
-    </form>
-
-    <script>
-      // Submit the beta form via fetch and redirect to the DMG download on
-      // success. Formspree still receives the submission (open form, no API
-      // key required); we just intercept the navigation so the user lands
-      // on the download instead of Formspree's confirmation page.
-      window.submitBeta = async function(e) {
-        e.preventDefault();
-        var form = e.target;
-        var btn = form.querySelector('button[type=submit]');
-        var originalLabel = btn.textContent;
-        btn.textContent = 'SENDING...';
-        btn.disabled = true;
-        try {
-          await fetch('https://formspree.io/f/mjgjngkj', {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
-          });
-          window.location.href = 'https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta3/XPN.Builder-1.0.0.dmg';
-        } catch (err) {
-          btn.textContent = 'ERROR — TRY AGAIN';
-          btn.disabled = false;
-          setTimeout(function(){ btn.textContent = originalLabel; }, 3000);
-        }
-      };
-    </script>
   </div>
 </section>
 
@@ -704,6 +589,119 @@
     <h2 class="sec-title" style="margin:12px 0 32px" data-en="Ship your next pack <em>tonight.</em>" data-es="Publica tu próximo pack <em>esta noche.</em>">Ship your next pack <em>tonight.</em></h2>
     <a href="https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta3/XPN.Builder-1.0.0.dmg" class="btn" style="padding:18px 32px;font-size:13px" data-en="Download XPN Builder · macOS ↓" data-es="Descargar XPN Builder · macOS ↓">Download XPN Builder · macOS ↓</a>
     <div class="mono" style="margin-top:20px;color:var(--dust);font-size:11px;letter-spacing:0.2em">MACOS 13+ · 99 MB · V1.0-beta3</div>
+  </div>
+</section>
+
+<section id="collaborators" style="padding:80px 0;text-align:center;border-top:1px solid rgba(217,188,130,0.15);border-bottom:1px solid rgba(217,188,130,0.15)">
+  <div class="wrap">
+    <p style="color:#D9BC82;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;margin:0" data-en="BETA PROGRAM" data-es="PROGRAMA BETA">BETA PROGRAM</p>
+    <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,4vw,48px);color:#F5F0E6;margin:16px 0;line-height:1.05;letter-spacing:-0.02em"
+      data-en="Help us build the best<br/><span style='color:#D9BC82'>expansion tool ever.</span>"
+      data-es="Ayúdanos a construir la mejor<br/><span style='color:#D9BC82'>herramienta de expansiones.</span>">
+      Help us build the best<br/><span style="color:#D9BC82">expansion tool ever.</span>
+    </h2>
+    <p style="color:rgba(245,240,230,0.6);max-width:500px;margin:0 auto 32px;font-size:15px;line-height:1.55"
+      data-en="Get early access with a free beta key. Test, give feedback, shape the product."
+      data-es="Acceso anticipado con clave beta gratuita. Prueba, da feedback, dale forma al producto.">
+      Get early access with a free beta key. Test, give feedback, shape the product.
+    </p>
+
+    <form id="betaForm" onsubmit="submitBeta(event)"
+      style="max-width:500px;margin:0 auto;text-align:left">
+
+      <input type="email" name="email" required
+        placeholder="your@email.com"
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
+
+      <input type="text" name="name" required
+        data-en-placeholder="Your name" data-es-placeholder="Tu nombre"
+        placeholder="Your name"
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
+
+      <select name="hardware" required
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
+        <option value="" data-en="Which hardware do you use?" data-es="¿Qué hardware usas?">Which hardware do you use?</option>
+        <optgroup label="Akai MPC">
+          <option>MPC Live 1</option>
+          <option>MPC Live 2</option>
+          <option>MPC Live 3</option>
+          <option>MPC One</option>
+          <option>MPC One+</option>
+          <option>MPC X</option>
+          <option>MPC Key</option>
+          <option>Akai Force</option>
+        </optgroup>
+        <optgroup label="Roland">
+          <option>SP-404 MKII</option>
+          <option>SP-404 SX</option>
+        </optgroup>
+        <optgroup label="Elektron">
+          <option>Analog RYTM MKII</option>
+          <option>Digitakt</option>
+          <option>Syntakt</option>
+        </optgroup>
+        <optgroup label="Native Instruments">
+          <option>Maschine MK3</option>
+          <option>Maschine+</option>
+          <option>Maschine Mikro</option>
+        </optgroup>
+        <optgroup label="Software">
+          <option>Ableton Live</option>
+          <option data-en="MPC Software only" data-es="Solo MPC Software">MPC Software only</option>
+          <option data-en="Other DAW" data-es="Otro DAW">Other DAW</option>
+        </optgroup>
+      </select>
+
+      <select name="experience" required
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
+        <option value="" data-en="Experience making expansions?" data-es="¿Experiencia haciendo expansions?">Experience making expansions?</option>
+        <option data-en="Never made one" data-es="Nunca hice una">Never made one</option>
+        <option data-en="Tried Akai Expansion Builder" data-es="Probé Akai Expansion Builder">Tried Akai Expansion Builder</option>
+        <option data-en="Sell packs on Gumroad/BeatStars" data-es="Vendo packs en Gumroad/BeatStars">Sell packs on Gumroad/BeatStars</option>
+        <option data-en="Professional sound designer" data-es="Sound designer profesional">Professional sound designer</option>
+      </select>
+
+      <textarea name="feedback_interest" rows="3"
+        placeholder="What would you use XPN Builder for? (optional)"
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;resize:vertical;font-family:inherit;border-radius:2px"></textarea>
+
+      <input type="url" name="portfolio"
+        placeholder="Link to your work — BeatStars, Spotify, IG (optional)"
+        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
+
+      <p style="color:rgba(245,240,230,0.4);font-size:11px;margin:0 0 16px"
+        data-en="Interested in being sponsored by Pad Works? Leave your portfolio link above."
+        data-es="¿Interés en ser sponsoreado por Pad Works? Deja tu portfolio arriba.">
+        Interested in being sponsored by Pad Works? Leave your portfolio link above.
+      </p>
+
+      <button type="submit"
+        style="width:100%;padding:16px;background:#D9BC82;color:#0D0F14;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:2px;border:none;cursor:pointer;border-radius:2px"
+        data-en="REQUEST BETA ACCESS" data-es="SOLICITAR ACCESO BETA">REQUEST BETA ACCESS</button>
+    </form>
+
+    <script>
+      window.submitBeta = async function(e) {
+        e.preventDefault();
+        var form = e.target;
+        var btn = form.querySelector('button[type=submit]');
+        var originalLabel = btn.textContent;
+        btn.textContent = 'SENDING...';
+        btn.disabled = true;
+        try {
+          await fetch('https://formspree.io/f/mjgjngkj', {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+          window.location.href = 'https://github.com/MARTINMRVS/xpn-builder/releases/download/v1.0.0-beta3/XPN.Builder-1.0.0.dmg';
+        } catch (err) {
+          btn.textContent = 'ERROR — TRY AGAIN';
+          btn.disabled = false;
+          setTimeout(function(){ btn.textContent = originalLabel; }, 3000);
+        }
+      };
+    </script>
   </div>
 </section>
 
