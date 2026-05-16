@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>BALANZE — Channel Strip + Master Bus · Pad Works</title>
+<meta name="viewport" content="width=1280" />
+<meta name="description" content="BALANZE — Channel Strip + Master Bus. 12 DSP modules. Connected. By Pad Works / XPN / TMCC." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --void:#050608; --bg:#0A0C10; --bg-2:#0E1116;
+    --panel:#141820; --panel-2:#1B2029;
+    --line:#222936; --line-2:#2C3543;
+    --text:#E8ECF2; --text-2:#8B95A5; --text-3:#5A6373; --text-4:#3D4554;
+    --gold:#FFB627; --orange:#FF6B35; --ember:#8B1A1A;
+    --cyan:#06B6D4; --drift:#06B6D4; --wide:#F97316;
+    --filter:#DC2626; --space:#2563EB; --echo:#7C3AED; --tune:#84CC16;
+    --accent: var(--gold);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+  .cond{font-family:'Barlow Condensed',sans-serif;letter-spacing:.04em}
+
+  /* NAV */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 48px;
+    background:rgba(10,12,16,.72);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-brand{display:flex;align-items:center;gap:12px}
+  .nav-brand .gly{width:22px;height:22px}
+  .nav-brand .word{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.32em;text-transform:uppercase;color:var(--text)}
+  .nav-brand .by{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);padding-left:10px;border-left:1px solid var(--line-2)}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-2);transition:color .2s ease;padding:6px 0}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--accent)}
+  .nav-cta{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--void);background:var(--accent);padding:10px 18px;border-radius:6px;transition:transform .2s ease, box-shadow .2s ease}
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,182,39,.25)}
+
+  /* HERO */
+  .hero{position:relative;min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:160px 48px 100px;text-align:center;overflow:hidden;background:radial-gradient(1200px 600px at 50% 30%, rgba(255,182,39,.08), transparent 60%), var(--void)}
+  .hero-meta{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);margin-bottom:28px}
+  .hero-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .hero h1{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:200px;line-height:.88;letter-spacing:.14em;
+    text-transform:uppercase;margin:0;
+    background:linear-gradient(180deg, #FFF8E8 0%, #E8ECF2 40%, #B8BDC8 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    text-shadow:0 0 60px rgba(255,182,39,.25)
+  }
+  .hero-tag{font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:20px;letter-spacing:.45em;text-transform:uppercase;color:var(--text-2);margin:28px 0 0}
+  .hero-tag em{font-style:italic;color:var(--accent);font-weight:400}
+  .hero-sub{max-width:640px;margin:32px auto 0;font-size:16px;line-height:1.7;color:var(--text-2)}
+  .hero-sub b{color:var(--text);font-weight:500}
+  .hero-ctas{display:flex;gap:14px;justify-content:center;margin-top:42px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.28em;text-transform:uppercase;cursor:pointer;border:1px solid transparent;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+  .btn.primary{background:var(--accent);color:var(--void);box-shadow:0 0 32px rgba(255,182,39,.2)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,182,39,.35)}
+  .btn.ghost{background:transparent;color:var(--text);border-color:var(--line-2)}
+  .btn.ghost:hover{border-color:var(--text-2);background:rgba(255,255,255,.02)}
+
+  /* SECTIONS */
+  section{padding:120px 48px;position:relative}
+  .container{max-width:1200px;margin:0 auto}
+  .sec-tag{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);margin-bottom:24px}
+  .sec-tag .dash{width:24px;height:1px;background:var(--accent)}
+  .sec-tag .num{color:var(--accent)}
+  h2{font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:64px;line-height:1.05;letter-spacing:.02em;margin:0 0 24px;color:var(--text)}
+  h2 em{font-style:italic;color:var(--accent);font-weight:400}
+  .lead{max-width:720px;font-size:17px;line-height:1.7;color:var(--text-2);margin:0 0 56px}
+
+  /* CHAIN */
+  .chain{
+    display:grid;gap:14px;
+    grid-template-columns:repeat(5, 1fr);
+    margin-top:24px;
+  }
+  .chain.master{grid-template-columns:repeat(7, 1fr)}
+  .node{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:22px 18px;text-align:center;position:relative;
+    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .node:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 12px 32px rgba(255,182,39,.12)}
+  .node .idx{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:.22em}
+  .node .nm{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;letter-spacing:.12em;text-transform:uppercase;margin:6px 0 6px;color:var(--text)}
+  .node .dsc{font-size:11px;color:var(--text-2);line-height:1.5}
+  .arrow{position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--text-4);font-family:'JetBrains Mono',monospace;font-size:14px;pointer-events:none}
+  .node:last-child .arrow{display:none}
+
+  /* FEATURES */
+  .features{display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;margin-top:24px}
+  .feat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px 22px;transition:border-color .2s ease}
+  .feat:hover{border-color:var(--line-2)}
+  .feat .ic{width:36px;height:36px;border-radius:8px;background:rgba(255,182,39,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;margin-bottom:18px}
+  .feat h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 8px;color:var(--text)}
+  .feat p{margin:0;font-size:13px;line-height:1.6;color:var(--text-2)}
+
+  /* PRICING */
+  #pricing{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .pricing{display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;margin-top:32px}
+  .price{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:36px 28px;position:relative;text-align:left}
+  .price.featured{border-color:var(--accent);background:linear-gradient(180deg, rgba(255,182,39,.06), transparent 60%), var(--panel)}
+  .price .badge{position:absolute;top:-10px;left:24px;background:var(--accent);color:var(--void);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;padding:5px 10px;border-radius:4px;font-weight:600}
+  .price .nm{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;letter-spacing:.12em;text-transform:uppercase;color:var(--text);margin:0 0 6px}
+  .price .sub{font-size:12px;color:var(--text-3);margin:0 0 22px;letter-spacing:.04em}
+  .price .amt{font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:56px;line-height:1;color:var(--text);margin:0 0 4px}
+  .price .amt span{font-size:18px;color:var(--text-2);vertical-align:top;margin-right:4px}
+  .price ul{list-style:none;padding:0;margin:24px 0 28px;font-size:13px;color:var(--text-2);line-height:1.9}
+  .price ul li::before{content:"·";color:var(--accent);margin-right:10px;font-weight:700}
+  .price .btn{width:100%;justify-content:center}
+
+  /* CTA banner */
+  .cta-band{padding:100px 48px;text-align:center;background:radial-gradient(800px 320px at 50% 50%, rgba(255,182,39,.12), transparent 70%)}
+  .cta-band h2{margin-bottom:14px}
+  .cta-band p{color:var(--text-2);margin:0 0 32px}
+
+  /* FOOTER */
+  footer{padding:48px;border-top:1px solid var(--line);background:var(--void);color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-align:center}
+  footer b{color:var(--text-2);font-weight:500}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="/">
+    <svg class="gly" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3" fill="#FFB627"/>
+      <circle cx="12" cy="12" r="7" stroke="#E8ECF2" stroke-width="1" opacity=".7"/>
+      <circle cx="12" cy="12" r="11" stroke="#E8ECF2" stroke-width="1" opacity=".3"/>
+    </svg>
+    <span style="display:flex;flex-direction:column;line-height:1;gap:2px">
+      <span style="font-size:9px;letter-spacing:.22em;color:var(--text-2);font-weight:600">XPN</span>
+      <span class="word">Pad Works</span>
+    </span>
+    <span class="by">by TMCC</span>
+  </a>
+  <div class="nav-links">
+    <a href="/">Pad Works</a>
+    <a href="/balanze" class="active">BALANZE</a>
+    <a href="/fx">FX Suite</a>
+    <a href="/mixcraft">Mixcraft</a>
+    <a href="/split">SPLIT</a>
+    <a href="/xpn-builder">XPN Builder</a>
+    <a class="nav-cta" href="#pricing">Buy Bundle</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-meta">
+    <span class="dot"></span>
+    <span>BALANZE · v1.0 · 2026</span>
+    <span style="opacity:.4">/</span>
+    <span>12 modules · 1 chain</span>
+  </div>
+  <h1>BALANZE</h1>
+  <div class="hero-tag">Channel Strip + Master Bus. <em>Connected.</em></div>
+  <p class="hero-sub">
+    <b>12 DSP modules. Two plugins. One philosophy.</b>
+    A complete mixing chain — from the first channel to the final limiter — built on transparent decisions and analog feel.
+  </p>
+  <div class="hero-ctas">
+    <a class="btn primary" href="#pricing">Buy Bundle — $149 →</a>
+    <a class="btn ghost" href="#chain-canal">See the Chain</a>
+  </div>
+</header>
+
+<section id="chain-canal">
+  <div class="container">
+    <div class="sec-tag"><span class="dash"></span><span class="num">01</span><span>The Channel</span></div>
+    <h2>BALANZE <em>Canal.</em></h2>
+    <p class="lead">A five-stage channel strip designed to live on every track. Five tools, one signal flow, zero confusion. From input trim to BS.1770 metering, every move is documented and reversible.</p>
+    <div class="chain">
+      <div class="node"><div class="idx">01</div><div class="nm">Gain</div><div class="dsc">Input trim, polarity, mono check</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">02</div><div class="nm">EQ</div><div class="dsc">7-band parametric · analog curves</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">03</div><div class="nm">Comp</div><div class="dsc">Giannoulis topology · feedback/forward</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">04</div><div class="nm">Color</div><div class="dsc">5 saturation modes · tube/tape/console</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">05</div><div class="nm">Output</div><div class="dsc">LUFS BS.1770 · true peak · auto-gain</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="chain-master" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="sec-tag"><span class="dash"></span><span class="num">02</span><span>The Master Bus</span></div>
+    <h2>BALANZE <em>Master.</em></h2>
+    <p class="lead">Seven modules for the final mix. Analyze a reference, match it, shape it, glue it, push it — and broadcast the result back to your channels via CommHub. The whole bus, in one place.</p>
+    <div class="chain master">
+      <div class="node"><div class="idx">01</div><div class="nm">Analysis</div><div class="dsc">Spectrum, LUFS, dynamic range</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">02</div><div class="nm">MatchEQ</div><div class="dsc">Reference match · 64-band</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">03</div><div class="nm">MasterEQ</div><div class="dsc">Linear phase · surgical</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">04</div><div class="nm">Exciter</div><div class="dsc">Multiband harmonics</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">05</div><div class="nm">Imager</div><div class="dsc">M/S width per band</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">06</div><div class="nm">Maximizer</div><div class="dsc">ISP-aware limiter · LUFS target</div><div class="arrow">→</div></div>
+      <div class="node"><div class="idx">07</div><div class="nm">CommHub</div><div class="dsc">Push decisions to Canal</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="sec-tag"><span class="dash"></span><span class="num">03</span><span>Features</span></div>
+    <h2>Built for the <em>working engineer.</em></h2>
+    <div class="features">
+      <div class="feat"><div class="ic">50</div><h3>Curated Presets</h3><p>50 starting points covering vocals, drums, bass, masters and broadcast. Each one annotated so you understand the move.</p></div>
+      <div class="feat"><div class="ic">cal</div><h3>Hardware Calibration</h3><p>Auto-calibration pipeline matches your interface and monitoring, so 0 dBFS feels the same everywhere.</p></div>
+      <div class="feat"><div class="ic">A/B</div><h3>A/B Comparison</h3><p>Two parallel states per module. Toggle instantly. Lock the better one. No bypass guessing.</p></div>
+      <div class="feat"><div class="ic">MIDI</div><h3>MIDI Learn</h3><p>Map any control to any controller in one click. Persistent per project. Hardware-first workflow.</p></div>
+      <div class="feat"><div class="ic">SC</div><h3>Sidechain</h3><p>Full external sidechain on compressor and color stages. Pre/post filters, ratio detection.</p></div>
+      <div class="feat"><div class="ic">AG</div><h3>Auto-Gain</h3><p>Loudness-compensated bypass and module-level gain matching. Always compare apples to apples.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <div class="sec-tag"><span class="dash"></span><span class="num">04</span><span>Pricing</span></div>
+    <h2>One bundle. <em>Two plugins. Everything.</em></h2>
+    <div class="pricing">
+      <div class="price">
+        <div class="nm">Canal</div>
+        <p class="sub">Channel strip · 5 modules</p>
+        <div class="amt"><span>$</span>99</div>
+        <ul>
+          <li>Gain · EQ · Comp · Color · Output</li>
+          <li>50 presets included</li>
+          <li>A/B + MIDI Learn + Sidechain</li>
+          <li>VST3 · AU · Standalone</li>
+          <li>1 year of updates</li>
+        </ul>
+        <a class="btn ghost" href="#">Buy Canal</a>
+      </div>
+      <div class="price featured">
+        <div class="badge">Best Value</div>
+        <div class="nm">Bundle</div>
+        <p class="sub">Canal + Master · save $49</p>
+        <div class="amt"><span>$</span>149</div>
+        <ul>
+          <li>BALANZE Canal (full)</li>
+          <li>BALANZE Master (full)</li>
+          <li>CommHub Canal ↔ Master</li>
+          <li>All future presets</li>
+          <li>Priority support</li>
+        </ul>
+        <a class="btn primary" href="#">Buy Bundle — $149</a>
+      </div>
+      <div class="price">
+        <div class="nm">Master</div>
+        <p class="sub">Master bus · 7 modules</p>
+        <div class="amt"><span>$</span>99</div>
+        <ul>
+          <li>Analysis → MatchEQ → MasterEQ</li>
+          <li>Exciter · Imager · Maximizer</li>
+          <li>Linear phase EQ + ISP limiter</li>
+          <li>LUFS BS.1770 target rendering</li>
+          <li>1 year of updates</li>
+        </ul>
+        <a class="btn ghost" href="#">Buy Master</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>Two plugins. <em>One mix.</em></h2>
+    <p>Get the full BALANZE experience and start mixing like an engineer.</p>
+    <a class="btn primary" href="#pricing">Buy BALANZE Bundle — $149 →</a>
+  </div>
+</section>
+
+<footer>
+  <b>Pad Works</b> by <b>XPN</b> · <b>TMCC</b> · Santiago, Chile · © 2026
+</footer>
+
+</body>
+</html>

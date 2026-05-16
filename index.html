@@ -1,768 +1,2527 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Pad Works — XPN Builder | Pro Expansion Builder for MPC</title>
-<meta name="description" content="The pro expansion builder for Akai MPC, SP-404, Ableton, Maschine and Elektron. Smart audio classifier, sequencer, 12 genre templates. $39 lifetime."/>
-<meta property="og:title" content="Pad Works — XPN Builder"/>
-<meta property="og:description" content="The pro expansion builder for MPC. Sequencer, classifier, 12 genres. $39 lifetime."/>
-<meta property="og:url" content="https://padworks.io"/>
-<meta property="og:type" content="website"/>
-<link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
-<link rel="icon" sizes="16x16" href="assets/favicon.ico"/>
-<link rel="icon" sizes="32x32" href="assets/favicon.ico"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<title>Pad Works — Tools for the craft.</title>
+<meta name="viewport" content="width=1440" />
+<script>
+// Silence benign ResizeObserver loop warnings (host iframe noise) — must run before anything else
+(function(){
+  const re = /ResizeObserver loop/i;
+  window.addEventListener('error', (e) => {
+    if (e && e.message && re.test(e.message)) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+  const origErr = console.error;
+  console.error = function(...args){
+    try {
+      if(args[0] && typeof args[0] === 'string' && re.test(args[0])) return;
+      if(args[0] && args[0].message && re.test(args[0].message)) return;
+    } catch(_){}
+    origErr.apply(console, args);
+  };
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --ink:#0E0F12; --ink-2:#14161A; --graphite:#17191D; --slate:#24262B; --iron:#3A3D44;
-    --dust:#6A6E76; --bone:#EDEAE2; --champagne:#D9BC82; --champ-hi:#D9BC82; --antique:#8D7A4D;
-    --line:#1c1d20;
+  :root{
+    /* surfaces */
+    --void:#050608;
+    --bg:#0A0C10;
+    --bg-2:#0E1116;
+    --panel:#141820;
+    --panel-2:#1B2029;
+    --line:#222936;
+    --line-2:#2C3543;
+
+    /* text */
+    --text:#E8ECF2;
+    --text-2:#8B95A5;
+    --text-3:#5A6373;
+    --text-4:#3D4554;
+
+    /* warm signature (universe) */
+    --gold:#FFB627;
+    --orange:#FF6B35;
+    --ember:#8B1A1A;
+
+    /* product accents */
+    --silver:#C0C0C0;
+    --cyan:#06B6D4;
+    --balanze-gold:#FFB627;
+    --drift:#06B6D4;
+    --wide:#F97316;
+    --filter:#DC2626;
+    --space:#2563EB;
+    --echo:#7C3AED;
+    --tune:#84CC16;
   }
-  *,*::before,*::after{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  html,body{margin:0;padding:0}
-  body{
-    background:var(--ink); color:var(--bone);
-    font-family:"Inter",system-ui,sans-serif; font-size:16px; line-height:1.55;
-    -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--void);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{overflow-x:hidden}
   a{color:inherit;text-decoration:none}
-  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
-  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--champagne)}
-  .h1,.h2,.h3{font-family:"Unbounded",sans-serif;font-weight:700;letter-spacing:-0.02em;line-height:1}
-  .wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+
+  .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+  .cond{font-family:'Barlow Condensed',sans-serif;letter-spacing:.04em}
+
+  /* ==================== NAV ==================== */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 48px;
+    background:linear-gradient(180deg, rgba(5,6,8,.5) 0%, rgba(5,6,8,0) 100%);
+    backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);
+    transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  .nav.scrolled{
+    background:rgba(10,12,16,.72);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom-color:var(--line);
+  }
+  .nav-brand{display:flex;align-items:center;gap:12px}
+  .nav-brand .gly{width:22px;height:22px}
+  .nav-brand .word{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:15px;letter-spacing:.32em;text-transform:uppercase;color:var(--text);
+  }
+  .nav-brand .by{
+    font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--text-3);padding-left:10px;border-left:1px solid var(--line-2);
+  }
+  .nav-links{display:flex;gap:36px;align-items:center}
+  .nav-links a{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:12px;
+    letter-spacing:.28em;text-transform:uppercase;color:var(--text-2);
+    transition:color .2s ease;position:relative;padding:6px 0;
+  }
+  .nav-links a:hover{color:var(--text)}
+
+  /* language toggle */
+  .lang{
+    display:inline-flex;align-items:center;background:rgba(10,12,16,.5);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid var(--line-2);border-radius:99px;padding:3px;gap:2px;
+    margin-left:4px;
+  }
+  .lang button{
+    background:transparent;border:0;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-weight:500;font-size:10px;
+    letter-spacing:.18em;color:var(--text-3);
+    padding:6px 10px;border-radius:99px;
+    transition:color .2s ease, background .2s ease;
+  }
+  .lang button:hover{color:var(--text-2)}
+  .lang button.on{
+    background:color-mix(in oklab, var(--gold) 16%, transparent);
+    color:var(--gold);
+  }
+  .nav-cta{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.28em;text-transform:uppercase;color:var(--void);
+    background:var(--gold);padding:10px 18px;border-radius:6px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,182,39,.25)}
+
+  /* ==================== HERO ==================== */
+  .hero{
+    position:relative;height:100vh;min-height:760px;width:100%;
+    overflow:hidden;background:var(--void);
+  }
+  #nebula{
+    position:absolute;inset:0;width:100%;height:100%;display:block;
+    cursor:crosshair;
+  }
+  .hero-vignette{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(1200px 600px at 50% 40%, transparent 0%, rgba(5,6,8,.35) 65%, var(--void) 100%),
+      linear-gradient(180deg, transparent 60%, var(--void) 100%);
+  }
+  .hero-inner{
+    position:relative;z-index:2;
+    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 48px;pointer-events:none;
+  }
+  .hero-meta{
+    display:flex;align-items:center;gap:12px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);
+    margin-bottom:36px;
+  }
+  .hero-meta .dot{
+    width:6px;height:6px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 12px var(--gold), 0 0 24px var(--gold);
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+  .hero-word{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;
+    font-size:172px;line-height:.88;letter-spacing:.14em;
+    text-transform:uppercase;margin:0;text-align:center;
+    color:var(--text);
+    text-shadow:
+      0 0 60px rgba(255,182,39,.25),
+      0 0 120px rgba(255,107,53,.15);
+    background:linear-gradient(180deg, #FFF8E8 0%, #E8ECF2 40%, #B8BDC8 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;
+    font-size:22px;letter-spacing:.5em;text-transform:uppercase;
+    color:var(--text-2);margin:28px 0 0;
+  }
+  .hero-tag em{font-style:italic;color:var(--gold);font-weight:400;letter-spacing:.45em}
+
+  .hero-sub{
+    max-width:640px;margin:48px 0 0;text-align:center;
+    font-size:16px;line-height:1.7;color:var(--text-2);
+    font-weight:400;
+  }
+  .hero-sub b{color:var(--text);font-weight:500}
+
+  .hero-ctas{
+    display:flex;gap:14px;align-items:center;margin-top:44px;pointer-events:auto;
+  }
   .btn{
-    display:inline-flex; align-items:center; gap:10px;
-    font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:0.14em;
-    text-transform:uppercase; padding:14px 22px; border-radius:2px;
-    border:1px solid var(--champagne); background:var(--champagne); color:var(--ink);
-    font-weight:500; cursor:pointer; transition:.18s;
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 24px;border-radius:8px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;
+    letter-spacing:.28em;text-transform:uppercase;
+    cursor:pointer;border:1px solid transparent;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
   }
-  .btn:hover{background:var(--champ-hi); border-color:var(--champ-hi)}
-  .btn.ghost{background:transparent; color:var(--champagne)}
-  .btn.ghost:hover{background:rgba(217,188,130,0.08); color:var(--champ-hi)}
-
-  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px) saturate(120%);background:rgba(14,15,18,0.78);border-bottom:1px solid var(--line)}
-  .topbar .row{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand .w{font-family:"Unbounded";font-weight:700;font-size:20px;letter-spacing:-0.02em}
-  .brand .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase;padding:3px 8px;border:1px solid var(--antique);border-radius:2px}
-  nav.menu{display:flex;gap:32px;font-family:"IBM Plex Mono";font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#b5b2a9}
-  nav.menu a:hover{color:var(--champagne)}
-  .lang{display:flex;gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden;font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.18em}
-  .lang button{background:transparent;border:0;color:var(--dust);padding:6px 10px;cursor:pointer;font:inherit;text-transform:uppercase}
-  .lang button.on{background:var(--champagne);color:var(--ink);font-weight:500}
-
-  .hero{position:relative;padding:88px 0 120px;
-    background:radial-gradient(900px 400px at 85% 20%, rgba(217,188,130,0.10), transparent 60%),linear-gradient(180deg,#0E0F12 0%, #0a0b0e 100%);
-    overflow:hidden}
-  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background-image:radial-gradient(circle at 1px 1px, rgba(217,188,130,0.10) 1px, transparent 0);
-    background-size:22px 22px;opacity:0.5;
-    mask-image:linear-gradient(180deg,#000 20%, transparent 100%);
-    -webkit-mask-image:linear-gradient(180deg,#000 20%, transparent 100%)}
-  .hero .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;position:relative;z-index:2}
-  /* Headline scale 78% (final design choice from the prototype's Tweaks). */
-  .hero h1{font-size:clamp(44px,6.24vw,87px);letter-spacing:-0.028em}
-  .hero h1 em{font-style:normal;color:var(--champagne)}
-  /* Lede scale 86%. */
-  .hero .lede{max-width:520px;margin:28px 0 40px;color:#b5b2a9;font-size:15.5px;line-height:1.55}
-  .hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
-  .hero .meta{display:flex;gap:24px;margin-top:28px;color:var(--dust);font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.16em;text-transform:uppercase;flex-wrap:wrap}
-  .hero .meta b{color:var(--champagne);font-weight:500}
-  .mock{background:var(--graphite);border:1px solid var(--line);border-radius:8px;
-    box-shadow:0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,188,130,0.04);
-    overflow:hidden;font-family:"IBM Plex Mono";font-size:11px}
-  .mock-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);background:#11131a}
-  .dot{width:10px;height:10px;border-radius:50%;background:#3a3d44}
-  .mock-title{margin-left:auto;color:var(--dust);font-size:10px;letter-spacing:0.18em;text-transform:uppercase}
-  .mock-body{display:grid;grid-template-columns:180px 1fr 220px;min-height:420px;color:#b5b2a9}
-  .mock-col{padding:16px;border-right:1px solid var(--line)}
-  .mock-col:last-child{border-right:0}
-  .mock-col .sec{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dust);margin:0 0 10px}
-  .mock-col .item{padding:7px 8px;border-radius:3px;display:flex;justify-content:space-between;gap:8px;margin-bottom:2px;color:#d6d2c8}
-  .mock-col .item.active{background:rgba(217,188,130,0.12);color:var(--champagne)}
-  .mock-col .item .c{color:var(--dust)}
-  .pads{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;margin-top:12px}
-  .pad{aspect-ratio:1/1;background:#1c1f26;border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--dust);font-size:10px}
-  .pad.on{background:var(--champagne);color:var(--ink);border-color:var(--champagne)}
-  .pad.half{background:rgba(217,188,130,0.3);border-color:rgba(217,188,130,0.4);color:var(--bone)}
-  .pad.active{outline:1.5px solid var(--champ-hi);outline-offset:2px}
-  .mrow{display:flex;justify-content:space-between;padding:4px 2px;border-bottom:1px dashed var(--line);font-size:10px}
-  .mrow:last-child{border:0}
-  .mrow .k{color:var(--dust)}
-  .mrow .v{color:var(--champagne);font-weight:500}
-  .progress{margin:12px 0 0;height:4px;background:#24262b;border-radius:2px;overflow:hidden}
-  .progress::after{content:"";display:block;height:100%;width:62%;background:linear-gradient(90deg,var(--antique),var(--champagne))}
-
-  .logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 0;background:#0b0c0f}
-  .logos .list{display:flex;gap:48px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-  .logos .item{font-family:"IBM Plex Mono";font-size:12px;letter-spacing:0.18em;color:#7a7a7a;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-  .logos .item::before{content:"";display:inline-block;width:6px;height:6px;background:var(--antique);transform:rotate(45deg)}
-
-  .section{padding:120px 0;border-top:1px solid var(--line)}
-  .sec-head{display:grid;grid-template-columns:80px 1fr auto;gap:24px;align-items:end;margin-bottom:64px}
-  .sec-num{font-family:"Unbounded";font-weight:300;font-size:64px;color:var(--antique);line-height:0.9}
-  /* Section titles also scaled to 78% to honor the design's final headline scale. */
-  .sec-title{font-family:"Unbounded";font-weight:700;font-size:clamp(28px,3.9vw,50px);letter-spacing:-0.025em;line-height:1.02;margin:0}
-  .sec-title em{font-style:normal;color:var(--champagne)}
-  .sec-meta{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--dust);text-align:right}
-
-  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .feat{border:1px solid var(--line);background:var(--graphite);border-radius:6px;padding:28px;min-height:260px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:.22s}
-  .feat:hover{border-color:var(--antique);transform:translateY(-2px)}
-  .feat .n{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase}
-  .feat h3{font-family:"Unbounded";font-weight:600;font-size:22px;letter-spacing:-0.01em;margin:0;color:var(--bone)}
-  .feat p{margin:0;color:#b5b2a9;font-size:12px;line-height:1.6}
-  .feat.wide{grid-column:span 2}
-
-  /* ── HARDWARE CARDS ── */
-  .hw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .hw-card{position:relative;border:1px solid rgba(217,188,130,0.2);background:var(--graphite);border-radius:6px;padding:30px;display:flex;flex-direction:column;gap:10px;transition:.22s;overflow:hidden}
-  .hw-card:hover{border-color:var(--champagne);transform:translateY(-2px)}
-  .hw-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(217,188,130,0.6),transparent);opacity:0;transition:opacity .22s}
-  .hw-card:hover::before{opacity:1}
-  .hw-num{position:absolute;top:24px;right:28px;font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--dust)}
-  .hw-brand{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--dust);margin-bottom:2px}
-  .hw-name{font-family:"Unbounded";font-weight:700;font-size:30px;letter-spacing:-0.02em;line-height:1.05;margin:0;color:var(--champagne)}
-  .hw-models{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.04em;color:var(--bone);margin-top:4px;line-height:1.55}
-  .hw-format{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.06em;color:var(--dust);padding:6px 10px;border:1px solid var(--line);border-radius:2px;align-self:flex-start;margin-top:6px}
-  .hw-desc{margin:8px 0 0;color:#b5b2a9;font-size:12px;line-height:1.6}
-  @media (max-width: 900px){
-    .hw-grid{grid-template-columns:repeat(2,1fr)}
+  .btn.primary{
+    background:var(--gold);color:var(--void);
+    box-shadow:0 0 32px rgba(255,182,39,.2), 0 8px 24px rgba(255,182,39,.15);
   }
-  @media (max-width: 560px){
-    .hw-grid{grid-template-columns:1fr}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,182,39,.32), 0 12px 32px rgba(255,182,39,.22)}
+  .btn.ghost{background:transparent;color:var(--text);border-color:var(--line-2)}
+  .btn.ghost:hover{border-color:var(--text-2);background:rgba(255,255,255,.02)}
+  .btn .arr{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px}
+
+  .hero-scroll{
+    position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:14px;z-index:3;
+    pointer-events:none;
+  }
+  .hero-scroll .lbl{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.32em;
+    color:var(--text-3);text-transform:uppercase;
+  }
+  .hero-scroll .ln{
+    width:1px;height:48px;background:linear-gradient(180deg, var(--text-3), transparent);
+    position:relative;overflow:hidden;
+  }
+  .hero-scroll .ln::after{
+    content:"";position:absolute;top:-24px;left:0;width:1px;height:24px;
+    background:linear-gradient(180deg, transparent, var(--gold));
+    animation:trickle 2.2s ease-in-out infinite;
+  }
+  @keyframes trickle{0%{top:-24px}100%{top:48px}}
+
+  /* ==================== SECTION CHROME ==================== */
+  section{position:relative}
+  .container{max-width:1320px;margin:0 auto;padding:0 48px}
+  .sec-tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--text-3);margin-bottom:24px;
+  }
+  .sec-tag .num{color:var(--gold)}
+  .sec-tag .dash{width:24px;height:1px;background:var(--line-2)}
+
+  /* ==================== STORY ==================== */
+  .story{
+    padding:200px 0 220px;
+    background:
+      radial-gradient(900px 500px at 50% 0%, rgba(255,107,53,.06), transparent 60%),
+      linear-gradient(180deg, var(--void) 0%, var(--bg) 80%);
+    position:relative;overflow:hidden;
+  }
+  .story::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.45) .8px, transparent .8px);
+    background-size:38px 38px;background-position:0 0;
+    opacity:.06;pointer-events:none;
+  }
+  .story-wrap{max-width:880px;margin:0 auto;padding:0 48px;position:relative}
+  .story h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;
+    font-size:54px;line-height:1.15;letter-spacing:.005em;
+    margin:0 0 56px;color:var(--text);text-wrap:balance;
+  }
+  .story h2 em{font-style:italic;color:var(--gold);font-weight:400}
+  .story p{
+    font-size:19px;line-height:1.7;color:var(--text-2);
+    font-weight:400;margin:0 0 28px;max-width:720px;text-wrap:pretty;
+  }
+  .story p:last-of-type{color:var(--text);font-size:18px}
+  .story-foot{
+    margin-top:64px;display:flex;align-items:center;gap:14px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--text-3);
+  }
+  .story-foot .ln{width:48px;height:1px;background:var(--gold);opacity:.6}
+
+  /* ==================== INSTRUMENTS (FX preview) ==================== */
+  .instruments{
+    padding:140px 0 160px;background:var(--bg);position:relative;overflow:hidden;
+    border-top:1px solid var(--line);
+  }
+  .instruments::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(900px 400px at 50% 0%, rgba(255,107,53,.04), transparent 60%),
+      radial-gradient(700px 300px at 100% 100%, rgba(124,58,237,.03), transparent 60%);
+    pointer-events:none;
+  }
+  .instruments::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.4) .8px, transparent .8px);
+    background-size:48px 48px;opacity:.04;pointer-events:none;
+  }
+  .inst-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin:0 0 56px;gap:48px;position:relative;
+  }
+  .inst-head h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;
+    font-size:74px;line-height:.95;letter-spacing:.005em;margin:0;
+    color:var(--text);max-width:640px;text-wrap:balance;
+  }
+  .inst-head h2 em{font-style:italic;color:var(--text-2);font-weight:300}
+  .inst-head h2 .ac{color:var(--gold);font-weight:500}
+  .inst-head p{
+    font-size:15px;line-height:1.7;color:var(--text-2);
+    max-width:340px;margin:0;padding-bottom:10px;text-wrap:pretty;
+  }
+  .inst-head p b{color:var(--text);font-weight:500}
+
+  .tools-grid{
+    display:grid;grid-template-columns:repeat(6, 1fr);gap:14px;position:relative;
+  }
+  .tool-card{
+    --acc:#FFB627;
+    position:relative;
+    background:
+      linear-gradient(180deg, color-mix(in oklab, var(--acc) 7%, transparent) 0%, transparent 35%),
+      linear-gradient(180deg,#0E1218,#0A0C10);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 20px 22px;
+    display:flex;flex-direction:column;
+    min-height:270px;
+    text-decoration:none;color:inherit;
+    transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;
+    overflow:hidden;
+  }
+  .tool-card::before{
+    content:"";position:absolute;left:0;top:22px;bottom:22px;width:2px;
+    background:var(--acc);opacity:.45;
+    transition:opacity .3s ease, width .3s ease;
+  }
+  .tool-card::after{
+    content:"";position:absolute;top:-40%;right:-40%;width:90%;height:90%;
+    border-radius:50%;
+    background:radial-gradient(closest-side, color-mix(in oklab, var(--acc) 22%, transparent), transparent 70%);
+    opacity:.55;transition:opacity .35s ease, transform .35s ease;pointer-events:none;
+    filter:blur(4px);
+  }
+  .tool-card:hover{
+    border-color:color-mix(in oklab, var(--acc) 40%, var(--line));
+    transform:translateY(-5px);
+    box-shadow:
+      0 18px 40px rgba(0,0,0,.45),
+      0 0 36px color-mix(in oklab, var(--acc) 12%, transparent);
+  }
+  .tool-card:hover::before{opacity:1;width:3px}
+  .tool-card:hover::after{opacity:.95;transform:translate(-6%, 6%)}
+  .tool-card .t-num{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+    color:var(--text-3);text-transform:uppercase;
+  }
+  .tool-card .t-vis{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    margin:18px 0 22px;min-height:64px;position:relative;z-index:1;
+  }
+  .tool-card .t-vis svg{display:block}
+  .tool-card .t-name{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;
+    line-height:.9;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text);display:flex;align-items:center;gap:10px;margin:0 0 6px;
+  }
+  .tool-card .t-name .d{
+    width:6px;height:6px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 8px var(--acc), 0 0 16px var(--acc);
+  }
+  .tool-card .t-tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin:0 0 12px;
+  }
+  .tool-card .t-one{
+    font-size:12px;line-height:1.55;color:var(--text-2);text-wrap:pretty;margin:0;
+  }
+  .inst-foot{
+    margin-top:28px;padding:22px 32px;
+    border:1px solid var(--line);border-radius:14px;
+    background:linear-gradient(90deg,
+      rgba(6,182,212,.04),
+      rgba(249,115,22,.04),
+      rgba(220,38,38,.04),
+      rgba(37,99,235,.04),
+      rgba(124,58,237,.04),
+      rgba(132,204,22,.04));
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .inst-foot .l{display:flex;flex-direction:column;gap:4px}
+  .inst-foot .l .kicker{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+    color:var(--text-3);text-transform:uppercase;
+  }
+  .inst-foot .l .ttl{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:22px;
+    letter-spacing:.04em;color:var(--text);
+  }
+  .inst-foot .l .ttl b{color:var(--gold);font-weight:600}
+  .inst-foot .r{display:flex;align-items:center;gap:18px}
+  .inst-foot .price-tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;
+    font-size:36px;line-height:1;letter-spacing:.02em;color:var(--text);
+  }
+  .inst-foot .price-tag .cur{font-size:16px;color:var(--text-3);vertical-align:top;padding-right:3px}
+  .inst-foot .price-tag .unit{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;
+    color:var(--text-3);text-transform:uppercase;display:inline-block;margin-left:6px;vertical-align:middle;
+  }
+  .inst-foot .lk{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;
+    letter-spacing:.28em;text-transform:uppercase;color:var(--void);
+    background:var(--gold);padding:12px 20px;border-radius:8px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .inst-foot .lk:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,182,39,.22)}
+
+  /* ==================== ECOSYSTEM ==================== */
+  .ecosystem{
+    padding:160px 0 180px;
+    background:var(--bg);position:relative;overflow:hidden;
+  }
+  .ecosystem::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.45) .8px, transparent .8px);
+    background-size:48px 48px;background-position:0 0;opacity:.05;pointer-events:none;
+  }
+  .eco-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:48px}
+  .eco-head h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;
+    font-size:80px;line-height:.95;letter-spacing:.02em;margin:0;
+    color:var(--text);max-width:560px;text-wrap:balance;
+  }
+  .eco-head h2 .glow{color:var(--gold);font-weight:600}
+  .eco-head p{
+    font-size:15px;line-height:1.7;color:var(--text-2);max-width:380px;margin:0;
+    padding-bottom:8px;text-wrap:pretty;
+  }
+  .eco-map{
+    position:relative;height:620px;
+    border:1px solid var(--line);border-radius:18px;
+    background:
+      radial-gradient(800px 400px at 50% 55%, rgba(255,182,39,.04), transparent 60%),
+      linear-gradient(180deg, #0B0E13 0%, #07090C 100%);
+    overflow:hidden;cursor:crosshair;
+  }
+  .eco-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+  /* cursor follower halo — smooth lerped, intensifies near nodes */
+  .eco-cursor{
+    position:absolute;width:200px;height:200px;border-radius:50%;
+    left:0;top:0;pointer-events:none;z-index:2;
+    background:radial-gradient(closest-side,
+      color-mix(in oklab, var(--cur, #FFB627) 16%, transparent),
+      transparent 72%);
+    transform:translate3d(-9999px,-9999px,0) translate(-50%,-50%) scale(var(--cs,1));
+    transition:background .4s ease;
+    mix-blend-mode:screen;
+    opacity:0;
+  }
+  .eco-map.has-cursor .eco-cursor{opacity:1}
+
+  /* ecosystem active pill (top right) */
+  .eco-pill{
+    position:absolute;top:22px;right:22px;z-index:5;
+    display:inline-flex;align-items:center;gap:10px;
+    padding:9px 16px;border-radius:99px;
+    background:rgba(10,12,16,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid color-mix(in oklab, var(--gold) 28%, var(--line));
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--gold);
+    box-shadow:0 8px 24px rgba(0,0,0,.3), 0 0 24px rgba(255,182,39,.08);
+  }
+  .eco-pill .d{
+    width:6px;height:6px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 10px var(--gold), 0 0 20px var(--gold);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  .eco-pill em{font-style:normal;color:var(--text-2);font-weight:500;letter-spacing:.22em}
+
+  /* legend bottom */
+  .eco-legend{
+    position:absolute;left:24px;bottom:22px;display:flex;gap:18px;align-items:center;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--text-3);z-index:5;
+    background:rgba(10,12,16,.55);backdrop-filter:blur(6px);
+    padding:8px 14px;border-radius:99px;border:1px solid var(--line);
+  }
+  .eco-legend .item{display:flex;align-items:center;gap:6px}
+  .eco-legend .sw{width:7px;height:7px;border-radius:50%}
+
+  /* MAIN HUBS — HTML-positioned for precise smooth hover */
+  .eco-hub{
+    --hub:#FFB627;
+    position:absolute;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    z-index:4;cursor:pointer;
+  }
+  .eco-hub .halo{
+    position:absolute;left:50%;top:18px;
+    width:160px;height:160px;border-radius:50%;
+    transform:translate(-50%,-50%) scale(.7);
+    background:radial-gradient(closest-side,
+      color-mix(in oklab, var(--hub) 28%, transparent),
+      transparent 72%);
+    pointer-events:none;
+    transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
+    opacity:.45;
+  }
+  .eco-hub:hover .halo,.eco-hub.near .halo{
+    transform:translate(-50%,-50%) scale(1.5);
+    opacity:1;
+  }
+  .eco-hub .ring{
+    width:38px;height:38px;border-radius:50%;
+    border:1.8px solid var(--hub);background:#0A0C10;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+  }
+  .eco-hub .ring::after{
+    content:"";width:12px;height:12px;border-radius:50%;
+    background:var(--hub);box-shadow:0 0 12px var(--hub);
+    transition:transform .35s ease;
+  }
+  .eco-hub.lg .ring{width:44px;height:44px}
+  .eco-hub.lg .ring::after{width:14px;height:14px}
+  .eco-hub:hover .ring,.eco-hub.near .ring{
+    transform:scale(1.12);
+    box-shadow:0 0 0 4px color-mix(in oklab, var(--hub) 14%, transparent),
+               0 0 24px color-mix(in oklab, var(--hub) 45%, transparent);
+  }
+  .eco-hub:hover .ring::after,.eco-hub.near .ring::after{transform:scale(1.15)}
+  /* mixcraft has an extra orbit ring */
+  .eco-hub.lg .ring{
+    box-shadow:0 0 0 0 transparent;
+  }
+  .eco-hub .orbit{
+    position:absolute;left:50%;top:18px;transform:translate(-50%,-50%);
+    width:64px;height:64px;border-radius:50%;
+    border:1px dashed color-mix(in oklab, var(--hub) 35%, transparent);
+    opacity:.6;animation:hubSpin 14s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes hubSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .eco-hub .lbl{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;
+    letter-spacing:.26em;text-transform:uppercase;color:var(--text);
+    white-space:nowrap;text-align:center;
+    text-shadow:0 0 16px color-mix(in oklab, var(--hub) 25%, transparent);
+  }
+  .eco-hub .sub{
+    font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--text-3);margin-top:-4px;
+  }
+  /* fx cluster — show 6 dots inside the ring */
+  .eco-hub .fx-dots{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:48px;height:48px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+    place-items:center;
+  }
+  .eco-hub .fx-dots span{width:5px;height:5px;border-radius:50%}
+
+  /* CONNECTION LINES — SVG only for these */
+  .eco-lines{position:absolute;inset:0;pointer-events:none;z-index:1}
+
+  /* PLUGIN MINI-THUMBNAILS — Aladin reveal */
+  .eco-chip{
+    --acc:#FFB627;
+    position:absolute;transform:translate(-50%,-50%);
+    width:104px;padding:10px 12px 9px;
+    background:linear-gradient(180deg, rgba(14,18,24,.92), rgba(10,12,16,.78));
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    border:1px solid color-mix(in oklab, var(--acc) 24%, var(--line));
+    border-radius:10px;
+    display:flex;flex-direction:column;gap:7px;
+    cursor:pointer;z-index:3;user-select:none;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+    /* aladin starting state */
+    opacity:0;
+    filter:blur(18px) brightness(1.6);
+    transform:translate(-50%, calc(-50% + 18px)) scale(.5) rotate(var(--rot,-4deg));
+    transition:
+      opacity 1.1s cubic-bezier(.2,.7,.2,1),
+      filter 1.1s cubic-bezier(.2,.7,.2,1),
+      transform 1.1s cubic-bezier(.2,.7,.2,1),
+      border-color .3s ease,
+      box-shadow .3s ease;
+  }
+  .eco-map.in .eco-chip{
+    opacity:1;
+    filter:blur(0) brightness(1);
+    transform:translate(-50%,-50%) scale(1) rotate(0);
+  }
+  .eco-map.in .eco-chip:hover{
+    border-color:var(--acc);
+    box-shadow:0 10px 28px color-mix(in oklab, var(--acc) 22%, transparent),
+               0 0 32px color-mix(in oklab, var(--acc) 18%, transparent);
+    transform:translate(-50%,-50%) scale(1.08);
+    z-index:6;
+  }
+  .eco-chip .vis{
+    height:26px;border-radius:5px;
+    background:
+      linear-gradient(180deg, color-mix(in oklab, var(--acc) 18%, transparent), transparent),
+      #07090C;
+    border:1px solid color-mix(in oklab, var(--acc) 18%, transparent);
+    position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .eco-chip .name{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--text);
+    text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;line-height:1;
+  }
+  .eco-chip .name .d{
+    width:5px;height:5px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 6px var(--acc);flex:none;
+  }
+  .eco-chip .tag{
+    font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--text-3);text-align:center;line-height:1;
+  }
+  /* mini visuals inside chip */
+  .eco-chip .wv{display:flex;gap:1.5px;align-items:center;height:100%}
+  .eco-chip .wv span{width:1.5px;background:var(--acc);border-radius:1px;opacity:.85}
+  .eco-chip .kn{
+    width:18px;height:18px;border-radius:50%;
+    border:1.5px solid var(--acc);background:#070A0E;position:relative;
+  }
+  .eco-chip .kn::after{
+    content:"";position:absolute;top:2px;left:50%;width:1.5px;height:5px;
+    background:var(--acc);border-radius:1px;
+    transform:translateX(-50%) rotate(var(--rot,40deg));
+    transform-origin:50% 100%;
+  }
+  .eco-chip .ar{
+    width:22px;height:14px;border-radius:50% 50% 0 0/100% 100% 0 0;
+    border:1.5px solid var(--acc);border-bottom:0;
+  }
+  .eco-chip .grid6{display:grid;grid-template-columns:repeat(3,4px);gap:2px}
+  .eco-chip .grid6 span{width:4px;height:4px;border-radius:50%;background:var(--acc)}
+  .eco-chip .grid6 span:nth-child(odd){opacity:.5}
+
+  /* chip plumes (extra Aladin smoke per chip) */
+  .eco-chip .smoke{
+    position:absolute;left:50%;top:50%;width:80px;height:80px;
+    border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side, color-mix(in oklab, var(--acc) 30%, transparent), transparent 70%);
+    transform:translate(-50%,-50%) scale(.2);opacity:0;
+    transition:transform 1.4s ease, opacity 1.4s ease;
+  }
+  .eco-map.in .eco-chip .smoke{
+    transform:translate(-50%,-50%) scale(1.8);opacity:0;
   }
 
-  .padviz{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
-  .padviz .p{aspect-ratio:1/1;background:#1c1f26;border:1px solid var(--line);border-radius:2px}
-  .padviz .p.on{background:var(--champagne);animation:pulse 2.4s ease-in-out infinite}
-  @keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
-  .seqviz{margin-top:6px;height:90px;display:flex;align-items:flex-end;gap:2px;padding:8px;background:var(--ink-2);border:1px solid var(--line);border-radius:3px;overflow:hidden}
-  .seqviz .bar{flex:1;background:linear-gradient(180deg,var(--champ-hi),var(--antique));border-radius:1px 1px 0 0;animation:eq 1.6s ease-in-out infinite}
-  .seqviz .bar:nth-child(1){animation-delay:.0s}.seqviz .bar:nth-child(2){animation-delay:.15s}.seqviz .bar:nth-child(3){animation-delay:.3s}.seqviz .bar:nth-child(4){animation-delay:.45s}.seqviz .bar:nth-child(5){animation-delay:.6s}.seqviz .bar:nth-child(6){animation-delay:.25s}.seqviz .bar:nth-child(7){animation-delay:.1s}.seqviz .bar:nth-child(8){animation-delay:.35s}.seqviz .bar:nth-child(9){animation-delay:.55s}.seqviz .bar:nth-child(10){animation-delay:.2s}.seqviz .bar:nth-child(11){animation-delay:.4s}.seqviz .bar:nth-child(12){animation-delay:.5s}
-  @keyframes eq{0%,100%{height:30%}50%{height:100%}}
+  /* tooltip */
 
-  .showcase{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-  .showcase h3{font-family:"Unbounded";font-weight:600;font-size:36px;letter-spacing:-0.015em;margin:0 0 16px}
-  .showcase p{color:#b5b2a9;font-size:14px;line-height:1.65;max-width:480px}
-  .showcase ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
-  .showcase ul li{display:flex;gap:12px;align-items:flex-start;font-size:14px}
-  .showcase ul li::before{content:"";width:10px;height:10px;background:var(--champagne);flex-shrink:0;margin-top:5px}
-  .mock-lg{background:var(--graphite);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
-
-  .pricing{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:20px;align-items:stretch}
-  .price{border:1px solid var(--line);background:var(--graphite);border-radius:6px;padding:36px;display:flex;flex-direction:column;gap:18px}
-  .price.main{background:var(--ink);border-color:var(--champ-hi);position:relative}
-  .price.main::before{content:"RECOMMENDED";position:absolute;top:-10px;left:36px;
-    font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;background:var(--champagne);color:var(--ink);padding:4px 10px;border-radius:2px}
-  .price .tier{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase}
-  .price .amount{font-family:"Unbounded";font-weight:700;font-size:56px;letter-spacing:-0.02em;line-height:1}
-  .price .amount .c{color:var(--champ-hi)}
-  .price .amount .sub{font-family:"IBM Plex Mono";font-size:12px;color:var(--dust);font-weight:400;letter-spacing:0.12em;margin-left:6px}
-  .price .lead{color:#b5b2a9;font-size:12px;line-height:1.55}
-  .price ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:13px}
-  .price ul li{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);color:#d6d2c8}
-  .price ul li::before{content:"▸";color:var(--champagne)}
-  .price ul li.no{color:var(--dust)}
-  .price ul li.no::before{content:"—";color:var(--dust)}
-  .price .btn{justify-content:center}
-
-  footer{border-top:1px solid var(--line);padding:64px 0 40px;background:#0a0b0e}
-  footer .frow{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
-  footer h4{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:0.22em;color:var(--champagne);text-transform:uppercase;margin:0 0 14px}
-  footer a{display:block;color:#b5b2a9;font-size:14px;padding:4px 0}
-  footer a:hover{color:var(--champagne)}
-  footer .legal{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--dust);font-family:"IBM Plex Mono";font-size:11px;letter-spacing:0.1em;flex-wrap:wrap;gap:16px}
-
-  @media (max-width:920px){
-    .hero .grid{grid-template-columns:1fr}
-    .showcase{grid-template-columns:1fr}
-    .features{grid-template-columns:1fr}
-    .feat.wide{grid-column:auto}
-    .pricing{grid-template-columns:1fr}
-    footer .frow{grid-template-columns:1fr 1fr}
-    nav.menu{display:none}
-    .sec-head{grid-template-columns:1fr;gap:10px}
-    .sec-num{font-size:36px}
-    .mock-body{grid-template-columns:1fr}
-    .mock-col{border-right:0;border-bottom:1px solid var(--line)}
+  /* ==================== PRODUCTS — section frame ==================== */
+  .product{padding:140px 0;position:relative;overflow:hidden}
+  .product-head{
+    display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:baseline;
+    margin-bottom:56px;padding-bottom:20px;border-bottom:1px solid var(--line);
   }
+  .product-no{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.32em;
+    color:var(--text-3);
+  }
+  .product-no b{color:var(--prod, var(--gold))}
+  .product-kind{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:13px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);text-align:right;
+  }
+
+  .product-title{
+    display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;
+  }
+  .product-title h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:140px;line-height:.88;letter-spacing:.08em;
+    text-transform:uppercase;margin:0;color:var(--text);
+  }
+  .product-title h2 .accent{color:var(--prod, var(--gold))}
+  .product-tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;
+    font-size:14px;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--text-3);padding-bottom:12px;
+  }
+
+  .product-body{
+    display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+    margin-top:56px;
+  }
+  .product-copy h3{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:32px;
+    line-height:1.2;letter-spacing:.01em;margin:0 0 20px;color:var(--text);text-wrap:balance;
+  }
+  .product-copy p{
+    font-size:15px;line-height:1.7;color:var(--text-2);margin:0 0 16px;max-width:520px;text-wrap:pretty;
+  }
+  .product-copy p b{color:var(--text);font-weight:500}
+  .spec-list{
+    margin:28px 0 0;padding:0;list-style:none;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .spec-list li{
+    display:grid;grid-template-columns:80px 1fr;gap:18px;align-items:center;
+    padding:14px 0;border-top:1px solid var(--line);
+    font-size:13px;color:var(--text-2);
+  }
+  .spec-list li:last-child{border-bottom:1px solid var(--line)}
+  .spec-list .k{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--prod, var(--gold));
+  }
+  .spec-list .v b{color:var(--text);font-weight:500}
+
+  .product-foot{
+    display:flex;align-items:center;gap:18px;margin-top:36px;
+  }
+  .price-tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;
+    font-size:42px;line-height:1;letter-spacing:.02em;color:var(--text);
+  }
+  .price-tag .cur{font-size:18px;color:var(--text-3);vertical-align:top;padding-right:4px}
+  .price-tag .unit{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;
+    color:var(--text-3);text-transform:uppercase;display:inline-block;margin-left:8px;vertical-align:middle;
+  }
+  .btn.prod{
+    background:transparent;color:var(--prod, var(--gold));border-color:color-mix(in oklab, var(--prod, var(--gold)) 40%, transparent);
+  }
+  .btn.prod:hover{
+    background:color-mix(in oklab, var(--prod, var(--gold)) 12%, transparent);
+    border-color:var(--prod, var(--gold));
+    box-shadow:0 0 24px color-mix(in oklab, var(--prod, var(--gold)) 22%, transparent);
+  }
+
+  /* product visual frame */
+  .product-vis{
+    position:relative;border:1px solid var(--line);border-radius:14px;
+    background:linear-gradient(180deg,#0B0E13,#07090C);
+    aspect-ratio:4/3;overflow:hidden;
+    box-shadow:0 40px 80px rgba(0,0,0,.4);
+  }
+  .product-vis::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(600px 300px at 70% 30%, color-mix(in oklab, var(--prod) 8%, transparent), transparent 60%);
+    pointer-events:none;
+  }
+  .product-vis.reverse + .product-copy{order:-1}
+
+  /* ==================== BALANZE plugin mockup ==================== */
+  .bz-mock{position:absolute;inset:20px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow:hidden;display:grid;grid-template-rows:38px 1fr 32px}
+  .bz-head{display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#11151C,#0E1218)}
+  .bz-head .name{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed';font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--text)}
+  .bz-head .name .d{width:5px;height:5px;border-radius:50%;background:var(--balanze-gold);box-shadow:0 0 6px var(--balanze-gold)}
+  .bz-head .preset{font-family:'JetBrains Mono';font-size:9px;color:var(--text-3);letter-spacing:.18em;text-transform:uppercase}
+  .bz-modules{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .bz-mod{background:var(--panel);padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+  .bz-mod.on{background:linear-gradient(180deg, rgba(255,182,39,.10), transparent), var(--panel)}
+  .bz-mod .mname{font-family:'Barlow Condensed';font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);font-weight:500}
+  .bz-mod.on .mname{color:var(--balanze-gold)}
+  .bz-mod .mval{font-family:'JetBrains Mono';font-size:11px;color:var(--text);font-weight:600}
+  .bz-body{padding:14px;display:grid;grid-template-columns:1fr 200px;gap:14px;min-height:0}
+  .bz-eq{border:1px solid var(--line);border-radius:8px;background:#070A0E;position:relative;overflow:hidden}
+  .bz-knobs{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+  .bz-knob{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px}
+  .bz-knob .ksvg{width:48px;height:48px}
+  .bz-knob .kv{font-family:'JetBrains Mono';font-size:10px;color:var(--text);font-weight:600}
+  .bz-knob .kl{font-family:'Barlow Condensed';font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3)}
+  .bz-foot{display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-top:1px solid var(--line);background:var(--bg-2);font-family:'JetBrains Mono';font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase}
+  .bz-foot .lufs{color:var(--balanze-gold)}
+
+  /* ==================== FX SUITE grid ==================== */
+  .fx{
+    padding:140px 0;background:var(--bg);position:relative;overflow:hidden;
+  }
+  .fx::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.4) .8px, transparent .8px);
+    background-size:56px 56px;opacity:.04;pointer-events:none;
+  }
+  .fx-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;
+  }
+  .fx-card{
+    --acc:var(--gold);
+    position:relative;border:1px solid var(--line);border-radius:14px;
+    background:linear-gradient(180deg,#0E1218,#0A0C10);
+    padding:36px 32px 28px;min-height:280px;overflow:hidden;
+    transition:border-color .25s ease, transform .25s ease;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .fx-card:hover{
+    border-color:color-mix(in oklab, var(--acc) 40%, var(--line));
+    transform:translateY(-4px);
+  }
+  .fx-card::before{
+    content:"";position:absolute;top:-40%;right:-30%;width:60%;height:120%;
+    background:radial-gradient(closest-side, color-mix(in oklab, var(--acc) 22%, transparent), transparent 75%);
+    opacity:.7;transition:opacity .3s ease;pointer-events:none;filter:blur(8px);
+  }
+  .fx-card:hover::before{opacity:1}
+  .fx-card .glow-dot{
+    position:absolute;top:24px;right:24px;width:8px;height:8px;border-radius:50%;
+    background:var(--acc);box-shadow:0 0 14px var(--acc), 0 0 28px var(--acc);
+  }
+  .fx-card .num{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+    color:var(--text-3);text-transform:uppercase;
+  }
+  .fx-card h3{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:64px;line-height:.9;letter-spacing:.06em;text-transform:uppercase;
+    margin:14px 0 8px;color:var(--text);
+  }
+  .fx-card .tag{
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;font-size:11px;
+    letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin-bottom:auto;
+  }
+  .fx-card p{
+    font-size:13px;line-height:1.6;color:var(--text-2);margin:18px 0 16px;max-width:280px;
+  }
+  .fx-card .price{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:14px;border-top:1px solid var(--line);
+  }
+  .fx-card .price b{color:var(--acc);font-weight:500}
+  .fx-card .price a{
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--text-3);
+  }
+
+  .fx-bundle{
+    margin-top:32px;
+    border:1px solid var(--line);border-radius:14px;
+    padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:32px;
+    background:
+      linear-gradient(90deg, rgba(255,182,39,.04), rgba(124,92,255,.04), rgba(132,204,22,.04)),
+      var(--bg-2);
+  }
+  .fx-bundle .l{display:flex;flex-direction:column;gap:6px}
+  .fx-bundle .l .kicker{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.28em;color:var(--text-3);text-transform:uppercase}
+  .fx-bundle .l .ttl{font-family:'Barlow Condensed';font-weight:500;font-size:24px;letter-spacing:.04em;color:var(--text)}
+  .fx-bundle .r{display:flex;align-items:center;gap:18px}
+
+  /* ==================== SPLIT mockup ==================== */
+  .split-mock{position:absolute;inset:20px;border:1px solid #2C3543;border-radius:10px;background:linear-gradient(180deg,#1A1E26,#10141B);overflow:hidden;display:grid;grid-template-rows:36px 1fr 30px}
+  .split-head{display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line-2)}
+  .split-head .name{font-family:'Barlow Condensed';font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--text);display:flex;align-items:center;gap:8px}
+  .split-head .name .ic{display:flex;gap:1px;align-items:flex-end;height:14px}
+  .split-head .name .ic span{width:2px;background:var(--silver);border-radius:1px}
+  .split-head .name .ic span:nth-child(1){height:60%;background:var(--filter)}
+  .split-head .name .ic span:nth-child(2){height:90%;background:var(--gold)}
+  .split-head .name .ic span:nth-child(3){height:50%;background:var(--tune)}
+  .split-head .name .ic span:nth-child(4){height:80%;background:var(--space)}
+  .split-head .name .ic span:nth-child(5){height:70%;background:var(--echo)}
+  .split-head .badge{font-family:'JetBrains Mono';font-size:9px;color:var(--text-3);letter-spacing:.18em;display:flex;align-items:center;gap:6px}
+  .split-head .badge .d{width:5px;height:5px;border-radius:50%;background:var(--tune)}
+  .split-body{padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
+  .split-drop{
+    border:1px dashed var(--line-2);border-radius:8px;padding:18px;
+    background:#070A0E;text-align:center;
+  }
+  .split-drop .wave{height:24px;display:flex;align-items:center;justify-content:center;gap:1.5px;margin-bottom:10px}
+  .split-drop .wave span{width:1.5px;background:var(--silver);border-radius:1px;opacity:.7}
+  .split-drop .ttl{font-family:'Barlow Condensed';font-weight:600;font-size:14px;letter-spacing:.22em;color:var(--text);text-transform:uppercase}
+  .split-drop .fmt{font-family:'JetBrains Mono';font-size:9px;letter-spacing:.22em;color:var(--text-3);margin-top:6px;text-transform:uppercase}
+  .split-stems{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;flex:1;min-height:0}
+  .split-stem{border:1px solid var(--line);border-radius:6px;background:rgba(20,24,32,.6);padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .split-stem .lbl{font-family:'Barlow Condensed';font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3)}
+  .split-stem .bar{width:4px;flex:1;background:var(--bg);border-radius:2px;position:relative;margin:4px 0;min-height:30px}
+  .split-stem .bar::after{content:"";position:absolute;left:-3px;width:10px;height:5px;background:var(--silver);border-radius:1px;top:var(--p,50%)}
+  .split-foot{display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-top:1px solid var(--line-2);font-family:'JetBrains Mono';font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase}
+  .split-foot .send{color:var(--gold)}
+
+  /* ==================== MIXCRAFT mockup ==================== */
+  .mx-mock{position:absolute;inset:20px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+  .mx-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--bg-2)}
+  .mx-head .l{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.22em;color:var(--text)}
+  .mx-head .l .d{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .mx-head .pill{font-family:'JetBrains Mono';font-size:9px;letter-spacing:.18em;color:var(--cyan);padding:3px 8px;border:1px solid color-mix(in oklab, var(--cyan) 40%, transparent);border-radius:99px;text-transform:uppercase}
+  .mx-body{padding:14px;display:grid;grid-template-columns:170px 1fr;gap:12px;flex:1;min-height:0}
+  .mx-tracks{display:flex;flex-direction:column;gap:5px}
+  .mx-track{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+  .mx-track.on{border-color:color-mix(in oklab, var(--cyan) 40%, transparent);background:linear-gradient(90deg, rgba(6,182,212,.08), transparent), var(--panel)}
+  .mx-track .sw{width:3px;height:16px;border-radius:2px;background:var(--text-4)}
+  .mx-track.on .sw{background:var(--cyan)}
+  .mx-track .lb{font-family:'Barlow Condensed';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);flex:1}
+  .mx-track.on .lb{color:var(--text)}
+  .mx-track .conf{font-family:'JetBrains Mono';font-size:9px;color:var(--text-3)}
+  .mx-track.on .conf{color:var(--cyan)}
+  .mx-chat{border:1px solid var(--line);border-radius:8px;background:var(--bg-2);padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+  .mx-msg{padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.55;color:var(--text-2);position:relative}
+  .mx-msg.ai{background:linear-gradient(180deg, rgba(6,182,212,.06), transparent);border-left:2px solid var(--cyan)}
+  .mx-msg.ai b{color:var(--cyan);font-weight:500}
+  .mx-msg .kicker{font-family:'JetBrains Mono';font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px;display:block;opacity:.7}
+  .mx-recipe{font-family:'JetBrains Mono';font-size:10px;color:var(--text);padding:8px 10px;background:#070A0E;border-radius:4px;margin-top:8px;line-height:1.6;color:var(--text-2)}
+  .mx-recipe b{color:var(--text)}
+  .mx-foot{padding:8px 14px;border-top:1px solid var(--line);background:var(--bg-2);display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase}
+  .mx-foot .ok{color:var(--cyan)}
+
+  /* ==================== TECH FOUNDATION ==================== */
+  .tech{
+    padding:140px 0;background:var(--bg-2);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .tech h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;
+    font-size:64px;line-height:1;letter-spacing:.01em;margin:0 0 14px;color:var(--text);
+  }
+  .tech h2 em{font-style:italic;font-weight:300;color:var(--text-2)}
+  .tech .lead{font-size:15px;color:var(--text-2);max-width:540px;margin:0 0 56px;line-height:1.7}
+  .tech-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .tech-cell{
+    background:var(--bg);padding:32px 28px;display:flex;flex-direction:column;gap:12px;
+    min-height:200px;
+  }
+  .tech-cell .k{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--gold);
+  }
+  .tech-cell .v{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:24px;
+    letter-spacing:.02em;color:var(--text);line-height:1.1;
+  }
+  .tech-cell .d{
+    font-size:12px;line-height:1.6;color:var(--text-2);margin-top:auto;
+  }
+
+  /* ==================== PRICING ==================== */
+  .pricing{
+    padding:160px 0 180px;background:var(--bg);position:relative;overflow:hidden;
+  }
+  .pricing::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(600px 300px at 20% 20%, rgba(255,182,39,.05), transparent 60%),
+      radial-gradient(600px 300px at 80% 80%, rgba(255,107,53,.04), transparent 60%);
+    pointer-events:none;
+  }
+  .pricing h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;
+    font-size:72px;line-height:1;letter-spacing:.01em;margin:0 0 14px;color:var(--text);text-align:center;
+  }
+  .pricing .lead{
+    font-size:15px;color:var(--text-2);max-width:540px;margin:0 auto 64px;line-height:1.7;text-align:center;
+  }
+  .price-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative;
+  }
+  .price-card{
+    position:relative;border:1px solid var(--line);border-radius:18px;
+    background:linear-gradient(180deg,#0E1218,#0A0C10);
+    padding:40px 36px;display:flex;flex-direction:column;gap:24px;
+  }
+  .price-card.featured{
+    border-color:color-mix(in oklab, var(--gold) 40%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255,182,39,.05), transparent 40%),
+      linear-gradient(180deg,#0E1218,#0A0C10);
+    box-shadow:0 0 60px rgba(255,182,39,.08), 0 30px 60px rgba(0,0,0,.4);
+  }
+  .price-card .badge{
+    position:absolute;top:-12px;left:36px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:10px;
+    letter-spacing:.32em;text-transform:uppercase;
+    background:var(--gold);color:var(--void);padding:6px 12px;border-radius:99px;
+  }
+  .price-card .tier{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:13px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);
+  }
+  .price-card.featured .tier{color:var(--gold)}
+  .price-card .name{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:42px;
+    line-height:1;letter-spacing:.02em;color:var(--text);
+  }
+  .price-card .amt{
+    display:flex;align-items:baseline;gap:6px;
+  }
+  .price-card .amt .n{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:72px;
+    line-height:1;letter-spacing:.005em;color:var(--text);
+  }
+  .price-card .amt .c{font-family:'Barlow Condensed';font-size:24px;color:var(--text-3);font-weight:300}
+  .price-card .amt .u{font-family:'JetBrains Mono';font-size:11px;color:var(--text-3);letter-spacing:.22em;text-transform:uppercase}
+  .price-card .desc{font-size:14px;line-height:1.6;color:var(--text-2);min-height:48px}
+  .price-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .price-card ul li{
+    font-size:13px;color:var(--text-2);padding-left:20px;position:relative;line-height:1.5;
+  }
+  .price-card ul li::before{
+    content:"";position:absolute;left:0;top:8px;width:10px;height:1px;background:var(--text-3);
+  }
+  .price-card.featured ul li::before{background:var(--gold)}
+  .price-card .btn{margin-top:auto}
+  .price-card .btn.outline{
+    background:transparent;border-color:var(--line-2);color:var(--text);width:100%;justify-content:center;
+  }
+  .price-card .btn.outline:hover{border-color:var(--text-2);background:rgba(255,255,255,.02)}
+  .price-card.featured .btn{
+    background:var(--gold);color:var(--void);width:100%;justify-content:center;
+    box-shadow:0 0 32px rgba(255,182,39,.2);
+  }
+  .price-fine{
+    text-align:center;margin-top:48px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+    color:var(--text-3);text-transform:uppercase;
+  }
+  .price-fine b{color:var(--text-2);font-weight:500}
+
+  /* ==================== FOOTER ==================== */
+  .footer{
+    position:relative;padding:120px 0 48px;background:var(--void);overflow:hidden;
+    border-top:1px solid var(--line);
+  }
+  .footer::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.4) .8px, transparent .8px);
+    background-size:32px 32px;opacity:.06;pointer-events:none;
+  }
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:80px;position:relative;
+  }
+  .footer-brand{display:flex;flex-direction:column;gap:18px}
+  .footer-brand .wm{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:64px;line-height:.9;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);
+    text-shadow:0 0 40px rgba(255,182,39,.3);
+  }
+  .footer-brand .by{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--text-3);
+  }
+  .footer-brand .by b{color:var(--text-2)}
+  .footer-brand .loc{font-size:13px;color:var(--text-2);line-height:1.6;max-width:300px}
+  .footer-col h4{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);margin:0 0 18px;
+  }
+  .footer-col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .footer-col ul li a{font-size:13px;color:var(--text-2);transition:color .15s ease}
+  .footer-col ul li a:hover{color:var(--text)}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:32px;border-top:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--text-3);position:relative;
+  }
+  .footer-line{
+    font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:18px;
+    letter-spacing:.08em;color:var(--text-2);text-transform:none;font-style:italic;
+  }
+
+  /* ==================== reveal on scroll ==================== */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s ease, transform .9s ease}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  .reveal-d2{transition-delay:.1s}
+  .reveal-d3{transition-delay:.2s}
+  .reveal-d4{transition-delay:.3s}
+
+  /* tooltip near chips */
+  .eco-tip{
+    position:absolute;pointer-events:none;
+    background:rgba(10,12,16,.94);backdrop-filter:blur(10px);
+    border:1px solid var(--line-2);border-radius:8px;
+    padding:10px 14px;display:none;z-index:9;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;
+    color:var(--text);min-width:160px;max-width:240px;
+    box-shadow:0 12px 32px rgba(0,0,0,.5);
+  }
+  .eco-tip .ttl{font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:4px;color:var(--tip-acc, var(--text))}
+  .eco-tip .one{font-family:'Inter';font-size:11px;color:var(--text-2);text-transform:none;letter-spacing:0;line-height:1.5}
+
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="wrap row">
-    <a class="brand" href="#">
-      <svg width="30" height="30" viewBox="0 0 72 72" aria-hidden="true">
-        <g fill="none" stroke="#D9BC82" stroke-width="1.1" stroke-opacity="0.5">
-          <rect x="4" y="4" width="14" height="14"/><rect x="22" y="4" width="14" height="14"/><rect x="40" y="4" width="14" height="14"/>
-          <rect x="4" y="22" width="14" height="14"/><rect x="22" y="22" width="14" height="14"/><rect x="40" y="22" width="14" height="14"/>
-          <rect x="4" y="40" width="14" height="14"/><rect x="22" y="40" width="14" height="14"/><rect x="40" y="40" width="14" height="14"/>
-        </g>
-        <rect x="4" y="4" width="14" height="14" fill="#D9BC82"/>
-        <rect x="40" y="4" width="14" height="14" fill="#D9BC82"/>
-        <rect x="22" y="22" width="14" height="14" fill="#D9BC82"/>
-        <rect x="4" y="40" width="14" height="14" fill="#D9BC82"/>
-        <rect x="40" y="40" width="14" height="14" fill="#D9BC82"/>
-      </svg>
-      <span class="w">XPN</span>
-      <span class="k">Builder</span>
-    </a>
-    <nav class="menu">
-      <a href="#collaborators" data-en="Beta" data-es="Beta">Beta</a>
-      <a href="#features" data-en="Features" data-es="Features">Features</a>
-      <a href="#how" data-en="How it works" data-es="Cómo funciona">How it works</a>
-      <a href="#pricing" data-en="Pricing" data-es="Pricing">Pricing</a>
-      <a href="#collaborators" data-en="Collaborators" data-es="Colaboradores">Collaborators</a>
-      <a href="https://padworks.gumroad.com/l/xpn" data-en="Download" data-es="Descargar">Download</a>
-    </nav>
-    <div style="display:flex;gap:12px;align-items:center">
-      <div class="lang">
-        <button class="on" data-lang="en">EN</button>
-        <button data-lang="es">ES</button>
-      </div>
-      <a href="https://padworks.gumroad.com/l/xpn" class="btn" data-en="Download" data-es="Descargar">Download</a>
+<!-- ============== NAV ============== -->
+<nav class="nav" id="nav">
+  <a class="nav-brand" href="#top">
+    <svg class="gly" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3" fill="#FFB627"/>
+      <circle cx="12" cy="12" r="7" stroke="#E8ECF2" stroke-width="1" opacity=".7"/>
+      <circle cx="12" cy="12" r="11" stroke="#E8ECF2" stroke-width="1" opacity=".3"/>
+      <circle cx="19" cy="6" r="1.2" fill="#06B6D4"/>
+      <circle cx="5" cy="18" r="1" fill="#F97316"/>
+    </svg>
+    <span style="display:flex;flex-direction:column;line-height:1;gap:2px">
+      <span style="font-size:9px;letter-spacing:.22em;color:var(--text-2);font-weight:600">XPN</span>
+      <span class="word">Pad Works</span>
+    </span>
+    <span class="by">by TMCC</span>
+  </a>
+  <div class="nav-links">
+    <a href="/">Pad Works</a>
+    <a href="/balanze">BALANZE</a>
+    <a href="/fx">FX Suite</a>
+    <a href="/mixcraft">Mixcraft</a>
+    <a href="/split">SPLIT</a>
+    <a href="/xpn-builder">XPN Builder</a>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en" class="on">EN</button>
+      <button data-lang="es">ES</button>
     </div>
+    <a class="nav-cta" href="#pricing" data-i18n="nav.cta">Get the Suite</a>
+  </div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<header class="hero" id="top">
+  <canvas id="nebula"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-inner">
+    <div class="hero-meta">
+      <span class="dot"></span>
+      <span>Pad Works · v1.0 · 2026</span>
+      <span style="opacity:.4">/</span>
+      <span data-i18n="hero.meta">10 plugins · 1 brain</span>
+    </div>
+    <h1 class="hero-word">Pad Works</h1>
+    <div class="hero-tag" data-i18n="hero.tag">Tools for <em>the craft.</em></div>
+    <p class="hero-sub" data-i18n="hero.sub">
+      We build instruments for the modern producer. <b>Plugins that sound right. Software that thinks.</b>
+      An ecosystem that respects the music — and teaches you why.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn primary" href="#balanze"><span data-i18n="hero.cta1">Explore the Suite</span> <span class="arr">→</span></a>
+      <a class="btn ghost" href="#story" data-i18n="hero.cta2">Read the Story</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="lbl" data-i18n="hero.scroll">Scroll · enter the universe</span>
+    <span class="ln"></span>
   </div>
 </header>
 
-<section class="hero">
-  <div class="wrap grid">
-    <div>
-      <div class="eyebrow" data-en="Pad Works · Studio Instrument · V1.0" data-es="Pad Works · Studio Instrument · V1.0">Pad Works · Studio Instrument · V1.0</div>
-      <h1 class="h1" style="margin:18px 0 0"
-        data-en="The pro expansion<br/>builder for <em>MPC.</em>"
-        data-es="El builder profesional<br/>para <em>MPC.</em>">The pro expansion<br/>builder for <em>MPC.</em></h1>
-      <p class="lede"
-        data-en="XPN Builder is the pro expansion builder for Akai MPC. Sequencer, sampler edits, 12 genre templates, intelligent auto-assign, multi-kit projects — exports to MPC 2.x, 3.x, Ableton and MIDI with perfect parity."
-        data-es="XPN Builder es el builder profesional de expansion packs para Akai MPC. Secuenciador, editor de samples, 12 templates de género, auto-assign inteligente, proyectos multi-kit — exporta a MPC 2.x, 3.x, Ableton y MIDI sin reajustes.">
-        XPN Builder is the pro expansion builder for Akai MPC.
-      </p>
-      <div class="ctas">
-        <a href="https://padworks.gumroad.com/l/xpn" class="btn" data-en="Download for macOS ↓" data-es="Descargar para macOS ↓">Download for macOS ↓</a>
-        <a href="#how" class="btn ghost" data-en="See how it works" data-es="Ver cómo funciona">See how it works</a>
-      </div>
-      <div class="meta">
-        <span><b>macOS 13+</b></span>
-        <span><b>V1.0</b> · 28 Apr 2026</span>
-        <span><b data-en="One-time" data-es="Pago único">One-time</b> · USD 39</span>
-      </div>
-    </div>
-    <div>
-      <div class="mock">
-        <div class="mock-bar">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="mock-title">midnight_drill_vol2.xpn — XPN Builder</span>
-        </div>
-        <div class="mock-body">
-          <div class="mock-col">
-            <div class="sec" data-en="Project" data-es="Proyecto">Project</div>
-            <div class="item active">Kit 01 · 808 <span class="c">32</span></div>
-            <div class="item">Kit 02 · Hats <span class="c">16</span></div>
-            <div class="item">Kit 03 · Snare <span class="c">24</span></div>
-            <div class="item">Kit 04 · FX <span class="c">12</span></div>
-            <div class="item">Kit 05 · Melody <span class="c">24</span></div>
-            <div class="item">Kit 06 · Drill Pack <span class="c">32</span></div>
-            <div class="sec" style="margin-top:20px" data-en="Template" data-es="Template">Template</div>
-            <div class="item active">Chilean Drill</div>
-          </div>
-          <div class="mock-col" style="padding:12px">
-            <div class="sec" data-en="Pads · Bank A" data-es="Pads · Banco A">Pads · Bank A</div>
-            <div class="pads">
-              <div class="pad on">A1</div><div class="pad half">A2</div><div class="pad">A3</div><div class="pad on active">A4</div>
-              <div class="pad">B1</div><div class="pad on">B2</div><div class="pad half">B3</div><div class="pad">B4</div>
-              <div class="pad on">C1</div><div class="pad">C2</div><div class="pad on">C3</div><div class="pad half">C4</div>
-              <div class="pad half">D1</div><div class="pad on">D2</div><div class="pad">D3</div><div class="pad on">D4</div>
-            </div>
-            <div class="seqviz" style="margin-top:12px">
-              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            </div>
-          </div>
-          <div class="mock-col">
-            <div class="sec" data-en="Export" data-es="Export">Export</div>
-            <div class="mrow"><span class="k">TARGET</span><span class="v">MPC 3.x</span></div>
-            <div class="mrow"><span class="k">PADS</span><span class="v">128 / 128</span></div>
-            <div class="mrow"><span class="k">KITS</span><span class="v">6</span></div>
-            <div class="mrow"><span class="k">SIZE</span><span class="v">1.82 GB</span></div>
-            <div class="mrow"><span class="k">BPM</span><span class="v">142</span></div>
-            <div class="mrow"><span class="k">INTEGRITY</span><span class="v" style="color:#7BA05B">✓ PASS</span></div>
-            <div class="progress"></div>
-            <div style="font-size:10px;color:var(--dust);margin-top:8px;letter-spacing:0.12em">PACKAGING · 62%</div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ============== STORY ============== -->
+<section class="story" id="story">
+  <div class="story-wrap">
+    <div class="sec-tag reveal"><span class="dash"></span><span class="num">01</span><span data-i18n="story.kicker">The Story</span></div>
+    <h2 class="reveal" data-i18n="story.h2">Every producer knows the feeling — the song is in your head, the recording is there, and then the mix <em>becomes a wall.</em></h2>
+    <p class="reveal reveal-d2" data-i18n="story.p1">Too many plugins. Too many options. Too little understanding of why one move works and another doesn't. So you stack tutorials, presets, third-party recommendations — and the craft slips further from you.</p>
+    <p class="reveal reveal-d3" data-i18n="story.p2">We started Pad Works because mixing shouldn't require a decade of trial and error. Technology should make the craft more accessible — not replace the human behind it. AI doesn't replace the engineer. It documents the decisions an engineer would make, and gives you back the time to make better ones.</p>
+    <p class="reveal reveal-d4" data-i18n="story.p3">So we built an ecosystem. Not just plugins — a system that <b>analyzes, processes, and explains.</b> Every knob has a reason. Every decision is documented. Every producer, from bedroom to studio, gets the same quality tools and the knowledge to use them.</p>
+    <p class="reveal reveal-d4" style="font-size:14px;color:var(--text-2);margin-top:24px"><b>Pad Works</b> is the product brand of <b>XPN</b>, the professional audio division of <b>TMCC — The Martin Creative Company</b>. We design tools, write the software, and document the craft.</p>
+    <div class="story-foot reveal"><span class="ln"></span><span data-i18n="story.foot">This is what we've built ↓</span></div>
   </div>
 </section>
 
-<section class="logos">
-  <div class="wrap list">
-    <span class="item" data-en="Built for MPC 2.x" data-es="Para MPC 2.x">Built for MPC 2.x</span>
-    <span class="item" data-en="Built for MPC 3.x" data-es="Para MPC 3.x">Built for MPC 3.x</span>
-    <span class="item" data-en="Ableton Live export" data-es="Export a Ableton">Ableton Live export</span>
-    <span class="item" data-en="MIDI export" data-es="Export MIDI">MIDI export</span>
-    <span class="item">Gumroad · BeatStars · Splice</span>
-  </div>
-</section>
-
-<section class="section" id="features">
-  <div class="wrap">
-    <header class="sec-head">
-      <div class="sec-num">01</div>
-      <div>
-        <div class="eyebrow" data-en="Features" data-es="Características">Features</div>
-        <h2 class="sec-title"
-          data-en="Everything the <em>official builder</em><br/>should have been."
-          data-es="Todo lo que el <em>builder oficial</em><br/>debió haber sido.">Everything the <em>official builder</em><br/>should have been.</h2>
-      </div>
-      <div class="sec-meta">9 / 9 shipping</div>
-    </header>
-
-    <div class="features">
-      <div class="feat">
-        <div class="n">01 · Pads</div>
-        <h3 data-en="Smart Audio Classifier" data-es="Smart Audio Classifier">Smart Audio Classifier</h3>
-        <p data-en="Drop 400 samples into a folder. XPN analyzes each sample's frequency spectrum — detecting kicks, snares, hats, and melodics by how they sound, not by filename. Auto-builds balanced kits in seconds." data-es="Arrastra 400 samples a una carpeta. XPN analiza el espectro de frecuencia de cada sample — detecta kicks, snares, hats y melodías por cómo suenan, no por el nombre del archivo. Arma kits balanceados en segundos.">Drop 400 samples into a folder. XPN analyzes each sample's frequency spectrum — detecting kicks, snares, hats, and melodics by how they sound, not by filename. Auto-builds balanced kits in seconds.</p>
-        <div class="padviz">
-          <div class="p on"></div><div class="p"></div><div class="p on"></div><div class="p"></div>
-          <div class="p"></div><div class="p on"></div><div class="p"></div><div class="p on"></div>
-          <div class="p on"></div><div class="p"></div><div class="p"></div><div class="p on"></div>
-        </div>
-      </div>
-
-      <div class="feat">
-        <div class="n">02 · Sequencer</div>
-        <h3 data-en="Bake patterns into the pack" data-es="Graba patterns en el pack">Bake patterns into the pack</h3>
-        <p data-en="Preview groove, pocket and swing inside XPN. Export the sequence with the pack so buyers load a kit and hear your demo immediately." data-es="Previsualiza groove, pocket y swing dentro de XPN. Exporta la secuencia con el pack.">Preview groove, pocket and swing inside XPN. Export the sequence with the pack so buyers load a kit and hear your demo immediately.</p>
-        <div class="seqviz">
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
-      </div>
-
-      <div class="feat">
-        <div class="n">03 · Templates</div>
-        <h3 data-en="12 genre templates" data-es="12 templates de género">12 genre templates</h3>
-        <p data-en="Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop." data-es="Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop.">Trap · Drill · Boom Bap · House · Afrobeat · Lo-Fi · Reggaeton · Dancehall · Jersey · 4/4 · Electronic · Hip-Hop.</p>
-        <div class="mono" style="color:var(--champagne);font-size:11px;letter-spacing:0.12em;margin-top:auto">BPM 70–170 · 44.1/24</div>
-      </div>
-
-      <div class="feat wide">
-        <div class="n">04 · Export</div>
-        <h3 style="font-size:28px" data-en="One project. Every target." data-es="Un proyecto. Todos los destinos.">One project. Every target.</h3>
-        <p data-en="Export the same project as an Akai MPC expansion (firmware 2.x or 3.x), a Roland SP-404 MKII import, an Ableton Live Drum Rack, an NI Maschine pack, an Elektron RYTM pack, or a Universal WAV pack — six destinations from one source. Integrity check before every bounce." data-es="Exporta el mismo proyecto como expansion Akai MPC (firmware 2.x o 3.x), import para Roland SP-404 MKII, Drum Rack de Ableton Live, pack para NI Maschine, pack para Elektron RYTM o pack Universal WAV — seis destinos desde una sola fuente. Integrity check antes de cada export.">Export the same project as an Akai MPC expansion (firmware 2.x or 3.x), a Roland SP-404 MKII import, an Ableton Live Drum Rack, an NI Maschine pack, an Elektron RYTM pack, or a Universal WAV pack — six destinations from one source. Integrity check before every bounce.</p>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">MPC 2.x</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px;color:var(--champagne)">MPC 3.x</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">SP-404 MKII</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Ableton</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Maschine</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Elektron</div>
-          <div class="mono" style="padding:8px 12px;border:1px solid var(--line);border-radius:2px;font-size:11px">Universal</div>
-        </div>
-      </div>
-
-      <div class="feat">
-        <div class="n">05 · Sampler edits</div>
-        <h3 data-en="Trim, loop, tune — in place" data-es="Trim, loop, tune — en vivo">Trim, loop, tune — in place</h3>
-        <p data-en="A real sampler editor inside the builder: start/end, loop, tune, gain, fades, root note. No round-trips to a DAW for every fix." data-es="Editor de sampler completo dentro del builder: start/end, loop, tune, gain, fades, root note. Sin round-trips al DAW.">A real sampler editor inside the builder: start/end, loop, tune, gain, fades, root note. No round-trips to a DAW for every fix.</p>
-      </div>
-
-      <div class="feat">
-        <div class="n">06 · Batch</div>
-        <h3 data-en="Multi-kit projects" data-es="Proyectos multi-kit">Multi-kit projects</h3>
-        <p data-en="16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack." data-es="16 kits × 128 pads × 4 bancos en un solo proyecto. Batch-rename, batch-tune, batch-normalize.">16 kits × 128 pads × 4 banks in a single project. Switch in ⌘+[ ⌘+]. Batch-rename, batch-tune, batch-normalize across the whole pack.</p>
-      </div>
+<!-- ============== INSTRUMENTS (FX SUITE PREVIEW) ============== -->
+<section class="instruments" id="instruments">
+  <div class="container">
+    <div class="sec-tag reveal"><span class="dash"></span><span class="num">02</span><span data-i18n="inst.kicker">The Instruments</span></div>
+    <div class="inst-head">
+      <h2 class="reveal" data-i18n="inst.h2">Six tools. <em>Six voices.</em></h2>
+      <p class="reveal reveal-d2" data-i18n="inst.lead">The FX Suite — each plugin focused, opinionated, named after what it does. <b>No "Suite Pro Ultra" syndrome.</b></p>
     </div>
-  </div>
-</section>
 
-<!-- ── COMPATIBLE HARDWARE ── -->
-<section class="section" id="hardware">
-  <div class="wrap">
-    <header class="sec-head">
-      <div class="sec-num">02</div>
-      <div>
-        <div class="eyebrow" data-en="Compatible hardware" data-es="Hardware compatible">Compatible hardware</div>
-        <h2 class="sec-title"
-          data-en="One project. <em>Every target.</em>"
-          data-es="Un proyecto. <em>Todos los destinos.</em>">One project. <em>Every target.</em></h2>
-        <p style="color:#b5b2a9;font-size:13px;line-height:1.6;margin:12px 0 0;max-width:540px"
-          data-en="Export ready-to-play packs for 6 platforms — same source, format-perfect output."
-          data-es="Exporta packs listos para 6 plataformas — misma fuente, formato perfecto.">Export ready-to-play packs for 6 platforms — same source, format-perfect output.</p>
-      </div>
-      <div class="sec-meta">6 targets</div>
-    </header>
-
-    <div class="hw-grid">
-      <!-- 1. Akai MPC -->
-      <div class="hw-card">
-        <div class="hw-num">01</div>
-        <div class="hw-brand" data-en="Akai" data-es="Akai">Akai</div>
-        <h3 class="hw-name">MPC</h3>
-        <div class="hw-models" data-en="Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force"
-                                data-es="Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force">Live 1 · Live 2 · Live 3 · One · One+ · X · Key · Force</div>
-        <div class="hw-format" data-en=".xpn expansion · firmware 2.x + 3.x"
-                                 data-es=".xpn expansion · firmware 2.x + 3.x">.xpn expansion · firmware 2.x + 3.x</div>
-        <p class="hw-desc"
-           data-en="Full expansion with kits, sequences, previews and artwork — drag the .xpn into the MPC, browse it like a factory pack."
-           data-es="Expansion completa con kits, secuencias, previews y artwork — arrastra el .xpn a la MPC, explóralo como un pack de fábrica.">Full expansion with kits, sequences, previews and artwork — drag the .xpn into the MPC, browse it like a factory pack.</p>
-      </div>
-
-      <!-- 2. Roland SP-404 MKII -->
-      <div class="hw-card">
-        <div class="hw-num">02</div>
-        <div class="hw-brand" data-en="Roland" data-es="Roland">Roland</div>
-        <h3 class="hw-name">SP-404 MKII</h3>
-        <div class="hw-models" data-en="SP-404 MKII"
-                                data-es="SP-404 MKII">SP-404 MKII</div>
-        <div class="hw-format" data-en="SD card ready · ROLAND/IMPORT/"
-                                 data-es="SD card listo · ROLAND/IMPORT/">SD card ready · ROLAND/IMPORT/</div>
-        <p class="hw-desc"
-           data-en="WAV 16-bit / 44.1 kHz organised bank by bank. Drop the folder onto your SD card, hit Import on the device — done."
-           data-es="WAV 16-bit / 44.1 kHz organizados banco por banco. Pega la carpeta en la SD, presiona Import en el aparato — listo.">WAV 16-bit / 44.1 kHz organised bank by bank. Drop the folder onto your SD card, hit Import on the device — done.</p>
-      </div>
-
-      <!-- 3. Ableton Live -->
-      <div class="hw-card">
-        <div class="hw-num">03</div>
-        <div class="hw-brand" data-en="Ableton" data-es="Ableton">Ableton</div>
-        <h3 class="hw-name">Live</h3>
-        <div class="hw-models" data-en="Live 10+ · Suite / Standard"
-                                data-es="Live 10+ · Suite / Standard">Live 10+ · Suite / Standard</div>
-        <div class="hw-format" data-en=".adg Drum Rack + samples + MIDI"
-                                 data-es=".adg Drum Rack + samples + MIDI">.adg Drum Rack + samples + MIDI</div>
-        <p class="hw-desc"
-           data-en="Open the Drum Rack inside Live — every pad mapped, every sample loaded, patterns drop in as MIDI clips."
-           data-es="Abre el Drum Rack en Live — cada pad mapeado, cada sample cargado, los patterns entran como clips MIDI.">Open the Drum Rack inside Live — every pad mapped, every sample loaded, patterns drop in as MIDI clips.</p>
-      </div>
-
-      <!-- 4. NI Maschine -->
-      <div class="hw-card">
-        <div class="hw-num">04</div>
-        <div class="hw-brand" data-en="Native Instruments" data-es="Native Instruments">Native Instruments</div>
-        <h3 class="hw-name">Maschine</h3>
-        <div class="hw-models" data-en="MK3 · Mikro · Plus · Studio"
-                                data-es="MK3 · Mikro · Plus · Studio">MK3 · Mikro · Plus · Studio</div>
-        <div class="hw-format" data-en="Sample pack + MIDI patterns"
-                                 data-es="Sample pack + patterns MIDI">Sample pack + MIDI patterns</div>
-        <p class="hw-desc"
-           data-en="Pad-ordered folders so you can drag them into Groups in sequence. Tags file included for the NI Browser."
-           data-es="Carpetas ordenadas por pad para arrastrarlas a Groups en secuencia. Archivo de tags incluido para el NI Browser.">Pad-ordered folders so you can drag them into Groups in sequence. Tags file included for the NI Browser.</p>
-      </div>
-
-      <!-- 5. Elektron Analog RYTM -->
-      <div class="hw-card">
-        <div class="hw-num">05</div>
-        <div class="hw-brand" data-en="Elektron" data-es="Elektron">Elektron</div>
-        <h3 class="hw-name">Analog RYTM</h3>
-        <div class="hw-models" data-en="Analog RYTM MKII"
-                                data-es="Analog RYTM MKII">Analog RYTM MKII</div>
-        <div class="hw-format" data-en="48 kHz mono WAV + MIDI · Transfer ready"
-                                 data-es="48 kHz mono WAV + MIDI · listo para Transfer">48 kHz mono WAV + MIDI · Transfer ready</div>
-        <p class="hw-desc"
-           data-en="Samples auto-converted to RYTM specs. PadMap.txt lists which sample lands on which pad — drag through Elektron Transfer."
-           data-es="Samples convertidos automáticamente a specs RYTM. PadMap.txt indica qué sample va a cada pad — arrastra con Elektron Transfer.">Samples auto-converted to RYTM specs. PadMap.txt lists which sample lands on which pad — drag through Elektron Transfer.</p>
-      </div>
-
-      <!-- 6. Universal -->
-      <div class="hw-card">
-        <div class="hw-num">06</div>
-        <div class="hw-brand" data-en="Universal" data-es="Universal">Universal</div>
-        <h3 class="hw-name" data-en="Any DAW" data-es="Cualquier DAW">Any DAW</h3>
-        <div class="hw-models" data-en="Any DAW or hardware sampler"
-                                data-es="Cualquier DAW o sampler de hardware">Any DAW or hardware sampler</div>
-        <div class="hw-format" data-en="WAV folders by type + MIDI"
-                                 data-es="Carpetas WAV por tipo + MIDI">WAV folders by type + MIDI</div>
-        <p class="hw-desc"
-           data-en="Kicks, snares, hats, melodics — sorted by the audio classifier. Works wherever WAVs work."
-           data-es="Kicks, snares, hats, melodías — clasificados por el audio classifier. Funciona donde funcionen los WAVs.">Kicks, snares, hats, melodics — sorted by the audio classifier. Works wherever WAVs work.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="how">
-  <div class="wrap">
-    <header class="sec-head">
-      <div>
-        <div class="eyebrow" data-en="How it works" data-es="Cómo funciona">How it works</div>
-        <h2 class="sec-title"
-          data-en="From folder to <em>finished pack</em><br/>in under ten minutes."
-          data-es="De carpeta a <em>pack finalizado</em><br/>en menos de diez minutos.">From folder to <em>finished pack</em><br/>in under ten minutes.</h2>
-      </div>
-      <div class="sec-meta">4 steps</div>
-    </header>
-
-    <div class="showcase">
-      <div>
-        <h3 data-en="Drop. Assign. Tune. Ship." data-es="Arrastra. Asigna. Tune. Publica.">Drop. Assign. Tune. Ship.</h3>
-        <p data-en="XPN Builder is the only tool in the market that treats your expansion pack like a studio session — because that's what it is. Built by an indie dev in Santiago who was tired of XML surgery and Expansion Builder crashes." data-es="XPN Builder es la única herramienta del mercado que trata tu expansion pack como una sesión de estudio. Hecho por un indie dev en Santiago.">XPN Builder is the only tool in the market that treats your expansion pack like a studio session — because that's what it is. Built by an indie dev in Santiago who was tired of XML surgery and Expansion Builder crashes.</p>
-        <ul>
-          <li data-en="① Drop a folder of samples — 1 to 2,000." data-es="① Arrastra una carpeta con samples — de 1 a 2.000.">① Drop a folder of samples — 1 to 2,000.</li>
-          <li data-en="② Pick a genre template. Auto-assign runs." data-es="② Elige un template de género. Corre el auto-assign.">② Pick a genre template. Auto-assign runs.</li>
-          <li data-en="③ Edit pads, trim samples, bake a demo pattern." data-es="③ Edita pads, recorta samples, graba un pattern demo.">③ Edit pads, trim samples, bake a demo pattern.</li>
-          <li data-en="④ Export to every target — MPC 2, MPC 3, Ableton, MIDI." data-es="④ Exporta a cada target — MPC 2, MPC 3, Ableton, MIDI.">④ Export to every target — MPC 2, MPC 3, Ableton, MIDI.</li>
-        </ul>
-      </div>
-      <div class="mock-lg">
-        <div class="mock-bar">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="mock-title">Sampler Editor · pad A4 · kick_01.wav</span>
-        </div>
-        <div style="padding:24px">
-          <svg viewBox="0 0 700 200" style="width:100%;height:auto">
-            <rect width="700" height="200" fill="#11131a"/>
-            <g stroke="#24262B" stroke-width="1">
-              <line x1="0" y1="100" x2="700" y2="100"/>
-              <line x1="0" y1="50" x2="700" y2="50" stroke-dasharray="2,4"/>
-              <line x1="0" y1="150" x2="700" y2="150" stroke-dasharray="2,4"/>
-            </g>
-            <g fill="#D9BC82">
-              <path d="M0 100 L20 60 L40 110 L60 40 L80 160 L100 30 L120 170 L140 50 L160 120 L180 80 L200 100 L220 95 L240 105 L260 92 L280 108 L300 98 L320 102 L340 99 L360 101 L380 100 L700 100 Z"/>
-            </g>
-            <line x1="30" y1="0" x2="30" y2="200" stroke="#D9BC82" stroke-width="2"/>
-            <line x1="180" y1="0" x2="180" y2="200" stroke="#D9BC82" stroke-width="2"/>
-            <rect x="30" y="0" width="150" height="200" fill="#D9BC82" opacity="0.06"/>
-            <line x1="90" y1="0" x2="90" y2="200" stroke="#7BA05B" stroke-width="1.5"/>
-            <text x="32" y="14" font-family="IBM Plex Mono" font-size="10" fill="#D9BC82">IN 0.032s</text>
-            <text x="182" y="14" font-family="IBM Plex Mono" font-size="10" fill="#D9BC82">OUT 0.512s</text>
+    <div class="tools-grid">
+      <a class="tool-card reveal" href="/fx" style="--acc:#06B6D4">
+        <span class="t-num">FX / 01</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <path d="M2 28 Q14 8 26 28 T50 28 T74 28 T94 28" stroke="#06B6D4" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M2 28 Q14 18 26 28 T50 28 T74 28 T94 28" stroke="#06B6D4" stroke-width="1" stroke-linecap="round" opacity=".4"/>
           </svg>
-          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:20px;font-family:'IBM Plex Mono';font-size:11px">
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">START</div><div style="color:var(--champagne)">0.032</div></div>
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">END</div><div style="color:var(--champagne)">0.512</div></div>
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">LOOP</div><div style="color:var(--champagne)">OFF</div></div>
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">TUNE</div><div style="color:var(--champagne)">−2 st</div></div>
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">GAIN</div><div style="color:var(--champagne)">+1.2 dB</div></div>
-            <div><div style="color:var(--dust);font-size:9px;letter-spacing:0.2em">ROOT</div><div style="color:var(--champagne)">C2</div></div>
+        </div>
+        <div class="t-name">Drift <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.drift.tag">Modulation</div>
+        <p class="t-one" data-i18n="inst.drift.one">Five modes. Analog warmth. Chorus, flanger, phaser, vibrato, harmonic. BBD-style delays under the hood.</p>
+      </a>
+
+      <a class="tool-card reveal reveal-d2" href="/fx" style="--acc:#F97316">
+        <span class="t-num">FX / 02</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <circle cx="38" cy="28" r="16" stroke="#F97316" stroke-width="1.6"/>
+            <circle cx="58" cy="28" r="16" stroke="#F97316" stroke-width="1.6"/>
+            <line x1="2" y1="28" x2="94" y2="28" stroke="#F97316" stroke-width=".8" stroke-dasharray="2 3" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="t-name">Wide <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.wide.tag">Stereo Imager</div>
+        <p class="t-one" data-i18n="inst.wide.one">Multiband stereo imager. Vectorscope. Haas delay. Correlation meter. Phase-safe at every step.</p>
+      </a>
+
+      <a class="tool-card reveal reveal-d3" href="/fx" style="--acc:#DC2626">
+        <span class="t-num">FX / 03</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <path d="M2 30 L42 30 Q50 30 52 14 L56 44 Q58 30 94 30" stroke="#DC2626" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="52" y1="14" x2="52" y2="6" stroke="#DC2626" stroke-width=".8" stroke-dasharray="1 2" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="t-name">Filter <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.filter.tag">Resonant</div>
+        <p class="t-one" data-i18n="inst.filter.one">Stilson/Smith Moog ladder. Self-oscillation. Envelope follower. LFO sync. Drive into the resonance.</p>
+      </a>
+
+      <a class="tool-card reveal" href="/fx" style="--acc:#2563EB">
+        <span class="t-num">FX / 04</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <circle cx="48" cy="28" r="6" stroke="#2563EB" stroke-width="1.6" fill="#2563EB" fill-opacity=".18"/>
+            <circle cx="48" cy="28" r="14" stroke="#2563EB" stroke-width="1.2" opacity=".55"/>
+            <circle cx="48" cy="28" r="22" stroke="#2563EB" stroke-width=".9" opacity=".3"/>
+            <circle cx="48" cy="28" r="28" stroke="#2563EB" stroke-width=".6" opacity=".15"/>
+          </svg>
+        </div>
+        <div class="t-name">Space <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.space.tag">Reverb</div>
+        <p class="t-one" data-i18n="inst.space.one">Algorithmic. One-knob preset. Shimmer mode. Hadamard FDN — clean tails, no metallic ring.</p>
+      </a>
+
+      <a class="tool-card reveal reveal-d2" href="/fx" style="--acc:#7C3AED">
+        <span class="t-num">FX / 05</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <line x1="10" y1="10" x2="10" y2="46" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+            <line x1="26" y1="16" x2="26" y2="40" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round" opacity=".8"/>
+            <line x1="42" y1="20" x2="42" y2="36" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
+            <line x1="58" y1="23" x2="58" y2="33" stroke="#7C3AED" stroke-width="1.1" stroke-linecap="round" opacity=".4"/>
+            <line x1="74" y1="25" x2="74" y2="31" stroke="#7C3AED" stroke-width=".8" stroke-linecap="round" opacity=".25"/>
+            <line x1="88" y1="27" x2="88" y2="29" stroke="#7C3AED" stroke-width=".6" stroke-linecap="round" opacity=".15"/>
+          </svg>
+        </div>
+        <div class="t-name">Echo <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.echo.tag">Smart Delay</div>
+        <p class="t-one" data-i18n="inst.echo.one">Sync to BPM. Grain mode. Freeze. Pitch shift in the feedback path. Ducking against the dry signal.</p>
+      </a>
+
+      <a class="tool-card reveal reveal-d3" href="/fx" style="--acc:#84CC16">
+        <span class="t-num">FX / 06</span>
+        <div class="t-vis">
+          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
+            <path d="M2 44 L18 44 L18 32 L34 32 L34 20 L50 20 L50 28 L66 28 L66 36 L82 36 L82 24 L94 24" stroke="#84CC16" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="t-name">Tune <span class="d"></span></div>
+        <div class="t-tag" data-i18n="inst.tune.tag">Pitch</div>
+        <p class="t-one" data-i18n="inst.tune.one">YIN detection. PSOLA. Eight scales. Formant preserve. Transparent for natural, hard for the effect.</p>
+      </a>
+    </div>
+
+    <div class="inst-foot reveal">
+      <div class="l">
+        <span class="kicker" data-i18n="inst.foot.kicker">FX Suite · Complete</span>
+        <span class="ttl" data-i18n="inst.foot.ttl">All six plugins. One bundle. <b>Save $145.</b></span>
+      </div>
+      <div class="r">
+        <div class="price-tag"><span class="cur">$</span>199<span class="unit" data-i18n="price.once">/ once</span></div>
+        <a class="lk" href="/fx"><span data-i18n="inst.foot.cta">Explore the Suite</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ECOSYSTEM ============== -->
+<section class="ecosystem" id="ecosystem">
+  <div class="container">
+    <div class="sec-tag reveal"><span class="dash"></span><span class="num">03</span><span data-i18n="eco.kicker">The Ecosystem</span></div>
+    <div class="eco-head">
+      <h2 class="reveal" data-i18n="eco.h2">One ecosystem. <span class="glow">Every piece connected.</span></h2>
+      <p class="reveal reveal-d2" data-i18n="eco.lead">Your mix enters as a stereo file. It leaves as a finished master. <b style="color:var(--text)">SPLIT</b> separates. <b style="color:var(--text)">Mixcraft</b> analyzes. <b style="color:var(--text)">Balanze</b> executes. You create.</p>
+    </div>
+
+    <div class="eco-map reveal reveal-d3" id="ecoMap">
+      <!-- SVG: background dots + stars -->
+      <svg class="eco-bg" viewBox="0 0 1200 620" preserveAspectRatio="none">
+        <defs>
+          <pattern id="dots" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r=".7" fill="#E8ECF2" opacity=".06"/>
+          </pattern>
+        </defs>
+        <rect width="1200" height="620" fill="url(#dots)"/>
+        <g fill="#E8ECF2" opacity=".25">
+          <circle cx="120" cy="80" r=".8"/><circle cx="320" cy="50" r=".6"/><circle cx="540" cy="120" r="1"/>
+          <circle cx="780" cy="60" r=".7"/><circle cx="980" cy="110" r=".8"/><circle cx="1100" cy="80" r=".5"/>
+          <circle cx="80" cy="300" r=".7"/><circle cx="200" cy="200" r=".5"/><circle cx="1140" cy="280" r=".6"/>
+          <circle cx="60" cy="520" r=".8"/><circle cx="280" cy="540" r=".5"/><circle cx="520" cy="560" r=".7"/>
+          <circle cx="780" cy="540" r=".6"/><circle cx="980" cy="560" r=".8"/><circle cx="1140" cy="500" r=".5"/>
+          <circle cx="420" cy="180" r=".5"/><circle cx="700" cy="220" r=".5"/><circle cx="860" cy="280" r=".6"/>
+          <circle cx="380" cy="340" r=".5"/><circle cx="160" cy="420" r=".6"/><circle cx="1060" cy="380" r=".5"/>
+        </g>
+      </svg>
+
+      <!-- Connection lines (5 hubs: SPLIT 18,30 · MIXCRAFT 45,46 · BALANZE CH 80,30 · BALANZE MASTER 80,68 · FX 52,72) -->
+      <svg class="eco-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <g stroke="#2C3543" fill="none" stroke-dasharray=".25 .55" vector-effect="non-scaling-stroke">
+          <path d="M18,30 Q32,38 45,46" stroke-width="1"/>
+          <path d="M45,46 Q62,38 80,30" stroke-width="1"/>
+          <path d="M45,46 Q48,58 52,72" stroke-width="1"/>
+          <path d="M52,72 Q66,68 80,68" stroke-width="1"/>
+          <path d="M80,30 Q86,48 80,68" stroke-width="1"/>
+          <path d="M18,30 Q28,52 52,72" opacity=".4" stroke-width="1"/>
+        </g>
+        <g>
+          <circle r=".5" fill="#FFB627" opacity=".9">
+            <animateMotion dur="6s" repeatCount="indefinite" path="M18,30 Q32,38 45,46"/>
+            <animate attributeName="opacity" values="0;1;0" dur="6s" repeatCount="indefinite"/>
+          </circle>
+          <circle r=".5" fill="#06B6D4" opacity=".9">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="1s" path="M45,46 Q62,38 80,30"/>
+            <animate attributeName="opacity" values="0;1;0" dur="5s" begin="1s" repeatCount="indefinite"/>
+          </circle>
+          <circle r=".5" fill="#F97316" opacity=".9">
+            <animateMotion dur="7s" repeatCount="indefinite" begin="2s" path="M45,46 Q48,58 52,72"/>
+            <animate attributeName="opacity" values="0;1;0" dur="7s" begin="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r=".5" fill="#FFB627" opacity=".9">
+            <animateMotion dur="6s" repeatCount="indefinite" begin="3s" path="M52,72 Q66,68 80,68"/>
+            <animate attributeName="opacity" values="0;1;0" dur="6s" begin="3s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+
+      <!-- ECOSYSTEM ACTIVE pill -->
+      <div class="eco-pill">
+        <span class="d"></span>
+        <span data-i18n="eco.pill">Ecosystem Active</span>
+        <em>· 10 / 10</em>
+      </div>
+
+      <!-- Cursor halo follower -->
+      <div class="eco-cursor" id="ecoCursor"></div>
+
+      <!-- ========= 5 MAIN HUBS ========= -->
+      <div class="eco-hub" data-hub="split" data-target="split" style="--hub:#C0C0C0; left:18%; top:30%">
+        <span class="halo"></span>
+        <div class="ring"></div>
+        <div class="lbl">SPLIT</div>
+        <div class="sub" data-i18n="hub.split.sub">Stems</div>
+      </div>
+
+      <div class="eco-hub lg" data-hub="mixcraft" data-target="mixcraft" style="--hub:#06B6D4; left:45%; top:46%">
+        <span class="halo"></span>
+        <span class="orbit"></span>
+        <div class="ring"></div>
+        <div class="lbl">MIXCRAFT</div>
+        <div class="sub" data-i18n="hub.mixcraft.sub">The Brain</div>
+      </div>
+
+      <div class="eco-hub" data-hub="balanze-ch" data-target="balanze" style="--hub:#FFB627; left:80%; top:30%">
+        <span class="halo"></span>
+        <div class="ring"></div>
+        <div class="lbl">BALANZE CH</div>
+        <div class="sub" data-i18n="hub.balanze-ch.sub">Channel</div>
+      </div>
+
+      <div class="eco-hub" data-hub="balanze-master" data-target="balanze" style="--hub:#FFB627; left:80%; top:68%">
+        <span class="halo"></span>
+        <div class="ring"></div>
+        <div class="lbl">BALANZE MASTER</div>
+        <div class="sub" data-i18n="hub.balanze-master.sub">Bus</div>
+      </div>
+
+      <div class="eco-hub" data-hub="fx" data-target="fx" style="--hub:#F97316; left:52%; top:72%">
+        <span class="halo"></span>
+        <div class="ring" style="border-color:#F97316">
+          <div class="fx-dots">
+            <span style="background:#06B6D4"></span><span style="background:#F97316"></span><span style="background:#DC2626"></span>
+            <span style="background:#2563EB"></span><span style="background:#7C3AED"></span><span style="background:#84CC16"></span>
           </div>
+        </div>
+        <div class="lbl">FX SUITE</div>
+        <div class="sub" data-i18n="hub.fx.sub">6 Plugins</div>
+      </div>
+
+      <!-- ========= 4 NON-FX CHIPS (Aladin reveal) ========= -->
+      <!-- FX individual chips (DRIFT/WIDE/FILTER/SPACE/ECHO/TUNE) moved out to "The Instruments" section above -->
+
+      <div class="eco-chip" data-tip-acc="#C0C0C0" data-target="split"
+           data-tip="SPLIT" data-one="AI stem separation · 6 stems · offline"
+           data-one-es="Separación de stems con IA · 6 stems · offline"
+           style="--acc:#C0C0C0; --rot:-5deg; left:7%; top:8%; transition-delay:.05s">
+        <span class="smoke"></span>
+        <div class="vis"><div class="wv">
+          <span style="height:4px"></span><span style="height:8px"></span><span style="height:14px"></span>
+          <span style="height:10px"></span><span style="height:16px"></span><span style="height:8px"></span>
+          <span style="height:12px"></span><span style="height:6px"></span><span style="height:10px"></span>
+          <span style="height:14px"></span><span style="height:8px"></span><span style="height:4px"></span>
+        </div></div>
+        <div class="name"><span class="d"></span>SPLIT</div>
+        <div class="tag">STEMS · OFFLINE</div>
+      </div>
+
+      <div class="eco-chip" data-tip-acc="#06B6D4" data-target="mixcraft"
+           data-tip="MIXCRAFT" data-one="The AI brain · analyzes · classifies · explains"
+           data-one-es="El cerebro IA · analiza · clasifica · explica"
+           style="--acc:#06B6D4; --rot:3deg; left:7%; top:62%; transition-delay:.15s">
+        <span class="smoke"></span>
+        <div class="vis">
+          <svg viewBox="0 0 60 18" style="height:14px">
+            <circle cx="6" cy="9" r="3" fill="none" stroke="#06B6D4" stroke-width="1"/>
+            <circle cx="6" cy="9" r="1.5" fill="#06B6D4"/>
+            <path d="M12 9 L20 9 M24 9 L34 9 M38 9 L48 9" stroke="#06B6D4" stroke-width="1" stroke-dasharray="1 1.5"/>
+            <circle cx="54" cy="9" r="2" fill="#06B6D4" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="name"><span class="d"></span>MIXCRAFT</div>
+        <div class="tag">AI · ANALYSIS</div>
+      </div>
+
+      <div class="eco-chip" data-tip-acc="#FFB627" data-target="balanze"
+           data-tip="BALANZE Channel" data-one="Channel strip · 5 modules · per-track surgical mixing"
+           data-one-es="Channel strip · 5 módulos · mezcla quirúrgica por canal"
+           style="--acc:#FFB627; --rot:4deg; left:62%; top:9%; transition-delay:.25s">
+        <span class="smoke"></span>
+        <div class="vis">
+          <svg viewBox="0 0 60 18" style="width:54px;height:14px">
+            <path d="M2 14 C12 14 16 6 24 6 C32 6 36 12 44 12 C50 12 54 8 58 8"
+                  fill="none" stroke="#FFB627" stroke-width="1.2"/>
+            <circle cx="24" cy="6" r="1.6" fill="#0A0C10" stroke="#FF4D5E" stroke-width="1"/>
+            <circle cx="44" cy="12" r="1.6" fill="#0A0C10" stroke="#FFB627" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="name"><span class="d"></span>CHANNEL</div>
+        <div class="tag">EQ · COMP · COLOR</div>
+      </div>
+
+      <div class="eco-chip" data-tip-acc="#FFB627" data-target="balanze"
+           data-tip="BALANZE Master" data-one="Master bus · linear-phase EQ · maximizer · −14 LUFS aware"
+           data-one-es="Master bus · EQ fase lineal · maximizer · target −14 LUFS"
+           style="--acc:#FFB627; --rot:-3deg; left:62%; top:90%; transition-delay:.35s">
+        <span class="smoke"></span>
+        <div class="vis" style="gap:2px">
+          <div style="display:flex;gap:2px;align-items:flex-end;height:14px">
+            <span style="width:3px;height:6px;background:#FFB627"></span>
+            <span style="width:3px;height:10px;background:#FFB627"></span>
+            <span style="width:3px;height:14px;background:#FFB627"></span>
+            <span style="width:3px;height:11px;background:#FFB627;opacity:.7"></span>
+            <span style="width:3px;height:8px;background:#FFB627;opacity:.6"></span>
+            <span style="width:3px;height:5px;background:#FFB627;opacity:.5"></span>
+          </div>
+        </div>
+        <div class="name"><span class="d"></span>MASTER</div>
+        <div class="tag">−14 LUFS · BUS</div>
+      </div>
+
+      <!-- Legend -->
+      <div class="eco-legend">
+        <div class="item"><span class="sw" style="background:#C0C0C0"></span>SPLIT</div>
+        <div class="item"><span class="sw" style="background:#06B6D4"></span>MIXCRAFT</div>
+        <div class="item"><span class="sw" style="background:#FFB627"></span>BALANZE</div>
+        <div class="item"><span class="sw" style="background:linear-gradient(90deg,#F97316,#7C3AED)"></span>FX SUITE</div>
+      </div>
+    </div>
+
+    <div class="eco-tip" id="ecoTip">
+      <div class="ttl"></div>
+      <div class="one"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PRODUCT · BALANZE ============== -->
+<section class="product" id="balanze" style="--prod:#FFB627">
+  <div class="container">
+    <div class="product-head reveal">
+      <span class="product-no">P / <b>01</b></span>
+      <div class="product-title">
+        <h2>Bal<span class="accent">a</span>nze</h2>
+        <span class="product-tag" data-i18n="prod.balanze.tag">Channel · Master · Connected</span>
+      </div>
+      <span class="product-kind" data-i18n="prod.balanze.kind">Foundation</span>
+    </div>
+
+    <div class="product-body">
+      <div class="product-vis reveal">
+        <!-- Balanze mockup -->
+        <div class="bz-mock">
+          <div class="bz-head">
+            <div class="name"><span class="d"></span>BALANZE · CHANNEL</div>
+            <div class="preset">⟨ BUS · DRUMS · GLUE ⟩</div>
+          </div>
+          <div style="display:flex;flex-direction:column;min-height:0">
+            <div class="bz-modules">
+              <div class="bz-mod"><span class="mname">Gain</span><span class="mval">+2.4</span></div>
+              <div class="bz-mod on"><span class="mname">EQ · 7B</span><span class="mval">ACTIVE</span></div>
+              <div class="bz-mod on"><span class="mname">Comp</span><span class="mval">−4.1</span></div>
+              <div class="bz-mod"><span class="mname">Color</span><span class="mval">CRT</span></div>
+              <div class="bz-mod"><span class="mname">Out</span><span class="mval">−13.8</span></div>
+            </div>
+            <div class="bz-body">
+              <div class="bz-eq">
+                <svg viewBox="0 0 400 200" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+                  <defs>
+                    <linearGradient id="bzg" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0" stop-color="#FFB627" stop-opacity=".35"/>
+                      <stop offset="1" stop-color="#FFB627" stop-opacity="0"/>
+                    </linearGradient>
+                    <pattern id="bzgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path d="M40 0L0 0 0 40" fill="none" stroke="#1B2029" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="400" height="200" fill="url(#bzgrid)"/>
+                  <path d="M0,160 C50,150 80,120 120,105 C160,90 200,90 240,105 C280,120 320,150 400,160 L400,200 L0,200 Z" fill="url(#bzg)"/>
+                  <path d="M0,110 C40,110 70,80 115,78 C150,76 165,108 195,110 C230,112 250,82 295,82 C335,82 360,100 400,100" stroke="#E8ECF2" stroke-width="1.4" fill="none"/>
+                  <circle cx="115" cy="78" r="3.6" fill="#0A0C10" stroke="#FF4D5E" stroke-width="1.4"/>
+                  <circle cx="195" cy="110" r="3.6" fill="#0A0C10" stroke="#F5C518" stroke-width="1.4"/>
+                  <circle cx="295" cy="82" r="3.6" fill="#0A0C10" stroke="#FFB627" stroke-width="1.4"/>
+                </svg>
+              </div>
+              <div class="bz-knobs">
+                <div class="bz-knob">
+                  <svg class="ksvg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#222936" stroke-width="2"/><path d="M24 6 A18 18 0 1 1 6 30" fill="none" stroke="#FFB627" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="11" fill="#0E1116" stroke="#1B2029"/><line x1="24" y1="14" x2="24" y2="18" stroke="#FFB627" stroke-width="2" stroke-linecap="round" transform="rotate(135 24 24)"/></svg>
+                  <div class="kv">70%</div><div class="kl">Amount</div>
+                </div>
+                <div class="bz-knob">
+                  <svg class="ksvg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#222936" stroke-width="2"/><path d="M24 6 A18 18 0 0 1 42 24" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="11" fill="#0E1116" stroke="#1B2029"/><line x1="24" y1="14" x2="24" y2="18" stroke="#FF6B35" stroke-width="2" stroke-linecap="round" transform="rotate(45 24 24)"/></svg>
+                  <div class="kv">+3.2</div><div class="kl">Drive</div>
+                </div>
+                <div class="bz-knob">
+                  <svg class="ksvg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#222936" stroke-width="2"/><path d="M24 6 A18 18 0 0 1 36 12" fill="none" stroke="#8B95A5" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="11" fill="#0E1116" stroke="#1B2029"/><line x1="24" y1="14" x2="24" y2="18" stroke="#E8ECF2" stroke-width="2" stroke-linecap="round" transform="rotate(-78 24 24)"/></svg>
+                  <div class="kv">12</div><div class="kl">Attack</div>
+                </div>
+                <div class="bz-knob">
+                  <svg class="ksvg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#222936" stroke-width="2"/><path d="M24 6 A18 18 0 1 1 12 38" fill="none" stroke="#3DDC97" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="11" fill="#0E1116" stroke="#1B2029"/><line x1="24" y1="14" x2="24" y2="18" stroke="#3DDC97" stroke-width="2" stroke-linecap="round" transform="rotate(160 24 24)"/></svg>
+                  <div class="kv">86</div><div class="kl">Release</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bz-foot"><span>● LINKED · MASTER BUS</span><span class="lufs">−13.8 LUFS</span></div>
+        </div>
+      </div>
+
+      <div class="product-copy reveal reveal-d2">
+        <h3>Channel strip + Master bus. <em style="font-style:italic;color:var(--gold)">12 DSP modules. One conversation.</em></h3>
+        <p>Built from academic papers — Giannoulis compression, Stilson/Smith ladder filters, linear-phase Match EQ. <b>Clean-room implementations.</b> Zero GPL. Every algorithm documented, every decision explained.</p>
+        <p>Drop Channel on every track. Drop Master on the bus. They talk to each other — masking detection, gain match, target loudness. The Master sees what each Channel is doing.</p>
+        <ul class="spec-list">
+          <li><span class="k">Channel</span><span class="v"><b>Gain</b> → <b>EQ 7-band</b> → <b>Comp</b> → <b>Color (5 modes)</b> → <b>Output</b></span></li>
+          <li><span class="k">Master</span><span class="v"><b>Analysis</b> → <b>Match EQ</b> → <b>Master EQ</b> → <b>Exciter</b> → <b>Imager</b> → <b>Maximizer</b></span></li>
+          <li><span class="k">Presets</span><span class="v"><b>18 factory</b> · VST3 / AU · pluginval strictness 5</span></li>
+          <li><span class="k">IPC</span><span class="v"><b>WebSocket</b> · real-time channel ↔ master</span></li>
+        </ul>
+        <div class="product-foot">
+          <div class="price-tag"><span class="cur">$</span>149<span class="unit">Bundle · one-time</span></div>
+          <a class="btn prod" href="/balanze">Learn more <span class="arr">→</span></a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section" id="pricing">
-  <div class="wrap">
-    <header class="sec-head">
-      <div class="sec-num">03</div>
-      <div>
-        <div class="eyebrow" data-en="Pricing" data-es="Precio">Pricing</div>
-        <h2 class="sec-title" data-en="Pay once. Own it <em>forever.</em>" data-es="Pago único. Tuyo para <em>siempre.</em>">Pay once. Own it <em>forever.</em></h2>
+<!-- ============== PRODUCT · FX SUITE ============== -->
+<section class="fx" id="fx">
+  <div class="container">
+    <div class="product-head reveal">
+      <span class="product-no">P / <b style="color:#F97316">02</b></span>
+      <div class="product-title">
+        <h2>FX Suite</h2>
+        <span class="product-tag" data-i18n="prod.fx.tag">Modulation · Color · Space</span>
       </div>
-      <div class="sec-meta">USD · no subscription</div>
-    </header>
-
-    <!-- Single early-access plan. Replaced the old 3-tier (Solo/Studio/Label)
-         scheme for launch — one offer, no subscriptions, lifetime updates. -->
-    <div class="pricing" style="grid-template-columns:minmax(0,560px);justify-content:center">
-      <div class="price main" style="padding:44px 48px">
-        <div class="tier" data-en="Early Access · First 100 Licenses" data-es="Early Access · Primeras 100 Licencias">Early Access · First 100 Licenses</div>
-        <div class="amount">$<span class="c">39</span><span class="sub" data-en="/ once · lifetime" data-es="/ único · lifetime">/ once · lifetime</span></div>
-        <div class="lead" data-en="Everything. No limits. No subscription." data-es="Todo. Sin límites. Sin suscripción.">Everything. No limits. No subscription.</div>
-        <ul>
-          <li data-en="Unlimited kits per project" data-es="Kits ilimitados por proyecto">Unlimited kits per project</li>
-          <li data-en="Smart Audio Classifier (spectral analysis)" data-es="Smart Audio Classifier (análisis espectral)">Smart Audio Classifier (spectral analysis)</li>
-          <li data-en="12 genre templates + Generate Rhythms" data-es="12 templates de género + Generate Rhythms">12 genre templates + Generate Rhythms</li>
-          <li data-en="Sequencer with Humanize, Probability, Euclidean" data-es="Secuenciador con Humanize, Probability, Euclidean">Sequencer with Humanize, Probability, Euclidean</li>
-          <li data-en="Filter + ADSR real-time preview" data-es="Filter + ADSR preview en tiempo real">Filter + ADSR real-time preview</li>
-          <li data-en="Sampler editor with waveform zoom" data-es="Sampler editor con waveform zoom">Sampler editor with waveform zoom</li>
-          <li data-en="Mixer with pan + output bus routing" data-es="Mixer con pan + output bus routing">Mixer with pan + output bus routing</li>
-          <li data-en="MPC 2.x + 3.x + Ableton + MIDI export" data-es="Export MPC 2.x + 3.x + Ableton + MIDI">MPC 2.x + 3.x + Ableton + MIDI export</li>
-          <li data-en="Lifetime updates" data-es="Updates de por vida">Lifetime updates</li>
-        </ul>
-        <a href="https://padworks.gumroad.com/l/xpn" class="btn" data-en="Get XPN Builder · $39" data-es="Comprar XPN Builder · $39">Get XPN Builder · $39</a>
-        <p class="mono" style="text-align:center;color:var(--dust);font-size:11px;letter-spacing:0.18em;margin:4px 0 0;text-transform:uppercase" data-en="After 100 licenses: $59" data-es="Después de 100 licencias: $59">After 100 licenses: $59</p>
-      </div>
+      <span class="product-kind" data-i18n="prod.fx.kind">Creative Tools</span>
     </div>
-  </div>
-</section>
 
-<section class="section" id="download">
-  <div class="wrap" style="text-align:center">
-    <div class="eyebrow" data-en="Ready when you are" data-es="Cuando estés listo">Ready when you are</div>
-    <h2 class="sec-title" style="margin:12px 0 32px" data-en="Ship your next pack <em>tonight.</em>" data-es="Publica tu próximo pack <em>esta noche.</em>">Ship your next pack <em>tonight.</em></h2>
-    <a href="https://padworks.gumroad.com/l/xpn" class="btn" style="padding:18px 32px;font-size:13px" data-en="Download XPN Builder · macOS ↓" data-es="Descargar XPN Builder · macOS ↓">Download XPN Builder · macOS ↓</a>
-    <div class="mono" style="margin-top:20px;color:var(--dust);font-size:11px;letter-spacing:0.2em">MACOS 13+ · 99 MB · V1.0-beta3</div>
-  </div>
-</section>
-
-<section id="collaborators" style="padding:80px 0;text-align:center;border-top:1px solid rgba(217,188,130,0.15);border-bottom:1px solid rgba(217,188,130,0.15)">
-  <div class="wrap">
-    <p style="color:#D9BC82;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;margin:0" data-en="FREE TRIAL" data-es="PRUEBA GRATIS">FREE TRIAL</p>
-    <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,4vw,48px);color:#F5F0E6;margin:16px 0;line-height:1.05;letter-spacing:-0.02em"
-      data-en="Try XPN Builder <span style='color:#D9BC82'>free for 3 days.</span>"
-      data-es="Prueba XPN Builder <span style='color:#D9BC82'>gratis por 3 días.</span>">
-      Try XPN Builder <span style="color:#D9BC82">free for 3 days.</span>
-    </h2>
-    <p style="color:rgba(245,240,230,0.6);max-width:500px;margin:0 auto 32px;font-size:15px;line-height:1.55"
-      data-en="No credit card. No limits. Fill in the form, get your trial key instantly."
-      data-es="Sin tarjeta de crédito. Sin límites. Llena el formulario y recibe tu clave al instante.">
-      No credit card. No limits. Fill in the form, get your trial key instantly.
+    <p class="reveal reveal-d2" style="max-width:640px;font-size:16px;line-height:1.7;color:var(--text-2);margin:0 0 16px">
+      Six plugins. Each with personality. <b style="color:var(--text)">No "Suite Pro Ultra" syndrome</b> — every one focused, opinionated, named after what it does.
     </p>
 
-    <form id="betaForm" onsubmit="submitBeta(event)"
-      style="max-width:500px;margin:0 auto;text-align:left">
+    <div class="fx-grid">
+      <div class="fx-card reveal" style="--acc:#06B6D4">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 01</span>
+          <h3>Drift</h3>
+          <span class="tag">Modulation</span>
+        </div>
+        <p>5 modes. Analog warmth. Chorus, flanger, phaser, vibrato, harmonic. BBD-style delays under the hood.</p>
+        <div class="price"><span><b>$49</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
 
-      <input type="email" name="email" required
-        placeholder="your@email.com"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
+      <div class="fx-card reveal reveal-d2" style="--acc:#F97316">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 02</span>
+          <h3>Wide</h3>
+          <span class="tag">Stereo</span>
+        </div>
+        <p>Multiband stereo imager. Vectorscope. Haas. Correlation meter. Phase-safe at every step of the way.</p>
+        <div class="price"><span><b>$49</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
 
-      <input type="text" name="name" required
-        data-en-placeholder="Your name" data-es-placeholder="Tu nombre"
-        placeholder="Your name"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
+      <div class="fx-card reveal reveal-d3" style="--acc:#DC2626">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 03</span>
+          <h3>Filter</h3>
+          <span class="tag">Resonant</span>
+        </div>
+        <p>Stilson/Smith Moog ladder. Self-oscillation. Envelope follower. LFO sync. Drive into the resonance.</p>
+        <div class="price"><span><b>$49</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
 
-      <select name="hardware" required
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
-        <option value="" data-en="Which hardware do you use?" data-es="¿Qué hardware usas?">Which hardware do you use?</option>
-        <option>Akai MPC (Live, One, One+, X, Key, Force)</option>
-        <option>Roland SP-404 MKII</option>
-        <option>Native Instruments Maschine (MK3, Mikro, Plus, Studio)</option>
-        <option>Elektron Analog RYTM MKII</option>
-        <option data-en="Software only (Ableton, FL Studio, other DAW)" data-es="Solo software (Ableton, FL Studio, otro DAW)">Software only (Ableton, FL Studio, other DAW)</option>
-        <option data-en="Other" data-es="Otro">Other</option>
-      </select>
+      <div class="fx-card reveal" style="--acc:#2563EB">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 04</span>
+          <h3>Space</h3>
+          <span class="tag">Reverb</span>
+        </div>
+        <p>Algorithmic. One-knob preset. Shimmer mode. Hadamard FDN under the hood — clean tails, no metallic ring.</p>
+        <div class="price"><span><b>$79</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
 
-      <select name="experience" required
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px">
-        <option value="" data-en="Experience making expansions?" data-es="¿Experiencia haciendo expansions?">Experience making expansions?</option>
-        <option data-en="Never made one" data-es="Nunca hice una">Never made one</option>
-        <option data-en="Tried Akai Expansion Builder" data-es="Probé Akai Expansion Builder">Tried Akai Expansion Builder</option>
-        <option data-en="Sell packs on Gumroad/BeatStars" data-es="Vendo packs en Gumroad/BeatStars">Sell packs on Gumroad/BeatStars</option>
-        <option data-en="Professional sound designer" data-es="Sound designer profesional">Professional sound designer</option>
-      </select>
+      <div class="fx-card reveal reveal-d2" style="--acc:#7C3AED">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 05</span>
+          <h3>Echo</h3>
+          <span class="tag">Smart Delay</span>
+        </div>
+        <p>Sync to BPM. Grain mode. Freeze. Pitch shift in the feedback path. Ducking against the dry signal.</p>
+        <div class="price"><span><b>$59</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
 
-      <textarea name="feedback_interest" rows="3"
-        placeholder="What would you use XPN Builder for? (optional)"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;resize:vertical;font-family:inherit;border-radius:2px"></textarea>
+      <div class="fx-card reveal reveal-d3" style="--acc:#84CC16">
+        <span class="glow-dot"></span>
+        <div>
+          <span class="num">FX / 06</span>
+          <h3>Tune</h3>
+          <span class="tag">Pitch</span>
+        </div>
+        <p>YIN detection. PSOLA. 8 scales. Formant preserve. Transparent for natural, hard for the effect.</p>
+        <div class="price"><span><b>$59</b> · one-time</span><a href="#">Explore →</a></div>
+      </div>
+    </div>
 
-      <input type="url" name="portfolio"
-        placeholder="Link to your work — BeatStars, Spotify, IG (optional)"
-        style="width:100%;padding:14px;background:rgba(245,240,230,0.05);border:1px solid rgba(217,188,130,0.3);color:#F5F0E6;font-size:14px;margin-bottom:12px;font-family:inherit;border-radius:2px"/>
-
-      <p style="color:rgba(245,240,230,0.4);font-size:11px;margin:0 0 16px"
-        data-en="Interested in being sponsored by Pad Works? Leave your portfolio link above."
-        data-es="¿Interés en ser sponsoreado por Pad Works? Deja tu portfolio arriba.">
-        Interested in being sponsored by Pad Works? Leave your portfolio link above.
-      </p>
-
-      <button type="submit"
-        style="width:100%;padding:16px;background:#D9BC82;color:#0D0F14;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:2px;border:none;cursor:pointer;border-radius:2px"
-        data-en="START FREE TRIAL" data-es="EMPEZAR PRUEBA GRATIS">START FREE TRIAL</button>
-    </form>
-
-    <script>
-      window.submitBeta = async function(e) {
-        e.preventDefault();
-        var form = e.target;
-        var btn = form.querySelector('button[type=submit]');
-        var originalLabel = btn.textContent;
-        btn.textContent = 'SENDING...';
-        btn.disabled = true;
-        try {
-          await fetch('https://formspree.io/f/mjgjngkj', {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
-          });
-          window.location.href = 'https://padworks.gumroad.com/l/xpn';
-        } catch (err) {
-          btn.textContent = 'ERROR — TRY AGAIN';
-          btn.disabled = false;
-          setTimeout(function(){ btn.textContent = originalLabel; }, 3000);
-        }
-      };
-    </script>
+    <div class="fx-bundle reveal">
+      <div class="l">
+        <span class="kicker">FX Suite · Complete</span>
+        <span class="ttl">All six plugins. One bundle. <span style="color:var(--text-3)">Save $145.</span></span>
+      </div>
+      <div class="r">
+        <div class="price-tag"><span class="cur">$</span>199<span class="unit">Bundle</span></div>
+        <a class="btn primary" href="#pricing" style="background:transparent;color:var(--text);border-color:var(--line-2);box-shadow:none">Explore FX <span class="arr">→</span></a>
+      </div>
+    </div>
   </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <div class="frow">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <svg width="28" height="28" viewBox="0 0 72 72">
-            <g fill="none" stroke="#D9BC82" stroke-width="1.1" stroke-opacity="0.5">
-              <rect x="4" y="4" width="14" height="14"/><rect x="22" y="4" width="14" height="14"/><rect x="40" y="4" width="14" height="14"/>
-              <rect x="4" y="22" width="14" height="14"/><rect x="22" y="22" width="14" height="14"/><rect x="40" y="22" width="14" height="14"/>
-              <rect x="4" y="40" width="14" height="14"/><rect x="22" y="40" width="14" height="14"/><rect x="40" y="40" width="14" height="14"/>
-            </g>
-            <rect x="4" y="4" width="14" height="14" fill="#D9BC82"/>
-            <rect x="40" y="4" width="14" height="14" fill="#D9BC82"/>
-            <rect x="22" y="22" width="14" height="14" fill="#D9BC82"/>
-            <rect x="4" y="40" width="14" height="14" fill="#D9BC82"/>
-            <rect x="40" y="40" width="14" height="14" fill="#D9BC82"/>
-          </svg>
-          <span style="font-family:Unbounded;font-weight:700;font-size:20px">XPN</span>
+<!-- ============== PRODUCT · SPLIT ============== -->
+<section class="product" id="split" style="--prod:#C0C0C0">
+  <div class="container">
+    <div class="product-head reveal">
+      <span class="product-no">P / <b>03</b></span>
+      <div class="product-title">
+        <h2>Spl<span class="accent">i</span>t</h2>
+        <span class="product-tag" data-i18n="prod.split.tag">AI Stem Separation</span>
+      </div>
+      <span class="product-kind" data-i18n="prod.split.kind">Source</span>
+    </div>
+
+    <div class="product-body">
+      <div class="product-copy reveal">
+        <h3>Drop any song. Get <em style="font-style:italic;color:var(--silver)">6 studio-quality stems.</em> No internet.</h3>
+        <p>Powered by <b>BS-RoFormer SW</b> — the best open-source separation model of 2026. Runs locally on Apple Silicon via CoreML. Your audio never leaves your machine.</p>
+        <p>Three stem modes. Send straight to Mixcraft when you're done. The first move in every remix, sample flip, or stem-based mix.</p>
+        <ul class="spec-list">
+          <li><span class="k">Stems</span><span class="v"><b>Vocals · Drums · Bass · Guitar · Piano · Other</b></span></li>
+          <li><span class="k">Engine</span><span class="v"><b>BS-RoFormer SW</b> · CoreML accelerated · Apple Silicon native</span></li>
+          <li><span class="k">Modes</span><span class="v"><b>2-stem · 4-stem · 6-stem · 6-stem Pro</b></span></li>
+          <li><span class="k">Output</span><span class="v"><b>WAV 24-bit · 44.1 kHz</b> · Offline · Send to Mixcraft</span></li>
+        </ul>
+        <div class="product-foot">
+          <div class="price-tag"><span class="cur">$</span>79<span class="unit">One-time</span></div>
+          <a class="btn prod" href="/split">Learn more <span class="arr">→</span></a>
         </div>
-        <p style="color:var(--dust);font-size:13px;line-height:1.6;max-width:340px;margin:16px 0 0"
-          data-en="Pad Works is an independent software studio in Santiago, Chile. We build desktop tools for producers who ship."
-          data-es="Pad Works es un estudio independiente en Santiago, Chile. Hacemos tools de escritorio para productores que publican.">Pad Works is an independent software studio in Santiago, Chile. We build desktop tools for producers who ship.</p>
       </div>
-      <div>
-        <h4 data-en="Product" data-es="Producto">Product</h4>
-        <a href="#features" data-en="Features" data-es="Características">Features</a>
-        <a href="#pricing" data-en="Pricing" data-es="Precio">Pricing</a>
-        <a href="#" data-en="Changelog" data-es="Changelog">Changelog</a>
-        <a href="#" data-en="Roadmap" data-es="Roadmap">Roadmap</a>
-      </div>
-      <div>
-        <h4 data-en="Resources" data-es="Recursos">Resources</h4>
-        <a href="#" data-en="Documentation" data-es="Documentación">Documentation</a>
-        <a href="#" data-en="Video tutorials" data-es="Video tutoriales">Video tutorials</a>
-        <a href="#" data-en="MPC 2.x ↔ 3.x guide" data-es="Guía MPC 2.x ↔ 3.x">MPC 2.x ↔ 3.x guide</a>
-        <a href="#" data-en="Support" data-es="Soporte">Support</a>
-      </div>
-      <div>
-        <h4 data-en="Company" data-es="Empresa">Company</h4>
-        <a href="#" data-en="About Pad Works" data-es="Sobre Pad Works">About Pad Works</a>
-        <a href="#" data-en="Contact" data-es="Contacto">Contact</a>
-        <a href="#">X / Twitter</a>
-        <a href="#">Instagram</a>
+
+      <div class="product-vis reveal reveal-d2" style="background:linear-gradient(180deg,#0E1218,#070A0E)">
+        <!-- SPLIT mockup styled after the real plugin screenshot -->
+        <div class="split-mock">
+          <div class="split-head">
+            <div class="name">
+              <span class="ic"><span></span><span></span><span></span><span></span><span></span></span>
+              <span>SPLIT</span>
+              <span style="font-family:'JetBrains Mono';font-size:9px;color:var(--text-3);letter-spacing:.18em;margin-left:6px">v1.0</span>
+            </div>
+            <div class="badge"><span class="d"></span>APPLE M2 · CoreML</div>
+          </div>
+          <div class="split-body">
+            <div class="split-drop">
+              <div class="wave" id="splitWave"></div>
+              <div class="ttl">Drop audio file here</div>
+              <div class="fmt">WAV · MP3 · FLAC · M4A · AIFF</div>
+            </div>
+            <div class="split-stems">
+              <div class="split-stem"><span class="lbl">Vocals</span><div class="bar" style="--p:20%"></div></div>
+              <div class="split-stem"><span class="lbl">Drums</span><div class="bar" style="--p:45%"></div></div>
+              <div class="split-stem"><span class="lbl">Bass</span><div class="bar" style="--p:55%"></div></div>
+              <div class="split-stem"><span class="lbl">Guitar</span><div class="bar" style="--p:35%"></div></div>
+              <div class="split-stem"><span class="lbl">Piano</span><div class="bar" style="--p:62%"></div></div>
+              <div class="split-stem"><span class="lbl">Other</span><div class="bar" style="--p:50%"></div></div>
+            </div>
+          </div>
+          <div class="split-foot"><span>6-STEM · WAV 24-bit</span><span class="send">SEND TO MIXCRAFT →</span></div>
+        </div>
       </div>
     </div>
-    <div class="legal">
-      <span>© 2026 PAD WORKS · SANTIAGO / CL</span>
-      <span>"AKAI" AND "MPC" ARE TRADEMARKS OF THEIR RESPECTIVE OWNERS. XPN BUILDER IS NOT AFFILIATED.</span>
+  </div>
+</section>
+
+<!-- ============== PRODUCT · MIXCRAFT ============== -->
+<section class="product" id="mixcraft" style="--prod:#06B6D4">
+  <div class="container">
+    <div class="product-head reveal">
+      <span class="product-no">P / <b>04</b></span>
+      <div class="product-title">
+        <h2>Mix<span class="accent">c</span>raft</h2>
+        <span class="product-tag" data-i18n="prod.mix.tag">The AI Brain</span>
+      </div>
+      <span class="product-kind" data-i18n="prod.mix.kind">Intelligence</span>
+    </div>
+
+    <div class="product-body">
+      <div class="product-vis reveal" style="background:linear-gradient(180deg,#0E1218,#070A0E)">
+        <div class="mx-mock">
+          <div class="mx-head">
+            <div class="l"><span class="d"></span>MIXCRAFT · ANALYSIS</div>
+            <div class="pill">● CLAUDE LINKED</div>
+          </div>
+          <div class="mx-body">
+            <div class="mx-tracks">
+              <div class="mx-track on"><span class="sw"></span><span class="lb">Kick</span><span class="conf">98%</span></div>
+              <div class="mx-track on"><span class="sw"></span><span class="lb">Snare</span><span class="conf">96%</span></div>
+              <div class="mx-track"><span class="sw"></span><span class="lb">Hats</span><span class="conf">92%</span></div>
+              <div class="mx-track on"><span class="sw"></span><span class="lb">Bass</span><span class="conf">99%</span></div>
+              <div class="mx-track"><span class="sw"></span><span class="lb">Lead Vocal</span><span class="conf">97%</span></div>
+              <div class="mx-track"><span class="sw"></span><span class="lb">BG Vocal</span><span class="conf">88%</span></div>
+              <div class="mx-track"><span class="sw"></span><span class="lb">Synth Pad</span><span class="conf">94%</span></div>
+              <div class="mx-track"><span class="sw"></span><span class="lb">Guitar L</span><span class="conf">91%</span></div>
+            </div>
+            <div class="mx-chat">
+              <div class="mx-msg ai">
+                <span class="kicker">▸ Masking detected</span>
+                <b>Kick</b> and <b>Bass</b> compete at <b>80 Hz</b>. Suggesting a 2 dB dip on Kick around 78 Hz with Q=1.2 — preserves the Bass fundamental without thinning the kick body.
+                <div class="mx-recipe">
+                  <b>BALANZE · Bass · EQ Band 2</b><br>
+                  freq=80Hz · gain=−2.0dB · Q=1.2
+                </div>
+              </div>
+              <div class="mx-msg ai">
+                <span class="kicker">▸ Recipe ready</span>
+                Generated for your kit: <b>Balanze Channel</b>, <b>Comp</b>, <b>Wide</b>. Review before applying.
+              </div>
+            </div>
+          </div>
+          <div class="mx-foot"><span>24 TYPES · MATRIX BUILT</span><span class="ok">8 RECIPES READY</span></div>
+        </div>
+      </div>
+
+      <div class="product-copy reveal reveal-d2">
+        <h3>Mixcraft doesn't mix for you. It <em style="font-style:italic;color:var(--cyan)">analyzes, explains, and teaches.</em></h3>
+        <p>Drop your stems. Mixcraft classifies them (24 instrument types), detects masking conflicts between tracks, and generates processing recipes adapted to <b>YOUR plugin kit.</b></p>
+        <p>Then it tells you why. Every recipe comes with the reasoning. You apply it, override it, or learn from it — your call. The AI is a colleague, not a replacement.</p>
+        <ul class="spec-list">
+          <li><span class="k">Engine</span><span class="v"><b>Claude AI</b> · 24-type classification · masking matrix</span></li>
+          <li><span class="k">Output</span><span class="v"><b>Recipes</b> per track · adapted to your installed plugins</span></li>
+          <li><span class="k">Integrates</span><span class="v"><b>SPLIT</b> · <b>Balanze</b> · <b>FX Suite</b> · third-party (read-only)</span></li>
+          <li><span class="k">Pricing</span><span class="v"><b>Free</b> — 2 tracks · <b>Pro</b> — $19/mo or $149/yr</span></li>
+        </ul>
+        <div class="product-foot">
+          <div class="price-tag"><span class="cur">$</span>19<span class="unit">/mo · Pro</span></div>
+          <a class="btn prod" href="/mixcraft">Learn more <span class="arr">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TECH FOUNDATION ============== -->
+<section class="tech">
+  <div class="container">
+    <div class="sec-tag reveal"><span class="dash"></span><span class="num">05</span><span data-i18n="tech.kicker">The Foundation</span></div>
+    <h2 class="reveal" data-i18n="tech.h2">Built right. <em>No shortcuts.</em></h2>
+    <p class="lead reveal reveal-d2" data-i18n="tech.lead">No silicon-valley demos that crash on a real project. No "powered by AI" stickers on a wrapper. Every plugin is verified, reproducible, and documented before it ships.</p>
+
+    <div class="tech-grid reveal reveal-d3">
+      <div class="tech-cell">
+        <div class="k">Framework</div>
+        <div class="v">JUCE 8.0.12</div>
+        <div class="d">Industry-standard plugin framework. Same stack used by every studio plugin you trust.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">Build</div>
+        <div class="v">CMake + Ninja</div>
+        <div class="d">Reproducible from source. CI pipeline catches every regression before a tag.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">QA</div>
+        <div class="v">Strictness 5</div>
+        <div class="d">pluginval at the highest setting. Every plugin verified across thousands of DAW edge-cases.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">License</div>
+        <div class="v">MIT / BSD</div>
+        <div class="d">Zero GPL dependencies. Commercial-ready. Your studio's lawyers can stop worrying.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">DSP</div>
+        <div class="v">Papers, not hacks</div>
+        <div class="d">Giannoulis compression. Stilson/Smith ladder. YIN. Hadamard FDN. BS-RoFormer.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">Comms</div>
+        <div class="v">WebSocket + IPC</div>
+        <div class="d">Real-time ecosystem messaging. Every plugin talks to the rest in milliseconds.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">Hardware</div>
+        <div class="v">Apple Silicon</div>
+        <div class="d">CoreML acceleration native. M1/M2/M3/M4. Intel supported, Apple Silicon optimized.</div>
+      </div>
+      <div class="tech-cell">
+        <div class="k">Privacy</div>
+        <div class="v">Offline-first</div>
+        <div class="d">Audio never leaves your machine. Mixcraft sends metadata only — and only if you opt in.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PRICING ============== -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="sec-tag reveal" style="justify-content:center;display:flex"><span class="dash"></span><span class="num">06</span><span data-i18n="price.kicker">Pricing</span></div>
+    <h2 class="reveal" data-i18n="price.h2">Three ways in.</h2>
+    <p class="lead reveal reveal-d2" data-i18n="price.lead">Pick a tier. Upgrade any time — we credit what you've already paid. No subscriptions on the plugins themselves: Balanze, SPLIT, and FX are yours forever once you buy.</p>
+
+    <div class="price-grid">
+      <div class="price-card reveal">
+        <div class="tier" data-i18n="price.t1.tier">Starter</div>
+        <div class="name">Balanze Bundle</div>
+        <div class="amt"><span class="c">$</span><span class="n">149</span><span class="u" data-i18n="price.once">/ once</span></div>
+        <p class="desc" data-i18n="price.t1.desc">The foundation. Channel + Master. 12 modules. 18 presets. Everything you need to mix and master a record.</p>
+        <ul>
+          <li>BALANZE Channel + Master</li>
+          <li data-i18n="price.t1.li2">12 DSP modules · 18 factory presets</li>
+          <li>VST3 / AU · macOS + Windows</li>
+          <li data-i18n="price.t1.li4">All future Balanze updates</li>
+        </ul>
+        <a class="btn outline" href="#"><span data-i18n="price.t1.cta">Get Starter</span> <span class="arr">→</span></a>
+      </div>
+
+      <div class="price-card featured reveal reveal-d2">
+        <span class="badge" data-i18n="price.popular">Popular</span>
+        <div class="tier" data-i18n="price.t2.tier">Producer</div>
+        <div class="name">Pad Works · Pro</div>
+        <div class="amt"><span class="c">$</span><span class="n">299</span><span class="u" data-i18n="price.year">/ year</span></div>
+        <p class="desc" data-i18n="price.t2.desc">Balanze Bundle + FX Suite + Mixcraft Pro. Everything except SPLIT. The producer's working kit.</p>
+        <ul>
+          <li>BALANZE Channel + Master</li>
+          <li data-i18n="price.t2.li2">FX Suite — all 6 plugins</li>
+          <li data-i18n="price.t2.li3">Mixcraft Pro — unlimited tracks</li>
+          <li data-i18n="price.t2.li4">9 plugins · 1 brain · 32 presets</li>
+        </ul>
+        <a class="btn primary" href="#"><span data-i18n="price.t2.cta">Get Producer</span> <span class="arr">→</span></a>
+      </div>
+
+      <div class="price-card reveal reveal-d3">
+        <div class="tier" data-i18n="price.t3.tier">Complete</div>
+        <div class="name">Pad Works · Universe</div>
+        <div class="amt"><span class="c">$</span><span class="n">449</span><span class="u" data-i18n="price.year2">/ year</span></div>
+        <p class="desc" data-i18n="price.t3.desc">The entire universe. SPLIT + BALANZE + FX Suite + Mixcraft Pro. 10 plugins. 1 brain. Every update, forever.</p>
+        <ul>
+          <li data-i18n="price.t3.li1">SPLIT — AI stem separation</li>
+          <li>BALANZE Channel + Master</li>
+          <li data-i18n="price.t3.li3">FX Suite — all 6 plugins</li>
+          <li data-i18n="price.t3.li4">Mixcraft Pro · 50 presets · priority support</li>
+        </ul>
+        <a class="btn outline" href="#"><span data-i18n="price.t3.cta">Get Universe</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <div class="price-fine reveal" data-i18n="price.fine">
+      <b>30-day refund</b> · &nbsp; Student <b>40% off</b> · &nbsp; No subscriptions on plugins · &nbsp; Balanze, SPLIT &amp; FX are <b>yours forever</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span style="font-size:11px;letter-spacing:.28em;color:var(--text-2);font-weight:600">XPN · PRO AUDIO</span>
+        <span class="wm">Pad Works</span>
+        <span class="by">PAD WORKS by <b>XPN</b> · <b>TMCC</b> — The Martin Creative Company</span>
+        <span class="loc" data-i18n="foot.loc">Santiago, Chile · Built for producers everywhere. The craft deserves better tools. We're building them.</span>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.products">Products</h4>
+        <ul>
+          <li><a href="/balanze">BALANZE</a></li>
+          <li><a href="/fx">FX Suite</a></li>
+          <li><a href="/split">SPLIT</a></li>
+          <li><a href="/mixcraft">Mixcraft</a></li>
+          <li><a href="/xpn-builder">XPN Builder</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.company">Company</h4>
+        <ul>
+          <li><a href="#story" data-i18n="nav.about">About</a></li>
+          <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
+          <li><a href="#" data-i18n="foot.philosophy">Philosophy</a></li>
+          <li><a href="#" data-i18n="foot.press">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.support">Support</h4>
+        <ul>
+          <li><a href="#" data-i18n="foot.docs">Documentation</a></li>
+          <li><a href="#" data-i18n="foot.contact">Contact</a></li>
+          <li><a href="#" data-i18n="foot.refunds">Refunds</a></li>
+          <li><a href="#" data-i18n="foot.status">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="foot.copy">© 2026 XPN · TMCC · Santiago, Chile · All rights reserved</span>
+      <span class="footer-line" data-i18n="foot.line">The craft deserves better tools.</span>
+      <span>v1.0 · May 2026</span>
     </div>
   </div>
 </footer>
 
 <script>
-// EN/ES toggle with localStorage persistence. Reads `xpn_landing_lang`,
-// falls back to 'en'. Each translatable element carries data-en / data-es;
-// we swap innerHTML when the user clicks the chip and persist the choice.
-(function() {
-  var STORAGE_KEY = 'xpn_landing_lang';
-  function applyLang(lang) {
-    document.querySelectorAll('[data-en]').forEach(function(el) {
-      var val = el.getAttribute('data-' + lang);
-      if (val != null) el.innerHTML = val;
-    });
-    document.querySelectorAll('.lang button').forEach(function(b) {
-      b.classList.toggle('on', b.dataset.lang === lang);
-    });
-    document.documentElement.lang = lang;
-    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
-  }
-  document.querySelectorAll('.lang button').forEach(function(b) {
-    b.addEventListener('click', function() { applyLang(b.dataset.lang); });
-  });
-  var stored = null;
-  try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-  applyLang(stored === 'es' ? 'es' : 'en');
+// Silence benign ResizeObserver loop warnings (host iframe noise)
+(function(){
+  const re = /ResizeObserver loop/i;
+  window.addEventListener('error', (e) => {
+    if (e && e.message && re.test(e.message)) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+  const origErr = console.error;
+  console.error = function(...args){
+    if(args[0] && typeof args[0] === 'string' && re.test(args[0])) return;
+    if(args[0] && args[0].message && re.test(args[0].message)) return;
+    origErr.apply(console, args);
+  };
 })();
 </script>
+<script>
+/* ============== Nebula canvas ============== */
+(function(){
+  const canvas = document.getElementById('nebula');
+  const ctx = canvas.getContext('2d');
+  let W=0,H=0,dpr=Math.min(window.devicePixelRatio||1, 2);
+  let mouse = {x:0, y:0, has:false};
+  let target = {x:0, y:0};
+  let blobs = [];
+  let stars = [];
+  let pulses = [];
+  let running = true;
+
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    W = Math.max(1, Math.floor(rect.width));
+    H = Math.max(1, Math.floor(rect.height));
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function rand(a,b){return a+Math.random()*(b-a)}
+
+  function init(){
+    resize();
+    // ember blobs — warm tones, layered
+    blobs = [];
+    const palette = [
+      {r:255,g:182,b:39,  a:.55}, // gold
+      {r:255,g:107,b:53,  a:.5},  // orange
+      {r:139, g:26, b:26, a:.45}, // deep red
+      {r:255,g:140,b:60,  a:.4},
+      {r:200, g:60, b:30, a:.4},
+      {r:255,g:200,b:90,  a:.35},
+    ];
+    for(let i=0;i<14;i++){
+      const c = palette[i % palette.length];
+      blobs.push({
+        x: rand(0,W), y: rand(0,H),
+        vx: rand(-.08,.08), vy: rand(-.05,.05),
+        r: rand(220, 460),
+        color: c,
+        wob: Math.random()*Math.PI*2,
+        wobSp: rand(.0005,.0012)
+      });
+    }
+    // stars
+    stars = [];
+    const N = Math.floor((W*H)/9000);
+    for(let i=0;i<N;i++){
+      stars.push({
+        x: rand(0,W), y: rand(0,H),
+        r: rand(.3, 1.4),
+        a: rand(.25, .9),
+        tw: rand(.001, .004), // twinkle speed
+        ph: Math.random()*Math.PI*2,
+        vx: rand(-.02, .02), vy: rand(-.02, .02)
+      });
+    }
+  }
+
+  function step(t){
+    if(!running){ requestAnimationFrame(step); return }
+    // smooth mouse target
+    mouse.x += (target.x - mouse.x) * .08;
+    mouse.y += (target.y - mouse.y) * .08;
+
+    // base — paint void
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#050608';
+    ctx.fillRect(0,0,W,H);
+
+    // blobs (additive)
+    ctx.globalCompositeOperation = 'screen';
+    for(const b of blobs){
+      // drift
+      b.x += b.vx; b.y += b.vy;
+      b.wob += b.wobSp;
+      // mouse warp — pull toward cursor for nearby blobs
+      if(mouse.has){
+        const dx = mouse.x - b.x, dy = mouse.y - b.y;
+        const d2 = dx*dx + dy*dy;
+        const range = 360*360;
+        if(d2 < range){
+          const f = (1 - d2/range) * .35;
+          b.x += dx * f * .015;
+          b.y += dy * f * .015;
+        }
+      }
+      // wrap
+      if(b.x < -b.r) b.x = W + b.r;
+      if(b.x > W + b.r) b.x = -b.r;
+      if(b.y < -b.r) b.y = H + b.r;
+      if(b.y > H + b.r) b.y = -b.r;
+
+      const rr = b.r * (1 + Math.sin(b.wob)*.08);
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, rr);
+      const c = b.color;
+      g.addColorStop(0, `rgba(${c.r},${c.g},${c.b},${c.a})`);
+      g.addColorStop(.5, `rgba(${c.r},${c.g},${c.b},${c.a*.3})`);
+      g.addColorStop(1, `rgba(${c.r},${c.g},${c.b},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, rr, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // dim overlay for depth
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(5,6,8,.45)';
+    ctx.fillRect(0,0,W,H);
+
+    // stars
+    ctx.globalCompositeOperation = 'lighter';
+    for(const s of stars){
+      s.ph += s.tw * 16;
+      s.x += s.vx; s.y += s.vy;
+      if(s.x<0) s.x=W; if(s.x>W) s.x=0;
+      if(s.y<0) s.y=H; if(s.y>H) s.y=0;
+      const a = s.a * (.65 + .35*Math.sin(s.ph));
+      ctx.fillStyle = `rgba(255,240,210,${a})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
+      // tiny glow
+      if(s.r > .9){
+        ctx.fillStyle = `rgba(255,210,140,${a*.18})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r*3, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    // click pulses
+    for(let i=pulses.length-1;i>=0;i--){
+      const p = pulses[i];
+      p.r += p.s;
+      p.a *= .96;
+      if(p.a < .02){ pulses.splice(i,1); continue }
+      ctx.strokeStyle = `rgba(255,200,90,${p.a})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.stroke();
+      // inner soft fill
+      const g2 = ctx.createRadialGradient(p.x, p.y, p.r*.6, p.x, p.y, p.r);
+      g2.addColorStop(0, `rgba(255,182,39,0)`);
+      g2.addColorStop(.7, `rgba(255,182,39,${p.a*.18})`);
+      g2.addColorStop(1, `rgba(255,107,53,0)`);
+      ctx.fillStyle = g2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  canvas.addEventListener('mousemove', e=>{
+    const r = canvas.getBoundingClientRect();
+    target.x = e.clientX - r.left;
+    target.y = e.clientY - r.top;
+    if(!mouse.has){ mouse.x = target.x; mouse.y = target.y; mouse.has = true }
+  });
+  canvas.addEventListener('mouseleave', ()=>{ mouse.has = false });
+  canvas.addEventListener('click', e=>{
+    const r = canvas.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    pulses.push({x, y, r: 8, s: 4.5, a: .85});
+    pulses.push({x, y, r: 4, s: 3.2, a: .6});
+  });
+  let resizeT;
+  window.addEventListener('resize', ()=>{ clearTimeout(resizeT); resizeT = setTimeout(init, 120) });
+
+  // pause animation when hero off-screen for perf
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=> running = e.isIntersecting );
+  }, {threshold:.01});
+  io.observe(canvas);
+
+  init();
+  requestAnimationFrame(()=>requestAnimationFrame(step));
+})();
+
+/* ============== nav shadow on scroll ============== */
+(function(){
+  const nav = document.getElementById('nav');
+  function onScroll(){
+    if(window.scrollY > 30) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+/* ============== reveal on scroll ============== */
+(function(){
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) } });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+
+/* ============== SPLIT mockup wave bars ============== */
+(function(){
+  const host = document.getElementById('splitWave');
+  if(!host) return;
+  const heights = [4,8,12,18,14,10,16,22,18,14,9,12,18,14,8,14,20,16,10,6,12,18,22,16,10,14,18,12,8,4];
+  heights.forEach((h,i)=>{
+    const s = document.createElement('span');
+    s.style.height = h+'px';
+    s.style.background = '#C0C0C0';
+    s.style.opacity = (.4 + .5*(h/22)).toFixed(2);
+    host.appendChild(s);
+  });
+})();
+
+/* ============== ecosystem: cursor halo + proximity glow + tooltips + Aladin reveal ============== */
+(function(){
+  const map = document.getElementById('ecoMap');
+  const tip = document.getElementById('ecoTip');
+  const cursor = document.getElementById('ecoCursor');
+  if(!map) return;
+
+  // ----- Aladin reveal: when map enters viewport, trigger staggered chip emergence
+  const revealIO = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        // small delay to let the section settle, then trigger
+        setTimeout(()=>map.classList.add('in'), 250);
+        revealIO.unobserve(map);
+      }
+    });
+  }, {threshold:.25});
+  revealIO.observe(map);
+
+  // ----- Cursor halo: smooth lerped follower
+  let mx = 0, my = 0;          // target (mouse)
+  let cx = 0, cy = 0;          // current
+  let active = false;
+  let mapRect = null;
+
+  function updateRect(){ mapRect = map.getBoundingClientRect() }
+  updateRect();
+  window.addEventListener('resize', updateRect, {passive:true});
+  window.addEventListener('scroll', updateRect, {passive:true});
+
+  // Pre-fetch hub centers (in CSS px, relative to map)
+  const hubs = [...map.querySelectorAll('.eco-hub')].map(el=>{
+    const cs = getComputedStyle(el);
+    return {
+      el,
+      x: parseFloat(el.style.left)/100,  // 0..1
+      y: parseFloat(el.style.top)/100,
+      color: el.style.getPropertyValue('--hub').trim() || '#FFB627',
+      target: el.dataset.target,
+      tip: el.querySelector('.lbl')?.textContent || '',
+      sub: el.querySelector('.sub')?.textContent || ''
+    };
+  });
+
+  function onMove(e){
+    if(!mapRect) updateRect();
+    const lx = e.clientX - mapRect.left;
+    const ly = e.clientY - mapRect.top;
+    // clamp to map area for the target
+    if(lx < 0 || ly < 0 || lx > mapRect.width || ly > mapRect.height){
+      onLeave();
+      return;
+    }
+    mx = lx; my = ly;
+    if(!active){
+      active = true;
+      // seed current position so it doesn't slide from origin
+      cx = mx; cy = my;
+      map.classList.add('has-cursor');
+    }
+  }
+  function onLeave(){
+    if(!active) return;
+    active = false;
+    map.classList.remove('has-cursor');
+    // clear near states
+    hubs.forEach(h=>h.el.classList.remove('near'));
+    // hide tip if not over a chip
+    if(tip && !tip.dataset.lock) tip.style.display='none';
+  }
+  map.addEventListener('mousemove', onMove);
+  map.addEventListener('mouseleave', onLeave);
+
+  // animation loop — lerp cursor + compute proximity glow on hubs
+  function tick(){
+    if(active){
+      cx += (mx - cx) * .18;
+      cy += (my - cy) * .18;
+      cursor.style.transform =
+        `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0) translate(-50%,-50%) scale(var(--cs,1))`;
+
+      // find closest hub and tint cursor + activate proximity
+      let closest = null;
+      let closestDist = Infinity;
+      const W = mapRect.width, H = mapRect.height;
+      for(const h of hubs){
+        const hx = h.x * W, hy = h.y * H;
+        const d = Math.hypot(cx - hx, cy - hy);
+        if(d < closestDist){ closestDist = d; closest = h }
+      }
+      // proximity glow on the closest hub if within ~140px
+      hubs.forEach(h=>h.el.classList.remove('near'));
+      if(closest && closestDist < 140){
+        closest.el.classList.add('near');
+        // tint cursor to that hub
+        cursor.style.setProperty('--cur', closest.color);
+        // scale cursor up as we get closer
+        const t = 1 - Math.min(1, closestDist/140);
+        cursor.style.setProperty('--cs', (1 + t*0.4).toFixed(3));
+      } else {
+        cursor.style.setProperty('--cur', '#FFB627');
+        cursor.style.setProperty('--cs', '1');
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // ----- Tooltip on chips (and click → scroll to product)
+  function showTip(node){
+    if(!tip) return;
+    const ttl = node.getAttribute('data-tip') || '';
+    const one = node.getAttribute(document.documentElement.lang === 'es' ? 'data-one-es' : 'data-one')
+              || node.getAttribute('data-one') || '';
+    const acc = node.getAttribute('data-tip-acc') || '#E8ECF2';
+    tip.querySelector('.ttl').textContent = ttl;
+    tip.querySelector('.one').textContent = one;
+    tip.style.setProperty('--tip-acc', acc);
+    tip.style.borderColor = `color-mix(in oklab, ${acc} 28%, var(--line-2))`;
+    tip.style.display = 'block';
+  }
+  function moveTip(e){
+    if(!tip || !mapRect) return;
+    const r = map.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const tw = tip.offsetWidth || 200;
+    const th = tip.offsetHeight || 60;
+    // place tip to the side of cursor; flip if near right/bottom edge
+    let px = x + 22, py = y + 22;
+    if(px + tw > r.width - 12) px = x - tw - 16;
+    if(py + th > r.height - 12) py = y - th - 16;
+    tip.style.left = px + 'px';
+    tip.style.top = py + 'px';
+  }
+  function hideTip(){ if(tip) tip.style.display = 'none' }
+
+  // chips: hover tooltip + click navigate
+  map.querySelectorAll('.eco-chip').forEach(node=>{
+    node.addEventListener('mouseenter', ()=>showTip(node));
+    node.addEventListener('mousemove', e=>moveTip(e));
+    node.addEventListener('mouseleave', hideTip);
+    node.addEventListener('click', ()=>{
+      const id = node.dataset.target;
+      const el = id && document.getElementById(id);
+      if(el){
+        const top = el.getBoundingClientRect().top + window.scrollY - 60;
+        window.scrollTo({top, behavior:'smooth'});
+      }
+    });
+  });
+
+  // hubs: click navigate, hover tooltip
+  map.querySelectorAll('.eco-hub').forEach(node=>{
+    const tipTxt = node.querySelector('.lbl')?.textContent || '';
+    const sub = node.querySelector('.sub')?.textContent || '';
+    const acc = node.style.getPropertyValue('--hub').trim() || '#FFB627';
+    node.addEventListener('mouseenter', ()=>{
+      tip.querySelector('.ttl').textContent = tipTxt;
+      tip.querySelector('.one').textContent = sub;
+      tip.style.setProperty('--tip-acc', acc);
+      tip.style.borderColor = `color-mix(in oklab, ${acc} 28%, var(--line-2))`;
+      tip.style.display='block';
+    });
+    node.addEventListener('mousemove', e=>moveTip(e));
+    node.addEventListener('mouseleave', hideTip);
+    node.addEventListener('click', ()=>{
+      const id = node.dataset.target;
+      const el = id && document.getElementById(id);
+      if(el){
+        const top = el.getBoundingClientRect().top + window.scrollY - 60;
+        window.scrollTo({top, behavior:'smooth'});
+      }
+    });
+  });
+})();
+
+/* ============== i18n: EN / ES toggle ============== */
+(function(){
+  const dict = {
+    // nav
+    'nav.ecosystem':   {en:'Ecosystem',         es:'Ecosistema'},
+    'nav.products':    {en:'Products',          es:'Productos'},
+    'nav.pricing':     {en:'Pricing',           es:'Precios'},
+    'nav.about':       {en:'About',             es:'Nosotros'},
+    'nav.cta':         {en:'Get the Suite',     es:'Obtener la Suite'},
+
+    // hero
+    'hero.meta':       {en:'10 plugins · 1 brain', es:'10 plugins · 1 cerebro'},
+    'hero.tag':        {en:'Tools for <em>the craft.</em>', es:'Herramientas para <em>el oficio.</em>'},
+    'hero.sub':        {
+      en:'We build instruments for the modern producer. <b>Plugins that sound right. Software that thinks.</b> An ecosystem that respects the music — and teaches you why.',
+      es:'Construimos instrumentos para el productor moderno. <b>Plugins que suenan bien. Software que piensa.</b> Un ecosistema que respeta la música — y te enseña por qué.'
+    },
+    'hero.cta1':       {en:'Explore the Suite', es:'Explorar la Suite'},
+    'hero.cta2':       {en:'Read the Story',    es:'Leer la historia'},
+    'hero.scroll':     {en:'Scroll · enter the universe', es:'Scroll · entra al universo'},
+
+    // story
+    'story.kicker':    {en:'The Story',         es:'La Historia'},
+    'story.h2':        {
+      en:'Every producer knows the feeling — the song is in your head, the recording is there, and then the mix <em>becomes a wall.</em>',
+      es:'Todo productor conoce esa sensación — la canción está en tu cabeza, la grabación está hecha, y entonces la mezcla <em>se vuelve un muro.</em>'
+    },
+    'story.p1':        {
+      en:"Too many plugins. Too many options. Too little understanding of why one move works and another doesn't. So you stack tutorials, presets, third-party recommendations — and the craft slips further from you.",
+      es:'Demasiados plugins. Demasiadas opciones. Poca comprensión de por qué una decisión funciona y otra no. Acumulas tutoriales, presets, recomendaciones — y el oficio se aleja cada vez más.'
+    },
+    'story.p2':        {
+      en:"We started Pad Works because mixing shouldn't require a decade of trial and error. Technology should make the craft more accessible — not replace the human behind it. AI doesn't replace the engineer. It documents the decisions an engineer would make, and gives you back the time to make better ones.",
+      es:'Empezamos Pad Works porque mezclar no debería requerir una década de prueba y error. La tecnología debería hacer el oficio más accesible — no reemplazar al humano detrás. La IA no reemplaza al ingeniero. Documenta las decisiones que un ingeniero tomaría, y te devuelve el tiempo para tomar mejores.'
+    },
+    'story.p3':        {
+      en:'So we built an ecosystem. Not just plugins — a system that <b>analyzes, processes, and explains.</b> Every knob has a reason. Every decision is documented. Every producer, from bedroom to studio, gets the same quality tools and the knowledge to use them.',
+      es:'Así que construimos un ecosistema. No solo plugins — un sistema que <b>analiza, procesa y explica.</b> Cada perilla tiene una razón. Cada decisión queda documentada. Cada productor, del dormitorio al estudio, recibe las mismas herramientas de calidad y el conocimiento para usarlas.'
+    },
+    'story.foot':      {en:"This is what we've built ↓", es:'Esto es lo que hemos construido ↓'},
+
+    // ecosystem
+    'eco.kicker':      {en:'The Ecosystem',     es:'El Ecosistema'},
+    'eco.h2':          {
+      en:'One ecosystem. <span class="glow">Every piece connected.</span>',
+      es:'Un ecosistema. <span class="glow">Cada pieza conectada.</span>'
+    },
+    'eco.lead':        {
+      en:'Your mix enters as a stereo file. It leaves as a finished master. <b style="color:var(--text)">SPLIT</b> separates. <b style="color:var(--text)">Mixcraft</b> analyzes. <b style="color:var(--text)">Balanze</b> executes. You create.',
+      es:'Tu mezcla entra como archivo estéreo. Sale como master terminado. <b style="color:var(--text)">SPLIT</b> separa. <b style="color:var(--text)">Mixcraft</b> analiza. <b style="color:var(--text)">Balanze</b> ejecuta. Tú creas.'
+    },
+    'eco.pill':        {en:'Ecosystem Active',  es:'Ecosistema Activo'},
+    'hub.split.sub':   {en:'Stems',             es:'Stems'},
+    'hub.mixcraft.sub':{en:'The Brain',         es:'El Cerebro'},
+    'hub.balanze.sub':        {en:'Channel + Master', es:'Canal + Master'},
+    'hub.balanze-ch.sub':     {en:'Channel',    es:'Canal'},
+    'hub.balanze-master.sub': {en:'Bus',        es:'Bus'},
+    'hub.fx.sub':      {en:'6 Plugins',         es:'6 Plugins'},
+
+    // instruments (FX preview section)
+    'inst.kicker':     {en:'The Instruments',   es:'Los Instrumentos'},
+    'inst.h2':         {en:'Six tools. <em>Six voices.</em>', es:'Seis herramientas. <em>Seis voces.</em>'},
+    'inst.lead':       {
+      en:'The FX Suite — each plugin focused, opinionated, named after what it does. <b>No "Suite Pro Ultra" syndrome.</b>',
+      es:'El FX Suite — cada plugin enfocado, con carácter, nombrado por lo que hace. <b>Sin el síndrome del "Suite Pro Ultra".</b>'
+    },
+    'inst.drift.tag':  {en:'Modulation',        es:'Modulación'},
+    'inst.drift.one':  {en:'Five modes. Analog warmth. Chorus, flanger, phaser, vibrato, harmonic. BBD-style delays under the hood.', es:'Cinco modos. Calidez análoga. Chorus, flanger, phaser, vibrato, armónico. Delays estilo BBD por debajo.'},
+    'inst.wide.tag':   {en:'Stereo Imager',     es:'Imager Stereo'},
+    'inst.wide.one':   {en:'Multiband stereo imager. Vectorscope. Haas delay. Correlation meter. Phase-safe at every step.', es:'Imager estéreo multibanda. Vectorscope. Delay Haas. Medidor de correlación. Seguro de fase en cada paso.'},
+    'inst.filter.tag': {en:'Resonant',          es:'Resonante'},
+    'inst.filter.one': {en:'Stilson/Smith Moog ladder. Self-oscillation. Envelope follower. LFO sync. Drive into the resonance.', es:'Moog ladder Stilson/Smith. Autoresonancia. Envelope follower. Sync de LFO. Drive en la resonancia.'},
+    'inst.space.tag':  {en:'Reverb',            es:'Reverb'},
+    'inst.space.one':  {en:'Algorithmic. One-knob preset. Shimmer mode. Hadamard FDN — clean tails, no metallic ring.', es:'Algorítmica. Preset de una perilla. Modo shimmer. FDN Hadamard — colas limpias, sin metal.'},
+    'inst.echo.tag':   {en:'Smart Delay',       es:'Delay Inteligente'},
+    'inst.echo.one':   {en:'Sync to BPM. Grain mode. Freeze. Pitch shift in the feedback path. Ducking against the dry signal.', es:'Sync al BPM. Modo grain. Freeze. Pitch shift en el feedback. Ducking contra la señal dry.'},
+    'inst.tune.tag':   {en:'Pitch',             es:'Pitch'},
+    'inst.tune.one':   {en:'YIN detection. PSOLA. Eight scales. Formant preserve. Transparent for natural, hard for the effect.', es:'Detección YIN. PSOLA. Ocho escalas. Preservación de formantes. Transparente para natural, hard para el efecto.'},
+    'inst.foot.kicker':{en:'FX Suite · Complete', es:'FX Suite · Completo'},
+    'inst.foot.ttl':   {en:'All six plugins. One bundle. <b>Save $145.</b>', es:'Los seis plugins. Un bundle. <b>Ahorras $145.</b>'},
+    'inst.foot.cta':   {en:'Explore the Suite', es:'Explorar la Suite'},
+
+    // products
+    'prod.balanze.tag':  {en:'Channel · Master · Connected', es:'Canal · Master · Conectados'},
+    'prod.balanze.kind': {en:'Foundation',      es:'Fundación'},
+    'prod.fx.tag':       {en:'Modulation · Color · Space', es:'Modulación · Color · Espacio'},
+    'prod.fx.kind':      {en:'Creative Tools',  es:'Herramientas Creativas'},
+    'prod.split.tag':    {en:'AI Stem Separation', es:'Separación de Stems con IA'},
+    'prod.split.kind':   {en:'Source',          es:'Fuente'},
+    'prod.mix.tag':      {en:'The AI Brain',    es:'El Cerebro IA'},
+    'prod.mix.kind':     {en:'Intelligence',    es:'Inteligencia'},
+
+    // tech
+    'tech.kicker':     {en:'The Foundation',    es:'La Fundación'},
+    'tech.h2':         {en:'Built right. <em>No shortcuts.</em>', es:'Bien construido. <em>Sin atajos.</em>'},
+    'tech.lead':       {
+      en:'No silicon-valley demos that crash on a real project. No "powered by AI" stickers on a wrapper. Every plugin is verified, reproducible, and documented before it ships.',
+      es:'Sin demos de Silicon Valley que crashean en un proyecto real. Sin stickers de "powered by AI" sobre un wrapper. Cada plugin es verificado, reproducible y documentado antes de salir.'
+    },
+
+    // pricing
+    'price.kicker':    {en:'Pricing',           es:'Precios'},
+    'price.h2':        {en:'Three ways in.',    es:'Tres formas de entrar.'},
+    'price.lead':      {
+      en:"Pick a tier. Upgrade any time — we credit what you've already paid. No subscriptions on the plugins themselves: Balanze, SPLIT, and FX are yours forever once you buy.",
+      es:'Elige un plan. Sube de nivel cuando quieras — abonamos lo que ya pagaste. Sin suscripciones sobre los plugins: Balanze, SPLIT y FX son tuyos para siempre al comprarlos.'
+    },
+    'price.popular':   {en:'Popular',           es:'Popular'},
+    'price.once':      {en:'/ once',            es:'/ pago único'},
+    'price.year':      {en:'/ year',            es:'/ año'},
+    'price.year2':     {en:'/ year',            es:'/ año'},
+    'price.t1.tier':   {en:'Starter',           es:'Inicial'},
+    'price.t1.desc':   {en:'The foundation. Channel + Master. 12 modules. 18 presets. Everything you need to mix and master a record.', es:'La fundación. Canal + Master. 12 módulos. 18 presets. Todo lo necesario para mezclar y masterizar un disco.'},
+    'price.t1.li2':    {en:'12 DSP modules · 18 factory presets', es:'12 módulos DSP · 18 presets de fábrica'},
+    'price.t1.li4':    {en:'All future Balanze updates', es:'Todas las actualizaciones futuras de Balanze'},
+    'price.t1.cta':    {en:'Get Starter',       es:'Obtener Inicial'},
+    'price.t2.tier':   {en:'Producer',          es:'Productor'},
+    'price.t2.desc':   {en:"Balanze Bundle + FX Suite + Mixcraft Pro. Everything except SPLIT. The producer's working kit.", es:'Balanze Bundle + FX Suite + Mixcraft Pro. Todo excepto SPLIT. El kit de trabajo del productor.'},
+    'price.t2.li2':    {en:'FX Suite — all 6 plugins', es:'FX Suite — los 6 plugins'},
+    'price.t2.li3':    {en:'Mixcraft Pro — unlimited tracks', es:'Mixcraft Pro — pistas ilimitadas'},
+    'price.t2.li4':    {en:'9 plugins · 1 brain · 32 presets', es:'9 plugins · 1 cerebro · 32 presets'},
+    'price.t2.cta':    {en:'Get Producer',      es:'Obtener Productor'},
+    'price.t3.tier':   {en:'Complete',          es:'Completo'},
+    'price.t3.desc':   {en:'The entire universe. SPLIT + BALANZE + FX Suite + Mixcraft Pro. 10 plugins. 1 brain. Every update, forever.', es:'El universo completo. SPLIT + BALANZE + FX Suite + Mixcraft Pro. 10 plugins. 1 cerebro. Cada actualización, para siempre.'},
+    'price.t3.li1':    {en:'SPLIT — AI stem separation', es:'SPLIT — separación de stems con IA'},
+    'price.t3.li3':    {en:'FX Suite — all 6 plugins', es:'FX Suite — los 6 plugins'},
+    'price.t3.li4':    {en:'Mixcraft Pro · 50 presets · priority support', es:'Mixcraft Pro · 50 presets · soporte prioritario'},
+    'price.t3.cta':    {en:'Get Universe',      es:'Obtener Universo'},
+    'price.fine':      {
+      en:'<b>30-day refund</b> · &nbsp; Student <b>40% off</b> · &nbsp; No subscriptions on plugins · &nbsp; Balanze, SPLIT &amp; FX are <b>yours forever</b>',
+      es:'<b>Reembolso 30 días</b> · &nbsp; Estudiantes <b>40% off</b> · &nbsp; Sin suscripciones sobre plugins · &nbsp; Balanze, SPLIT &amp; FX son <b>tuyos para siempre</b>'
+    },
+
+    // footer
+    'foot.loc':        {en:"Santiago, Chile · Built for producers everywhere. The craft deserves better tools. We're building them.", es:'Santiago, Chile · Construido para productores en todas partes. El oficio merece mejores herramientas. Las estamos construyendo.'},
+    'foot.products':   {en:'Products',          es:'Productos'},
+    'foot.company':    {en:'Company',           es:'Compañía'},
+    'foot.support':    {en:'Support',           es:'Soporte'},
+    'foot.philosophy': {en:'Philosophy',        es:'Filosofía'},
+    'foot.press':      {en:'Press',             es:'Prensa'},
+    'foot.docs':       {en:'Documentation',     es:'Documentación'},
+    'foot.contact':    {en:'Contact',           es:'Contacto'},
+    'foot.refunds':    {en:'Refunds',           es:'Reembolsos'},
+    'foot.status':     {en:'Status',            es:'Estado'},
+    'foot.copy':       {en:'© 2026 TMCC · All rights reserved', es:'© 2026 TMCC · Todos los derechos reservados'},
+    'foot.line':       {en:'The craft deserves better tools.', es:'El oficio merece mejores herramientas.'}
+  };
+
+  // store original innerHTML in data-en-html if not already set, so we always have a fallback
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    if(!el.dataset.enHtml) el.dataset.enHtml = el.innerHTML;
+  });
+
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    try{ localStorage.setItem('pw-lang', lang) }catch(e){}
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.dataset.i18n;
+      const entry = dict[key];
+      if(entry && entry[lang] != null){
+        el.innerHTML = entry[lang];
+      } else if(lang === 'en' && el.dataset.enHtml){
+        el.innerHTML = el.dataset.enHtml;
+      }
+    });
+    // toggle UI state
+    document.querySelectorAll('.lang button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.lang === lang);
+    });
+  }
+
+  // wire buttons
+  document.querySelectorAll('.lang button').forEach(b=>{
+    b.addEventListener('click', ()=> setLang(b.dataset.lang));
+  });
+
+  // initial
+  let initial = 'en';
+  try{
+    const saved = localStorage.getItem('pw-lang');
+    if(saved === 'es' || saved === 'en') initial = saved;
+  }catch(e){}
+  setLang(initial);
+})();
+</script>
+
 </body>
 </html>
-<!-- rebuild -->
