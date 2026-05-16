@@ -36,9 +36,9 @@
     --line-2:#2C3543;
 
     /* text */
-    --text:#E8ECF2;
-    --text-2:#8B95A5;
-    --text-3:#5A6373;
+    --text:#EDF0F4;
+    --text-2:#A0A5AD;
+    --text-3:#7E8794;
     --text-4:#3D4554;
 
     /* warm signature (universe) */
@@ -93,8 +93,8 @@
   }
   .nav-links{display:flex;gap:36px;align-items:center}
   .nav-links a{
-    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:12px;
-    letter-spacing:.28em;text-transform:uppercase;color:var(--text-2);
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:clamp(14px,1.1vw,16px);
+    letter-spacing:.24em;text-transform:uppercase;color:var(--text-2);
     transition:color .2s ease;position:relative;padding:6px 0;
   }
   .nav-links a:hover{color:var(--text)}
@@ -128,7 +128,7 @@
 
   /* ==================== HERO ==================== */
   .hero{
-    position:relative;height:100vh;min-height:760px;width:100%;
+    position:relative;height:100vh;min-height:680px;max-height:920px;width:100%;
     overflow:hidden;background:var(--void);
   }
   #nebula{
@@ -148,9 +148,9 @@
   }
   .hero-meta{
     display:flex;align-items:center;gap:12px;
-    font-family:'JetBrains Mono',monospace;font-size:10px;
-    letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);
-    margin-bottom:36px;
+    font-family:'JetBrains Mono',monospace;font-size:clamp(11px,.9vw,13px);
+    letter-spacing:.32em;text-transform:uppercase;color:var(--text-2);
+    margin-bottom:36px;text-shadow:0 0 20px rgba(0,0,0,.8);
   }
   .hero-meta .dot{
     width:6px;height:6px;border-radius:50%;background:var(--gold);
@@ -171,18 +171,18 @@
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   }
   .hero-tag{
-    font-family:'Barlow Condensed',sans-serif;font-weight:300;
-    font-size:22px;letter-spacing:.5em;text-transform:uppercase;
-    color:var(--text-2);margin:28px 0 0;
+    font-family:'Barlow Condensed',sans-serif;font-weight:400;
+    font-size:clamp(20px,1.9vw,28px);letter-spacing:.5em;text-transform:uppercase;
+    color:#E0E0E0;margin:28px 0 0;text-shadow:0 0 20px rgba(0,0,0,.8);
   }
-  .hero-tag em{font-style:italic;color:var(--gold);font-weight:400;letter-spacing:.45em}
+  .hero-tag em{font-style:italic;color:var(--gold);font-weight:500;letter-spacing:.45em}
 
   .hero-sub{
-    max-width:640px;margin:48px 0 0;text-align:center;
-    font-size:16px;line-height:1.7;color:var(--text-2);
-    font-weight:400;
+    max-width:680px;margin:48px 0 0;text-align:center;
+    font-size:clamp(17px,1.4vw,20px);line-height:1.7;color:#E0E0E0;
+    font-weight:400;text-shadow:0 0 20px rgba(0,0,0,.8);
   }
-  .hero-sub b{color:var(--text);font-weight:500}
+  .hero-sub b{color:var(--text);font-weight:600}
 
   .hero-ctas{
     display:flex;gap:14px;align-items:center;margin-top:44px;pointer-events:auto;
@@ -210,8 +210,8 @@
     pointer-events:none;
   }
   .hero-scroll .lbl{
-    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.32em;
-    color:var(--text-3);text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;font-size:clamp(11px,.85vw,13px);letter-spacing:.32em;
+    color:#A0A5AD;text-transform:uppercase;text-shadow:0 0 20px rgba(0,0,0,.8);
   }
   .hero-scroll .ln{
     width:1px;height:48px;background:linear-gradient(180deg, var(--text-3), transparent);
@@ -229,15 +229,15 @@
   .container{max-width:1320px;margin:0 auto;padding:0 48px}
   .sec-tag{
     display:inline-flex;align-items:center;gap:10px;
-    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
-    text-transform:uppercase;color:var(--text-3);margin-bottom:24px;
+    font-family:'JetBrains Mono',monospace;font-size:clamp(11px,.9vw,13px);letter-spacing:.28em;
+    text-transform:uppercase;color:var(--text-2);margin-bottom:24px;
   }
   .sec-tag .num{color:var(--gold)}
   .sec-tag .dash{width:24px;height:1px;background:var(--line-2)}
 
   /* ==================== STORY ==================== */
   .story{
-    padding:200px 0 220px;
+    padding:100px 0 100px;
     background:
       radial-gradient(900px 500px at 50% 0%, rgba(255,107,53,.06), transparent 60%),
       linear-gradient(180deg, var(--void) 0%, var(--bg) 80%);
@@ -252,15 +252,15 @@
   .story-wrap{max-width:880px;margin:0 auto;padding:0 48px;position:relative}
   .story h2{
     font-family:'Barlow Condensed',sans-serif;font-weight:300;
-    font-size:54px;line-height:1.15;letter-spacing:.005em;
-    margin:0 0 56px;color:var(--text);text-wrap:balance;
+    font-size:clamp(44px,4.8vw,72px);line-height:1.12;letter-spacing:.005em;
+    margin:0 0 48px;color:var(--text);text-wrap:balance;
   }
   .story h2 em{font-style:italic;color:var(--gold);font-weight:400}
   .story p{
-    font-size:19px;line-height:1.7;color:var(--text-2);
-    font-weight:400;margin:0 0 28px;max-width:720px;text-wrap:pretty;
+    font-size:clamp(18px,1.45vw,21px);line-height:1.7;color:var(--text-2);
+    font-weight:400;margin:0 0 28px;max-width:760px;text-wrap:pretty;
   }
-  .story p:last-of-type{color:var(--text);font-size:18px}
+  .story p:last-of-type{color:var(--text);font-size:clamp(18px,1.4vw,20px)}
   .story-foot{
     margin-top:64px;display:flex;align-items:center;gap:14px;
     font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;
@@ -270,7 +270,7 @@
 
   /* ==================== INSTRUMENTS (FX preview) ==================== */
   .instruments{
-    padding:140px 0 160px;background:var(--bg);position:relative;overflow:hidden;
+    padding:90px 0 100px;background:var(--bg);position:relative;overflow:hidden;
     border-top:1px solid var(--line);
   }
   .instruments::before{
@@ -297,8 +297,8 @@
   .inst-head h2 em{font-style:italic;color:var(--text-2);font-weight:300}
   .inst-head h2 .ac{color:var(--gold);font-weight:500}
   .inst-head p{
-    font-size:15px;line-height:1.7;color:var(--text-2);
-    max-width:340px;margin:0;padding-bottom:10px;text-wrap:pretty;
+    font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:var(--text-2);
+    max-width:380px;margin:0;padding-bottom:10px;text-wrap:pretty;
   }
   .inst-head p b{color:var(--text);font-weight:500}
 
@@ -364,7 +364,7 @@
     letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin:0 0 12px;
   }
   .tool-card .t-one{
-    font-size:12px;line-height:1.55;color:var(--text-2);text-wrap:pretty;margin:0;
+    font-size:clamp(13px,1vw,14px);line-height:1.55;color:var(--text-2);text-wrap:pretty;margin:0;
   }
   .inst-foot{
     margin-top:28px;padding:22px 32px;
@@ -409,7 +409,7 @@
 
   /* ==================== ECOSYSTEM ==================== */
   .ecosystem{
-    padding:160px 0 180px;
+    padding:90px 0 100px;
     background:var(--bg);position:relative;overflow:hidden;
   }
   .ecosystem::before{
@@ -425,7 +425,7 @@
   }
   .eco-head h2 .glow{color:var(--gold);font-weight:600}
   .eco-head p{
-    font-size:15px;line-height:1.7;color:var(--text-2);max-width:380px;margin:0;
+    font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:var(--text-2);max-width:400px;margin:0;
     padding-bottom:8px;text-wrap:pretty;
   }
   .eco-map{
@@ -650,7 +650,7 @@
   /* tooltip */
 
   /* ==================== PRODUCTS — section frame ==================== */
-  .product{padding:140px 0;position:relative;overflow:hidden}
+  .product{padding:90px 0;position:relative;overflow:hidden}
   .product-head{
     display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:baseline;
     margin-bottom:56px;padding-bottom:20px;border-bottom:1px solid var(--line);
@@ -685,11 +685,11 @@
     margin-top:56px;
   }
   .product-copy h3{
-    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:32px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:clamp(28px,2.6vw,38px);
     line-height:1.2;letter-spacing:.01em;margin:0 0 20px;color:var(--text);text-wrap:balance;
   }
   .product-copy p{
-    font-size:15px;line-height:1.7;color:var(--text-2);margin:0 0 16px;max-width:520px;text-wrap:pretty;
+    font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:var(--text-2);margin:0 0 16px;max-width:540px;text-wrap:pretty;
   }
   .product-copy p b{color:var(--text);font-weight:500}
   .spec-list{
@@ -699,7 +699,7 @@
   .spec-list li{
     display:grid;grid-template-columns:80px 1fr;gap:18px;align-items:center;
     padding:14px 0;border-top:1px solid var(--line);
-    font-size:13px;color:var(--text-2);
+    font-size:clamp(14px,1.1vw,16px);color:var(--text-2);
   }
   .spec-list li:last-child{border-bottom:1px solid var(--line)}
   .spec-list .k{
@@ -767,7 +767,7 @@
 
   /* ==================== FX SUITE grid ==================== */
   .fx{
-    padding:140px 0;background:var(--bg);position:relative;overflow:hidden;
+    padding:90px 0;background:var(--bg);position:relative;overflow:hidden;
   }
   .fx::before{
     content:"";position:absolute;inset:0;
@@ -813,7 +813,7 @@
     letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin-bottom:auto;
   }
   .fx-card p{
-    font-size:13px;line-height:1.6;color:var(--text-2);margin:18px 0 16px;max-width:280px;
+    font-size:clamp(14px,1.05vw,16px);line-height:1.6;color:var(--text-2);margin:18px 0 16px;max-width:300px;
   }
   .fx-card .price{
     font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);
@@ -897,7 +897,7 @@
 
   /* ==================== TECH FOUNDATION ==================== */
   .tech{
-    padding:140px 0;background:var(--bg-2);
+    padding:90px 0;background:var(--bg-2);
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   }
   .tech h2{
@@ -905,7 +905,7 @@
     font-size:64px;line-height:1;letter-spacing:.01em;margin:0 0 14px;color:var(--text);
   }
   .tech h2 em{font-style:italic;font-weight:300;color:var(--text-2)}
-  .tech .lead{font-size:15px;color:var(--text-2);max-width:540px;margin:0 0 56px;line-height:1.7}
+  .tech .lead{font-size:clamp(16px,1.3vw,19px);color:var(--text-2);max-width:560px;margin:0 0 56px;line-height:1.7}
   .tech-grid{
     display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
     background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
@@ -923,12 +923,12 @@
     letter-spacing:.02em;color:var(--text);line-height:1.1;
   }
   .tech-cell .d{
-    font-size:12px;line-height:1.6;color:var(--text-2);margin-top:auto;
+    font-size:clamp(13px,1vw,15px);line-height:1.6;color:var(--text-2);margin-top:auto;
   }
 
   /* ==================== PRICING ==================== */
   .pricing{
-    padding:160px 0 180px;background:var(--bg);position:relative;overflow:hidden;
+    padding:90px 0 100px;background:var(--bg);position:relative;overflow:hidden;
   }
   .pricing::before{
     content:"";position:absolute;inset:0;
@@ -942,7 +942,7 @@
     font-size:72px;line-height:1;letter-spacing:.01em;margin:0 0 14px;color:var(--text);text-align:center;
   }
   .pricing .lead{
-    font-size:15px;color:var(--text-2);max-width:540px;margin:0 auto 64px;line-height:1.7;text-align:center;
+    font-size:clamp(16px,1.3vw,19px);color:var(--text-2);max-width:560px;margin:0 auto 64px;line-height:1.7;text-align:center;
   }
   .price-grid{
     display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative;
@@ -983,10 +983,10 @@
   }
   .price-card .amt .c{font-family:'Barlow Condensed';font-size:24px;color:var(--text-3);font-weight:300}
   .price-card .amt .u{font-family:'JetBrains Mono';font-size:11px;color:var(--text-3);letter-spacing:.22em;text-transform:uppercase}
-  .price-card .desc{font-size:14px;line-height:1.6;color:var(--text-2);min-height:48px}
+  .price-card .desc{font-size:clamp(15px,1.15vw,17px);line-height:1.6;color:var(--text-2);min-height:48px}
   .price-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
   .price-card ul li{
-    font-size:13px;color:var(--text-2);padding-left:20px;position:relative;line-height:1.5;
+    font-size:clamp(14px,1.05vw,16px);color:var(--text-2);padding-left:20px;position:relative;line-height:1.5;
   }
   .price-card ul li::before{
     content:"";position:absolute;left:0;top:8px;width:10px;height:1px;background:var(--text-3);
@@ -1010,7 +1010,7 @@
 
   /* ==================== FOOTER ==================== */
   .footer{
-    position:relative;padding:120px 0 48px;background:var(--void);overflow:hidden;
+    position:relative;padding:90px 0 48px;background:var(--void);overflow:hidden;
     border-top:1px solid var(--line);
   }
   .footer::before{
@@ -1033,13 +1033,13 @@
     text-transform:uppercase;color:var(--text-3);
   }
   .footer-brand .by b{color:var(--text-2)}
-  .footer-brand .loc{font-size:13px;color:var(--text-2);line-height:1.6;max-width:300px}
+  .footer-brand .loc{font-size:clamp(14px,1.05vw,16px);color:var(--text-2);line-height:1.6;max-width:320px}
   .footer-col h4{
     font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;
     letter-spacing:.32em;text-transform:uppercase;color:var(--text-3);margin:0 0 18px;
   }
   .footer-col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-  .footer-col ul li a{font-size:13px;color:var(--text-2);transition:color .15s ease}
+  .footer-col ul li a{font-size:clamp(14px,1.05vw,16px);color:var(--text-2);transition:color .15s ease}
   .footer-col ul li a:hover{color:var(--text)}
   .footer-bottom{
     display:flex;justify-content:space-between;align-items:center;
@@ -1071,6 +1071,31 @@
   }
   .eco-tip .ttl{font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:4px;color:var(--tip-acc, var(--text))}
   .eco-tip .one{font-family:'Inter';font-size:11px;color:var(--text-2);text-transform:none;letter-spacing:0;line-height:1.5}
+
+  /* ===== Desktop type scale (≥1024px) — mobile unchanged ===== */
+  @media (min-width: 1024px) {
+    /* Nav links */
+    .nav-links a{font-size:16px}
+
+    /* Main section titles (64–80px) */
+    .story h2{font-size:80px}
+    .tech h2{font-size:72px}
+    .fx-card h3{font-size:72px}
+
+    /* Subtitles / leads (24–28px) */
+    .hero-tag{font-size:28px}
+    .hero-sub{font-size:24px}
+    .eco-head p{font-size:24px}
+    .tech .lead{font-size:24px}
+    .product-copy h3{font-size:42px}
+
+    /* Body text / paragraphs (18–20px) */
+    .story p{font-size:20px}
+    .story p:last-of-type{font-size:20px}
+    .product-copy p{font-size:20px}
+    .fx-card p{font-size:18px}
+    .spec-list li{font-size:18px}
+  }
 
 </style>
 </head>
@@ -1145,114 +1170,6 @@
     <p class="reveal reveal-d4" data-i18n="story.p3">So we built an ecosystem. Not just plugins — a system that <b>analyzes, processes, and explains.</b> Every knob has a reason. Every decision is documented. Every producer, from bedroom to studio, gets the same quality tools and the knowledge to use them.</p>
     <p class="reveal reveal-d4" style="font-size:14px;color:var(--text-2);margin-top:24px"><b>Pad Works</b> is the product brand of <b>XPN</b>, the professional audio division of <b>TMCC — The Martin Creative Company</b>. We design tools, write the software, and document the craft.</p>
     <div class="story-foot reveal"><span class="ln"></span><span data-i18n="story.foot">This is what we've built ↓</span></div>
-  </div>
-</section>
-
-<!-- ============== INSTRUMENTS (FX SUITE PREVIEW) ============== -->
-<section class="instruments" id="instruments">
-  <div class="container">
-    <div class="sec-tag reveal"><span class="dash"></span><span class="num">02</span><span data-i18n="inst.kicker">The Instruments</span></div>
-    <div class="inst-head">
-      <h2 class="reveal" data-i18n="inst.h2">Six tools. <em>Six voices.</em></h2>
-      <p class="reveal reveal-d2" data-i18n="inst.lead">The FX Suite — each plugin focused, opinionated, named after what it does. <b>No "Suite Pro Ultra" syndrome.</b></p>
-    </div>
-
-    <div class="tools-grid">
-      <a class="tool-card reveal" href="/fx" style="--acc:#06B6D4">
-        <span class="t-num">FX / 01</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <path d="M2 28 Q14 8 26 28 T50 28 T74 28 T94 28" stroke="#06B6D4" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M2 28 Q14 18 26 28 T50 28 T74 28 T94 28" stroke="#06B6D4" stroke-width="1" stroke-linecap="round" opacity=".4"/>
-          </svg>
-        </div>
-        <div class="t-name">Drift <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.drift.tag">Modulation</div>
-        <p class="t-one" data-i18n="inst.drift.one">Five modes. Analog warmth. Chorus, flanger, phaser, vibrato, harmonic. BBD-style delays under the hood.</p>
-      </a>
-
-      <a class="tool-card reveal reveal-d2" href="/fx" style="--acc:#F97316">
-        <span class="t-num">FX / 02</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <circle cx="38" cy="28" r="16" stroke="#F97316" stroke-width="1.6"/>
-            <circle cx="58" cy="28" r="16" stroke="#F97316" stroke-width="1.6"/>
-            <line x1="2" y1="28" x2="94" y2="28" stroke="#F97316" stroke-width=".8" stroke-dasharray="2 3" opacity=".4"/>
-          </svg>
-        </div>
-        <div class="t-name">Wide <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.wide.tag">Stereo Imager</div>
-        <p class="t-one" data-i18n="inst.wide.one">Multiband stereo imager. Vectorscope. Haas delay. Correlation meter. Phase-safe at every step.</p>
-      </a>
-
-      <a class="tool-card reveal reveal-d3" href="/fx" style="--acc:#DC2626">
-        <span class="t-num">FX / 03</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <path d="M2 30 L42 30 Q50 30 52 14 L56 44 Q58 30 94 30" stroke="#DC2626" stroke-width="1.6" stroke-linecap="round"/>
-            <line x1="52" y1="14" x2="52" y2="6" stroke="#DC2626" stroke-width=".8" stroke-dasharray="1 2" opacity=".5"/>
-          </svg>
-        </div>
-        <div class="t-name">Filter <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.filter.tag">Resonant</div>
-        <p class="t-one" data-i18n="inst.filter.one">Stilson/Smith Moog ladder. Self-oscillation. Envelope follower. LFO sync. Drive into the resonance.</p>
-      </a>
-
-      <a class="tool-card reveal" href="/fx" style="--acc:#2563EB">
-        <span class="t-num">FX / 04</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <circle cx="48" cy="28" r="6" stroke="#2563EB" stroke-width="1.6" fill="#2563EB" fill-opacity=".18"/>
-            <circle cx="48" cy="28" r="14" stroke="#2563EB" stroke-width="1.2" opacity=".55"/>
-            <circle cx="48" cy="28" r="22" stroke="#2563EB" stroke-width=".9" opacity=".3"/>
-            <circle cx="48" cy="28" r="28" stroke="#2563EB" stroke-width=".6" opacity=".15"/>
-          </svg>
-        </div>
-        <div class="t-name">Space <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.space.tag">Reverb</div>
-        <p class="t-one" data-i18n="inst.space.one">Algorithmic. One-knob preset. Shimmer mode. Hadamard FDN — clean tails, no metallic ring.</p>
-      </a>
-
-      <a class="tool-card reveal reveal-d2" href="/fx" style="--acc:#7C3AED">
-        <span class="t-num">FX / 05</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <line x1="10" y1="10" x2="10" y2="46" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
-            <line x1="26" y1="16" x2="26" y2="40" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round" opacity=".8"/>
-            <line x1="42" y1="20" x2="42" y2="36" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
-            <line x1="58" y1="23" x2="58" y2="33" stroke="#7C3AED" stroke-width="1.1" stroke-linecap="round" opacity=".4"/>
-            <line x1="74" y1="25" x2="74" y2="31" stroke="#7C3AED" stroke-width=".8" stroke-linecap="round" opacity=".25"/>
-            <line x1="88" y1="27" x2="88" y2="29" stroke="#7C3AED" stroke-width=".6" stroke-linecap="round" opacity=".15"/>
-          </svg>
-        </div>
-        <div class="t-name">Echo <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.echo.tag">Smart Delay</div>
-        <p class="t-one" data-i18n="inst.echo.one">Sync to BPM. Grain mode. Freeze. Pitch shift in the feedback path. Ducking against the dry signal.</p>
-      </a>
-
-      <a class="tool-card reveal reveal-d3" href="/fx" style="--acc:#84CC16">
-        <span class="t-num">FX / 06</span>
-        <div class="t-vis">
-          <svg viewBox="0 0 96 56" width="96" height="56" fill="none">
-            <path d="M2 44 L18 44 L18 32 L34 32 L34 20 L50 20 L50 28 L66 28 L66 36 L82 36 L82 24 L94 24" stroke="#84CC16" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="t-name">Tune <span class="d"></span></div>
-        <div class="t-tag" data-i18n="inst.tune.tag">Pitch</div>
-        <p class="t-one" data-i18n="inst.tune.one">YIN detection. PSOLA. Eight scales. Formant preserve. Transparent for natural, hard for the effect.</p>
-      </a>
-    </div>
-
-    <div class="inst-foot reveal">
-      <div class="l">
-        <span class="kicker" data-i18n="inst.foot.kicker">FX Suite · Complete</span>
-        <span class="ttl" data-i18n="inst.foot.ttl">All six plugins. One bundle. <b>Save $145.</b></span>
-      </div>
-      <div class="r">
-        <div class="price-tag"><span class="cur">$</span>199<span class="unit" data-i18n="price.once">/ once</span></div>
-        <a class="lk" href="/fx"><span data-i18n="inst.foot.cta">Explore the Suite</span> <span class="arr">→</span></a>
-      </div>
-    </div>
   </div>
 </section>
 
